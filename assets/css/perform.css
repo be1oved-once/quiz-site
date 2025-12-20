@@ -15,33 +15,114 @@ body.dark {
 .perform-content {
   padding: 16px; margin-top: 56px; margin-left: 3vw ;
 }
-
+@media (min-width: 768px) {
+  .perform-content {
+  padding: 16px; margin-top: 56px; margin-left: 0;
+  }
+  .stats-scroll{
+    justify-content: center;
+  }
+}
 /* Header */
+/* =========================
+   PERFORMANCE HEADER
+========================= */
+
 .perform-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px solid var(--violet);
-  border-radius: 16px;
-  padding: 12px 16px;
+
+  padding: 14px 18px;
   margin-bottom: 18px;
-  background: var(--bg-light);
+
+  border-radius: 18px;
+  border: 2px solid rgba(108,99,255,0.45);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(108,99,255,0.10),
+      rgba(255,255,255,0.85)
+    );
+
+  backdrop-filter: blur(6px);
+  box-shadow:
+    0 10px 25px rgba(108,99,255,0.15),
+    inset 0 0 0 1px rgba(255,255,255,0.6);
 }
 
+/* Title */
 .perform-header h2 {
   font-size: 16px;
   font-weight: 600;
+  color: var(--text-light);
 }
 
+/* =========================
+   BACK BUTTON
+========================= */
+
 .back-btn {
-  background: transparent;
-  border: none;
-  color: var(--violet);
-  font-size: 14px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
+
+  padding: 6px 12px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,0.85);
+  border: 1.5px solid rgba(108,99,255,0.45);
+
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--violet);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.back-btn i {
+  font-size: 13px;
+}
+
+/* Hover */
+.back-btn:hover {
+  background: rgba(108,99,255,0.12);
+  box-shadow: 0 6px 16px rgba(108,99,255,0.25);
+}
+
+/* Active (tap) */
+.back-btn:active {
+  transform: scale(0.96);
+}
+body.dark .perform-header {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(108,99,255,0.20),
+      rgba(15,23,42,0.95)
+    );
+
+  border-color: rgba(108,99,255,0.6);
+
+  box-shadow:
+    0 14px 32px rgba(0,0,0,0.55),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+body.dark .perform-header h2 {
+  color: #e5e7eb;
+}
+
+body.dark .back-btn {
+  background: rgba(15,23,42,0.85);
+  border-color: rgba(108,99,255,0.6);
+  color: #c7bfff;
+}
+
+body.dark .back-btn:hover {
+  background: rgba(108,99,255,0.18);
 }
 
 /* Scroll container */
@@ -89,20 +170,32 @@ body.dark {
   opacity: 0.9;
   z-index: 0;}
 /* Card types */
-.stat-card.streak .stat-bg {
-  background: radial-gradient(circle at top right, #ef4444, transparent 60%);
+.stat-card.streak {
+  background:
+    linear-gradient(135deg, rgba(239,68,68,0.18), transparent 60%),
+    linear-gradient(-135deg, rgba(239,68,68,0.12), transparent 60%),
+    var(--bg-light);
 }
 
-.stat-card.xp .stat-bg {
-  background: radial-gradient(circle at top right, #facc15, transparent 60%);
+.stat-card.xp {
+  background:
+    linear-gradient(135deg, rgba(250,204,21,0.18), transparent 60%),
+    linear-gradient(-135deg, rgba(250,204,21,0.12), transparent 60%),
+    var(--bg-light);
 }
 
-.stat-card.attempts .stat-bg {
-  background: radial-gradient(circle at top right, #3b82f6, transparent 60%);
+.stat-card.attempts {
+  background:
+    linear-gradient(135deg, rgba(59,130,246,0.18), transparent 60%),
+    linear-gradient(-135deg, rgba(59,130,246,0.12), transparent 60%),
+    var(--bg-light);
 }
 
-.stat-card.visits .stat-bg {
-  background: radial-gradient(circle at top right, #22c55e, transparent 60%);
+.stat-card.visits {
+  background:
+    linear-gradient(135deg, rgba(34,197,94,0.18), transparent 60%),
+    linear-gradient(-135deg, rgba(34,197,94,0.12), transparent 60%),
+    var(--bg-light);
 }
 
 /* Icon */
@@ -163,4 +256,112 @@ body.dark .stat-number {
 
 body.dark .stat-icon {
   color: #c7bfff;
+}
+/* =========================
+   XP WEEK CHART
+========================= */
+
+.xp-week-card {
+  margin-top: 24px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+}
+
+.xp-week-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+
+.xp-week-chart-wrap {
+  position: relative;
+  height: 200px;        /* 🔒 FIXED HEIGHT */
+  max-height: 200px;
+}
+
+#xpWeekChart {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.xp-week-total {
+  margin-top: 8px;
+  font-size: 13px;
+  opacity: 0.75;
+  text-align: left;
+}
+
+/* Dark mode */
+body.dark .xp-week-card {
+  background: #0f172a;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.45);
+}
+/* =========================
+   BACKGROUND ICONS
+========================= */
+
+.stat-bg-icon {
+  position: absolute;
+  font-size: 86px;
+  opacity: 0.12;
+  z-index: 0;
+  right: -12px;
+  bottom: -10px;
+  transform: rotate(-12deg);
+  pointer-events: none;
+  filter: blur(0.2px);
+}
+
+/* Color tuning per card */
+.stat-card.streak .stat-bg-icon {
+  color: #ef4444;
+}
+
+.stat-card.xp .stat-bg-icon {
+  color: #facc15;
+}
+
+.stat-card.attempts .stat-bg-icon {
+  color: #3b82f6;
+}
+
+.stat-card.visits .stat-bg-icon {
+  color: #22c55e;
+}
+body.dark .stat-bg-icon {
+  opacity: 0.18;
+}
+
+body.dark .stat-card.streak {
+  background:
+    linear-gradient(135deg, rgba(239,68,68,0.25), transparent 60%),
+    linear-gradient(-135deg, rgba(239,68,68,0.18), transparent 60%),
+    #0f172a;
+}
+
+body.dark .stat-card.xp {
+  background:
+    linear-gradient(135deg, rgba(250,204,21,0.25), transparent 60%),
+    linear-gradient(-135deg, rgba(250,204,21,0.18), transparent 60%),
+    #0f172a;
+}
+
+body.dark .stat-card.attempts {
+  background:
+    linear-gradient(135deg, rgba(59,130,246,0.25), transparent 60%),
+    linear-gradient(-135deg, rgba(59,130,246,0.18), transparent 60%),
+    #0f172a;
+}
+
+body.dark .stat-card.visits {
+  background:
+    linear-gradient(135deg, rgba(34,197,94,0.25), transparent 60%),
+    linear-gradient(-135deg, rgba(34,197,94,0.18), transparent 60%),
+    #0f172a;
 }

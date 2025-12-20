@@ -30,30 +30,49 @@
   <!-- STATS -->
 <div class="stats-scroll">
   
-  <div class="stat-card streak">
-    <div class="stat-bg"></div>
-    <span class="stat-title">Streak</span>
-    <span class="stat-number" id="streakVal">0</span>
-  </div>
+<div class="stat-card streak">
+  <div class="stat-bg"></div>
+  <i class="stat-bg-icon fa-solid fa-fire"></i>
+  <span class="stat-title">Streak</span>
+  <span class="stat-number" id="streakVal">0</span>
+</div>
   
-  <div class="stat-card xp">
-    <div class="stat-bg"></div>
-    <span class="stat-title">Most XP</span>
-    <span class="stat-number" id="mostXpVal">0</span>
-  </div>
+<div class="stat-card xp">
+  <div class="stat-bg"></div>
+  <i class="stat-bg-icon fa-solid fa-bolt"></i>
+  <span class="stat-title">Most XP</span>
+  <span class="stat-number" id="mostXpVal">0</span>
+</div>
   
-  <div class="stat-card attempts">
-    <div class="stat-bg"></div>
-    <span class="stat-title">Attempts</span>
-    <span class="stat-number" id="attemptVal">0</span>
-  </div>
+<div class="stat-card attempts">
+  <div class="stat-bg"></div>
+  <i class="stat-bg-icon fa-solid fa-list-check"></i>
+  <span class="stat-title">Attempts</span>
+  <span class="stat-number" id="attemptVal">0</span>
+</div>
   
-  <div class="stat-card visits">
-    <div class="stat-bg"></div>
-    <span class="stat-title">Page Visits</span>
-    <span class="stat-number" id="visitVal">0</span>
-  </div>
+<div class="stat-card visits">
+  <div class="stat-bg"></div>
+  <i class="stat-bg-icon fa-solid fa-eye"></i>
+  <span class="stat-title">Page Visits</span>
+  <span class="stat-number" id="visitVal">0</span>
+</div>
   
+</div>
+<!-- XP THIS WEEK -->
+<div class="xp-week-card">
+  <div class="xp-week-header">
+    <span>XP This Week</span>
+    <span class="xp-week-range">Mon – Sun</span>
+  </div>
+
+  <div class="xp-week-chart-wrap">
+    <canvas id="xpWeekChart"></canvas>
+  </div>
+
+  <div class="xp-week-total">
+    XP this Week: <span id="xpWeekTotal">0</span>
+  </div>
 </div>
 </main>
 
@@ -61,6 +80,7 @@
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
 <script type="module" src="assets/js/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="assets/js/performance-logic.js"></script>
 </body>
 </html>
