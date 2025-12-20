@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+
+<link rel="stylesheet" href="/assets/css/common.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <main class="profile-page">
+    <h1>My Profile</h1>
+
+    <div class="profile-card">
+      <div class="row">
+        <span>Username</span>
+        <strong id="profileUsername">—</strong>
+      </div>
+
+      <div class="row">
+        <span>Email</span>
+        <strong id="profileEmail">—</strong>
+      </div>
+
+      <div class="row">
+        <span>Joined</span>
+        <strong id="profileJoined">—</strong>
+      </div>
+
+      <div class="row">
+        <span>XP</span>
+        <strong id="profileXP">0</strong>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/common-layout.js"></script>
+<script type="module" src="assets/js/firebase.js"></script>
+<script type="module" src="assets/js/user-metrics-init.js"></script>
+<script type="module" src="assets/js/profile.js"></script>
+<script type="module" src="assets/js/common.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+
+  <link rel="stylesheet" href="assets/css/common.css">
+  <link rel="stylesheet" href="assets/css/perform.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- PAGE CONTENT ONLY -->
+<main class="perform-content">
+
+  <!-- HEADER -->
+  <div class="perform-header">
+    <h2>My Performance</h2>
+    <button class="back-btn" onclick="history.back()">
+      <i class="fa-solid fa-arrow-left"></i>
+      Back
+    </button>
+  </div>
+
+  <!-- STATS -->
+<div class="stats-scroll">
+  
+  <div class="stat-card streak">
+    <div class="stat-bg"></div>
+    <span class="stat-title">Streak</span>
+    <span class="stat-number" id="streakVal">0</span>
+  </div>
+  
+  <div class="stat-card xp">
+    <div class="stat-bg"></div>
+    <span class="stat-title">Most XP</span>
+    <span class="stat-number" id="mostXpVal">0</span>
+  </div>
+  
+  <div class="stat-card attempts">
+    <div class="stat-bg"></div>
+    <span class="stat-title">Attempts</span>
+    <span class="stat-number" id="attemptVal">0</span>
+  </div>
+  
+  <div class="stat-card visits">
+    <div class="stat-bg"></div>
+    <span class="stat-title">Page Visits</span>
+    <span class="stat-number" id="visitVal">0</span>
+  </div>
+  
+</div>
+</main>
+
+  <script src="assets/js/common-layout.js"></script>
+<script type="module" src="assets/js/firebase.js"></script>
+<script type="module" src="assets/js/user-metrics-init.js"></script>
+<script type="module" src="assets/js/common.js"></script>
+<script type="module" src="assets/js/performance-logic.js"></script>
+</body>
+</html>
