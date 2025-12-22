@@ -556,3 +556,28 @@ async function fetchGeminiInsight(payload) {
   const data = await res.json();
   return data.insight;
 }
+/* =========================
+   KEYBOARD SCROLL CONTROL
+========================= */
+
+let scrollInterval = null;
+const SCROLL_STEP = 60;     // small scroll (tap)
+const SCROLL_SPEED = 12;   // smooth continuous speed
+
+function startScroll(direction) {
+  if (scrollInterval) return;
+
+  scrollInterval = setInterval(() => {
+    window.scrollBy({
+      top: direction * SCROLL_SPEED,
+      behavior: "auto"
+    });
+  }, 16); // ~60fps
+}
+
+function stopScroll() {
+  if (scrollInterval) {
+    clearInterval(scrollInterval);
+    scrollInterval = null;
+  }
+}

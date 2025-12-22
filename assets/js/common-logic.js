@@ -376,3 +376,41 @@ if (pdfBtn) {
     }, 1200);
   });
 }
+/* =========================
+   KEYBOARD SHORTCUTS – REVIEW & PDF
+   (DESKTOP ONLY)
+========================= */
+document.addEventListener("keydown", e => {
+  // Ignore typing in inputs / textarea
+  const tag = document.activeElement.tagName.toLowerCase();
+  if (tag === "input" || tag === "textarea") return;
+
+  /* -------------------------
+     R → Toggle Review Panel
+  ------------------------- */
+  if (e.key.toLowerCase() === "r") {
+    if (!reviewBtn || !reviewPanel) return;
+
+    reviewBtn.click();
+  }
+
+  /* -------------------------
+     ESC → Close Review Panel
+  ------------------------- */
+  if (e.key === "Escape") {
+    if (reviewPanel?.classList.contains("open")) {
+      reviewBtn?.click();
+    }
+  }
+
+  /* -------------------------
+     CTRL + P → Save PDF
+  ------------------------- */
+  if (e.ctrlKey && e.key.toLowerCase() === "p") {
+    e.preventDefault(); // ❌ stop browser print
+
+    if (pdfBtn && !pdfBtn.disabled) {
+      pdfBtn.click();
+    }
+  }
+});

@@ -29,6 +29,8 @@ function lockScroll(lock) {
   document.body.style.overflow = lock ? "hidden" : "";
 }
 
+
+
 /* Toggle Sidebar */
 function toggleSidebar(open) {
   sidebar.classList.toggle("open", open);
@@ -99,6 +101,41 @@ document.addEventListener("click", e => {
   }
 });
 applyTheme(localStorage.getItem("quizta-theme") || "light");
+
+
+/* =========================
+   NOTIFICATIONS TOGGLE (SAFE)
+========================= */
+document.addEventListener("click", () => {
+  const notifyBtn = document.getElementById("notifyBtn");
+  const notifyPanel = document.getElementById("notifyPanel");
+  const notifyClose = document.getElementById("notifyClose");
+
+  if (!notifyBtn || !notifyPanel) return;
+
+  // Toggle on bell click
+  notifyBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    notifyPanel.classList.toggle("show");
+  });
+
+  // Close button
+  notifyClose?.addEventListener("click", () => {
+    notifyPanel.classList.remove("show");
+  });
+
+  // Click outside
+  document.addEventListener("click", e => {
+    if (
+      notifyPanel.classList.contains("show") &&
+      !notifyPanel.contains(e.target) &&
+      !notifyBtn.contains(e.target)
+    ) {
+      notifyPanel.classList.remove("show");
+    }
+  });
+}, { once: true });
+
 
 const leftSidebar = document.getElementById("leftSidebar");
 const leftStrip = document.getElementById("leftStrip");

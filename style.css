@@ -43,7 +43,6 @@ body.dark {
 }
 .quiz-setup {
   padding: 14px 16px;
-  max-width: 520px;
   margin-left: 3vw;
 }
 .select-row {
@@ -535,10 +534,7 @@ body.dark .marks-box {
   .practice-page{
     margin-left: -20px;
   }
-  .quiz-setup{
-    width: 100%;
-    max-width: 70vw;
-  }
+
   .xp-box{
     display: flex;
   }
