@@ -18,7 +18,7 @@ import { auth, db, googleProvider } from "./firebase.js";
 const sidebar = document.getElementById("rightSidebar");
 const menuBtn = document.getElementById("menuBtn");
 const overlay = document.getElementById("overlay");
-const themeSwitch = document.getElementById("themeSwitch");
+
 
 let startX = 0;
 let currentX = 0;
@@ -38,9 +38,13 @@ function toggleSidebar(open) {
 }
 
 /* Menu click */
-menuBtn.addEventListener("click", () => {
-  toggleSidebar(!sidebar.classList.contains("open"));
-});
+if (menuBtn && sidebar && overlay) {
+  menuBtn.addEventListener("click", () => {
+    toggleSidebar(!sidebar.classList.contains("open"));
+  });
+
+  overlay.addEventListener("click", () => toggleSidebar(false));
+}
 
 /* Overlay click */
 overlay.addEventListener("click", () => toggleSidebar(false));
@@ -48,7 +52,7 @@ overlay.addEventListener("click", () => toggleSidebar(false));
 /* Smooth swipe physics */
 document.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
-  dragging = startX > window.innerWidth * 0.8; // 👈 only right edge
+  dragging = startX > window.innerWidth * 0.9; // 👈 only right edge
 });
 
 
@@ -62,22 +66,39 @@ document.addEventListener("touchend", e => {
   if (diff > 50) toggleSidebar(true);
 });
 
-
-
-
-/* Dark mode */
-themeSwitch.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  localStorage.setItem(
-    "quizta-theme",
-    document.body.classList.contains("dark") ? "dark" : "light"
-  );
-});
+function applyTheme(mode) {
+  const isDark = mode === "dark";
+  
+  document.body.classList.toggle("dark", isDark);
+  localStorage.setItem("quizta-theme", mode);
+  
+  // Header icon
+  document.querySelectorAll("#themeBtn i").forEach(icon => {
+    icon.classList.toggle("fa-moon", isDark);
+    icon.classList.toggle("fa-sun", !isDark);
+  });
+  
+  // Sidebar switch
+  document.querySelectorAll("#themeToggle").forEach(sw => {
+    sw.classList.toggle("active", isDark);
+  });
+}
 
 // Load theme on start
-if (localStorage.getItem("quizta-theme") === "dark") {
-  document.body.classList.add("dark");
-}
+document.addEventListener("click", e => {
+  // Header icon click
+  if (e.target.closest("#themeBtn")) {
+    const isDark = document.body.classList.contains("dark");
+    applyTheme(isDark ? "light" : "dark");
+  }
+
+  // Sidebar switch click
+  if (e.target.closest("#themeToggle")) {
+    const isDark = document.body.classList.contains("dark");
+    applyTheme(isDark ? "light" : "dark");
+  }
+});
+applyTheme(localStorage.getItem("quizta-theme") || "light");
 
 const leftSidebar = document.getElementById("leftSidebar");
 const leftStrip = document.getElementById("leftStrip");
@@ -96,14 +117,17 @@ function toggleLeft(force) {
 }
 
 /* Click strip */
-leftStrip.addEventListener("click", () => {
-  toggleLeft();
-});
+if (leftStrip) {
+  leftStrip.addEventListener("click", () => {
+    toggleLeft();
+  });
+}
 
-/* Click outside */
-leftOverlay.addEventListener("click", () => {
-  toggleLeft(false);
-});
+if (leftOverlay) {
+  leftOverlay.addEventListener("click", () => {
+    toggleLeft(false);
+  });
+}
 
 /* Global swipe handler */
 document.addEventListener("touchstart", e => {
@@ -186,8 +210,11 @@ function validatePassword(pass) {
 }
 
 /* ---------- LOGIN ---------- */
-loginForm.addEventListener("submit", async e => {
-  e.preventDefault();
+if (loginForm) {
+  loginForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    // (keep your existing code inside)
+  
 
   const errorBox = document.getElementById("loginError");
   const emailOrUser = document.getElementById("loginUsername").value.trim();
@@ -200,9 +227,13 @@ loginForm.addEventListener("submit", async e => {
     errorBox.textContent = err.message.replace("Firebase:", "");
   }
 });
+}
 /* ---------- SIGNUP ---------- */
-signupForm.addEventListener("submit", async e => {
-  e.preventDefault();
+if (signupForm) {
+  signupForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    // (keep your existing code inside)
+
 
   const errorBox = document.getElementById("signupError");
 
@@ -229,7 +260,7 @@ signupForm.addEventListener("submit", async e => {
   } catch (err) {
     errorBox.textContent = err.message.replace("Firebase:", "");
   }
-});
+}); }
 
 document.addEventListener("click", e => {
   if (!e.target.classList.contains("toggle-pass")) return;
@@ -245,7 +276,11 @@ document.addEventListener("click", e => {
     e.target.classList.replace("fa-eye-slash", "fa-eye");
   }
 });
-document.querySelector(".google-btn").addEventListener("click", async () => {
+const googleBtn = document.querySelector(".google-btn");
+
+if (googleBtn) {
+  googleBtn.addEventListener("click", async () => {
+    // keep your code
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const userRef = doc(db, "users", result.user.uid);
@@ -265,7 +300,7 @@ document.querySelector(".google-btn").addEventListener("click", async () => {
   } catch (err) {
     alert(err.message);
   }
-});
+}); }
 
 onAuthStateChanged(auth, user => {
 
@@ -360,3 +395,30 @@ document.addEventListener("click", e => {
 
 /* expose globally */
 window.openSettings = openSettings;
+
+const profileBtn = document.getElementById("profileBtn");
+const profilePopup = document.getElementById("profilePopup");
+
+profileBtn?.addEventListener("click", e => {
+  e.stopPropagation();
+
+  if (profilePopup.style.maxHeight) {
+    closeProfilePopup();
+  } else {
+    openProfilePopup();
+  }
+});
+
+function openProfilePopup() {
+  if (!profilePopup) return;
+  profilePopup.style.maxHeight = profilePopup.scrollHeight + "px";
+}
+
+function closeProfilePopup() {
+  if (!profilePopup) return;
+  profilePopup.style.maxHeight = null;
+}
+
+document.addEventListener("click", () => {
+  closeProfilePopup();
+});

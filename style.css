@@ -537,7 +537,7 @@ body.dark .marks-box {
   }
   .quiz-setup{
     width: 100%;
-    max-width: none;
+    max-width: 70vw;
   }
   .xp-box{
     display: flex;
@@ -546,7 +546,7 @@ body.dark .marks-box {
     margin-left: 65px;
     margin-top: 30px;
   }
-  .quiz-area{
-    margin-right: 0;
+  .quiz-area{ 
+    justify-content: center;
   }
 }

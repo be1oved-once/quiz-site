@@ -43,7 +43,7 @@ export const subjects = [
         name: "Demand & Supply",
         questions: [
           {
-            text: "Law of demand shows—",
+            text: "Law of demand shows",
             options: ["Inverse relation", "Direct relation", "No relation", "Random"],
             correctIndex: 0
           }

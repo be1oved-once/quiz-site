@@ -121,6 +121,9 @@ body.dark .xp-box {
   transform: translateY(0);
   pointer-events: auto;
 }
+body.dark .select-popup{
+  border: 1px solid #5F606C;
+}
 .select-wrap {
   position: relative;
 }
@@ -153,7 +156,7 @@ body.dark .xp-box {
 }
 
 .primary-btn {
-  background: var(--violet);
+  background: linear-gradient(135deg, var(--violet), #8b5cf6);
   color: #fff;
   border: none;
 }
@@ -509,30 +512,43 @@ body.dark .marks-box {
   margin-top: 2px;
 }
 /* ===== Custom thin checkbox ===== */
+/* ===== Checkmark-only checkbox ===== */
 .attempt-header input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+
   border: 1.4px solid var(--violet);
   border-radius: 4px;
-  display: inline-grid;
+
+  display: grid;
   place-content: center;
-  cursor: pointer;
+
+  background: transparent;
 }
 
+/* Checkmark */
 .attempt-header input[type="checkbox"]::before {
   content: "";
-  width: 8px;
-  height: 8px;
-  transform: scale(0);
-  transition: transform 0.12s ease;
-  background: var(--violet);
-  border-radius: 2px;
+  width: 6px;
+  height: 10px;
+
+  border-right: 2px solid var(--violet);
+  border-bottom: 2px solid var(--violet);
+
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.15s ease;
 }
 
+/* Checked state */
 .attempt-header input[type="checkbox"]:checked::before {
-  transform: scale(1);
+  transform: rotate(45deg) scale(1);
+}
+.attempt-header input[type="checkbox"]:hover {
+  border-color: #6d6afc;
 }
 .attempt-list {
   overflow: hidden;

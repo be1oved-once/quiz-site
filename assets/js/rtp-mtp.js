@@ -1,7 +1,7 @@
 export const rtpMtpSubjects = [
   {
     id: "economics",
-    name: "Business Economics",
+    name: "Economics",
     attempts: [
       
       {

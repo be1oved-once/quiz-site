@@ -26,9 +26,8 @@ body {
 }
 
 /* ===== Header ===== */
-.top-header {
+.top-header, .desktop-only {
   height: 56px;
-  background: #ffffff;
   color: #111;
   border-bottom: 1px solid #e5e5e5;
   display: flex;
@@ -131,6 +130,7 @@ body.dark .logo-dot {
   transition: right 0.35s cubic-bezier(0.25,0.8,0.25,1);
   z-index: 1000;
   overflow: auto;
+  font-weight: 500;
 }
 
 
@@ -171,6 +171,10 @@ body.dark .sidebar-list li:hover i {
   align-items: baseline;
   font-weight: 600;
   margin-bottom: 10px;
+}
+.sidebar-header .side-theme{
+  align-items: left;
+  display: flex;
 }
 
 /* Quizta */
@@ -382,6 +386,11 @@ body.dark .left-sidebar {
   align-items: center;
   gap: 10px;
   font-size: 14px;
+  color: #1f2937;
+  font-weight: 500;
+}
+body.dark .left-sidebar .sidebar-list li a {
+  color: #e5e7eb;
 }
 .sidebar-list li a {
   display: flex;
@@ -514,11 +523,15 @@ body.dark .thought-arrow {
   .top-nav a:hover {
     opacity: 1;
   }
-@media (min-width: 678px) {
-    .top-nav {
-    display: flex;
-    justify-content: center;
-  }
+
+.top-actions{
+  display: none;
+}
+@media (min-width: 768px) {
+  .top-actions {
+  display: flex;
+  gap: 10px;
+}
 
   /* Left sidebar is layout, not modal */
   .left-sidebar {
@@ -868,8 +881,8 @@ body.dark .toggle-pass {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   display: none;
   align-items: center;
   justify-content: center;
@@ -1023,8 +1036,8 @@ body.dark .toggle-switch {
   border-radius: 50%;
 
   position: absolute;
-  top: -1px;
-  left: -1px;
+  top: -.5px;
+  left: .5px;
 
   border: 1px solid rgba(0,0,0,0.15);
   transition: left 0.25s ease;
@@ -1051,7 +1064,7 @@ body.dark .toggle-switch::after {
 .settings-close {
   position: absolute;
   top: 12px;
-  right: 14px;
+  right: 11px;
 
   background: none;
   border: none;
@@ -1087,4 +1100,193 @@ body.dark .toggle-switch.active {
   box-shadow:
     0 0 0 2px rgba(74,222,128,0.35),
     0 6px 16px rgba(34,197,94,0.35);
+}
+/* ===== DESKTOP ONLY HEADER ===== */
+.desktop-only {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+}
+
+/* ICON BUTTON */
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--accent);
+  border: 1.5px solid rgba(79,70,229,0.6);
+  background: transparent;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.icon-btn:hover {
+  background: rgba(108,99,255,0.18);
+  box-shadow: 0 6px 16px rgba(108,99,255,0.25);
+}
+
+/* NOTIFICATION DOT */
+
+
+/* ===== PROFILE POPUP ===== */
+
+
+/* ===== DARK MODE ===== */
+
+body.dark .icon-btn {
+color: #c7d2fe;
+  border-color: rgba(199,210,254,0.6);
+}
+
+/* DEFAULT: MOBILE FIRST */
+.sidebar-desktop {
+  display: none;
+}
+
+.sidebar-mobile {
+  display: block;
+}
+  .desktop-left{
+    display: none;
+  }
+  .mobile-left{
+    display: block;
+  }
+/* DESKTOP MODE */
+@media (min-width: 768px) {
+  .sidebar-mobile {
+    display: none;
+  }
+
+  .sidebar-desktop {
+    display: block;
+  }
+  .desktop-left{
+    display: block;
+  }
+  .mobile-left{
+    display: none;
+  }
+}
+/* Default: MOBILE */
+/* MOBILE DEFAULT */
+.header-actions {
+  display: none;
+}
+
+
+/* DESKTOP ONLY */
+@media (min-width: 768px) {
+  .header-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .menu-btn {
+    display: none;
+  }
+  .icon-btn{
+    display: flex;
+  }
+}
+/* =========================
+   PROFILE POPUP
+========================= */
+.profile-popup {
+  position: absolute;
+  top: 56px;           /* just below header */
+  right: 14px;
+
+  width: 220px;
+
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(108,99,255,0.25);
+
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.12);
+
+  overflow: hidden;
+
+  max-height: 0;
+  transition: max-height 0.28s ease, box-shadow 0.28s ease;
+  z-index: 1200;
+}
+.profile-popup.open{
+  padding: 8px;
+}
+/* links */
+.profile-popup a {
+  display: block;
+  padding: 10px 12px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  text-decoration: none;
+
+  border-radius: 10px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* hover */
+.profile-popup a:hover {
+  background: rgba(108,99,255,0.12);
+  color: #4f46e5;
+}
+
+/* divider */
+.profile-popup hr {
+  border: none;
+  height: 1px;
+  margin: 6px 0;
+  background: rgba(0,0,0,0.08);
+}
+
+/* logout emphasis */
+.profile-popup .auth-logout {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.profile-popup .auth-logout:hover {
+  background: rgba(220,38,38,0.12);
+  color: #b91c1c;
+}
+body.dark .profile-popup {
+  background: #020617;
+  border-color: rgba(108,99,255,0.45);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.65);
+}
+
+body.dark .profile-popup a {
+  color: #e5e7eb;
+}
+
+body.dark .profile-popup a:hover {
+  background: rgba(99,102,241,0.25);
+  color: #c7bfff;
+}
+
+body.dark .profile-popup hr {
+  background: rgba(255,255,255,0.12);
+}
+
+body.dark .profile-popup .auth-logout {
+  color: #f87171;
+}
+
+body.dark .profile-popup .auth-logout:hover {
+  background: rgba(248,113,113,0.18);
+  color: #fecaca;
 }

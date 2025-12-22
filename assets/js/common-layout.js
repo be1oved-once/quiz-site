@@ -16,6 +16,37 @@
       <a href="sponsor.html">Sponsor</a>
 
     </nav>
+      <!-- RIGHT : ICON ACTIONS -->
+  <div class="top-actions">
+
+    <button class="icon-btn" title="Notifications">
+      <i class="fa-regular fa-bell"></i>
+      <span class="notify-dot"></span>
+    </button>
+
+<button class="icon-btn" id="themeBtn" title="Theme">
+  <i class="fa-solid fa-moon"></i>
+</button>
+
+    <div class="profile-wrap">
+      <button class="icon-btn profile-btn" id="profileBtn" title="Profile">
+        <i class="fa-solid fa-user"></i>
+      </button>
+
+      <!-- PROFILE POPUP -->
+      <div class="profile-popup" id="profilePopup">
+        <a href="profile.html">My Profile</a>
+        <a href="performance.html">My Performance</a>
+        <a href="bookmarks.html">Bookmarks</a>
+        <a href="correction-test.html">Correction Test</a>
+        <a href="#">Saved Tests</a>
+        <a href="#">Account Settings</a>
+        <hr>
+        <a href="javascript:void(0)" class="auth-logout">Logout</a>
+      </div>
+    </div>
+
+  </div>
     <button id="menuBtn" class="menu-btn" aria-label="Menu">
       <span></span>
       <span></span>
@@ -39,41 +70,43 @@
   <hr class="sidebar-hr" />
 
 <ul class="sidebar-list">
-  <li>
+  <li class="mobile-left">
     <a href="profile.html">
       <i class="fa-solid fa-user"></i>
       <span>My Profile</span>
     </a>
   </li>
-
-  <li>
+  <li class="mobile-left">
     <a href="performance.html">
       <i class="fa-solid fa-chart-line"></i>
       <span>My Performance</span>
     </a>
   </li>
 
-  <li>
+  <li class="mobile-left">
     <a href="bookmarks.html">
-      <i class="fa-solid fa-bookmark"></i>
+      <i class="fa-solid fa-star"></i>
       <span>Bookmarks</span>
     </a>
   </li>
-
-  <li>
+  <li class="mobile-left">
     <a href="correction-test.html">
       <i class="fa-solid fa-pen-to-square"></i>
       <span>Take a Correction Test</span>
     </a>
   </li>
 
-  <li>
+  <li class="mobile-left">
     <a href="articles.html">
       <i class="fa-solid fa-newspaper"></i>
       <span>Articles</span>
     </a>
   </li>
-    <li><a href="thoughts.html"><i class="fa-regular fa-comment-dots"></i><span>Drop Thoughts</span></a></li>
+    <li class="mobile-left"><a href="thoughts.html"><i class="fa-regular fa-comment-dots"></i><span>Drop Thoughts</span></a></li>
+    <li class="desktop-left"><a href="rtp-mtp.html"><i class="fa-solid fa-file-lines"></i><span>RTP / MTP</span></a></li>
+  <li class="desktop-left"><a href="articles.html"><i class="fa-solid fa-newspaper"></i><span>Articles</span></a></li>
+  <li class="desktop-left"><a href="about.html"><i class="fa-solid fa-circle-info"></i><span>About</span></a></li>
+  <li class="desktop-left"><a href="feedback.html"><i class="fa-solid fa-comment"></i><span>Suggestions</span></a></li>
     <div class="thought-hint">
   <div class="thought-arrow"></div>
   <p>
@@ -94,6 +127,7 @@
   <span class="menu-main">TIC</span>
   <span class="menu-dot">.</span>
   <span class="menu-sub">Menu</span>
+
 </div>
     <hr class="sidebar-hr" />
 <ul class="sidebar-list">
@@ -111,9 +145,9 @@
   </p>
 </div><br>
       <hr class="sidebar-hr" />
-      <div class="theme-toggle">
+<div class="theme-toggle">
   <span>Dark Mode</span>
-  <div id="themeSwitch" class="theme-switch">
+  <div class="theme-switch" id="themeToggle">
     <div class="switch-knob"></div>
   </div>
 </div>
@@ -122,7 +156,8 @@
   <a href="javascript:void(0)" class="auth-btn signup-btn auth-signup" onclick="openAuth()">Sign Up</a>
   <a href="javascript:void(0)" class="auth-btn login-btn auth-logout" style="display:none;">LogOut</a>
 </div>
-    </ul>
+
+</ul>
   </aside>
 
   <!-- ===== Overlay ===== -->

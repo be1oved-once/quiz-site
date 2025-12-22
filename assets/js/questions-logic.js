@@ -5,12 +5,14 @@ import { auth, db } from "./firebase.js";
 import {
   doc,
   collection,
+  addDoc,
   getDoc,
   getDocs,
   setDoc,
   deleteDoc,
   updateDoc,
-  increment
+  increment,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import { onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
@@ -277,7 +279,16 @@ marksBox.classList.add("hidden");
 
 /* =========================
    XP LOCAL STORAGE HELPERS
+
+
 ========================= */
+
+function getLocalDate() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
+
 function xpKey(uid) {
   return `xp_${uid}`;
 }
@@ -584,19 +595,27 @@ nextBtn.onclick = () => {
    FINISH ROUND
 ========================= */
 function finishRound() {
-  if (round === 1 && !round1Completed) {
+if (!round1Completed) {
   round1Completed = true;
-  
-  // 📸 Freeze Round 1 questions for review
+
+  // 📸 Freeze round-1 data
   round1Snapshot = activeQuestions.map(q => ({ ...q }));
-window.round1Snapshot = round1Snapshot;
-  
-  // ✅ Show marks
+  window.round1Snapshot = round1Snapshot;
+
+  // 🎯 UI
   marksValue.textContent = marks.toFixed(2);
   marksBox.classList.remove("hidden");
-  
-  // ✅ Show result action buttons
   if (resultActions) resultActions.classList.remove("hidden");
+
+  // 🔥🔥🔥 SAVE ATTEMPT SUMMARY (AUTO CREATES attempts/)
+  recordAttemptSummary({
+    type: "CHAPTER",
+    subject: currentSubject?.name || "",
+    chapter: currentChapter?.name || "",
+    correct: round1Snapshot.filter(q => q.correct).length,
+    total: round1Snapshot.length,
+    xpEarned: round1Snapshot.filter(q => q.correct).length * 5
+  });
 }
   wrongQuestions = activeQuestions.filter(q => !q.correct);
 
@@ -649,6 +668,7 @@ function slideToggle(popup, open) {
     popup.classList.remove("show");
   }
 }
+
 async function recordQuestionAttempt(xpGained) {
   if (!currentUser) return;
 
@@ -657,14 +677,19 @@ async function recordQuestionAttempt(xpGained) {
   if (!snap.exists()) return;
 
   const data = snap.data();
-  const today = new Date().toISOString().slice(0, 10);
-
+  const today = getLocalDate();
   let updates = {
     totalAttempts: increment(1),
-    dailyXp: increment(xpGained)
+    dailyXp: increment(xpGained),
+    dailyXpDate: today,
+
+    // ✅ PER-DAY XP STORAGE (WEEK SAFE)
+    [`weeklyXp.${today}`]: increment(xpGained)
   };
 
-  // 🔥 STREAK LOGIC (ONLY ON FIRST ATTEMPT OF DAY)
+  /* =========================
+     STREAK LOGIC
+  ========================= */
   if (data.lastActiveDate !== today) {
     let streak = data.streak || 0;
 
@@ -680,11 +705,23 @@ async function recordQuestionAttempt(xpGained) {
 
     updates.streak = streak;
     updates.lastActiveDate = today;
-    updates.dailyXp = xpGained; // reset daily XP
+
+    // 🔥 RESET daily XP ONLY ON NEW DAY
+    updates.dailyXp = xpGained;
+
+    // 🔥 RESET weekly day XP ONLY ON NEW DAY
+    updates[`weeklyXp.${today}`] = xpGained;
   }
+
+// 🧹 RESET weeklyXp on Monday
+const day = new Date().getDay(); // 0 = Sunday, 1 = Monday
+if (day === 1 && data.lastActiveDate !== today) {
+  updates.weeklyXp = {}; // fresh week
+}
 
   await updateDoc(ref, updates);
 }
+
 async function updateBestXpIfNeeded() {
   if (!currentUser) return;
 
@@ -702,6 +739,8 @@ async function updateBestXpIfNeeded() {
     });
   }
 }
+
+
 // 🔓 EXPOSE CONTROLLED QUIZ START (for bookmarks / special modes)
 window.__startQuizWithQuestions = function (questions, meta = {}) {
   baseQuestions = questions.map(q => ({
@@ -723,3 +762,31 @@ window.__startQuizWithQuestions = function (questions, meta = {}) {
   updateRoundLabel();
   startRound(baseQuestions);
 };
+
+
+async function recordAttemptSummary(data) {
+  if (!currentUser) return;
+
+  try {
+    await addDoc(
+      collection(db, "users", currentUser.uid, "attempts"),
+      {
+        type: data.type,                 // CHAPTER / RTP / MTP
+        subject: data.subject || "",
+        chapter: data.chapter || "",
+        correct: data.correct || 0,
+        total: data.total || 0,
+        score: data.total
+          ? Math.round((data.correct / data.total) * 100)
+          : 0,
+        xpEarned: data.xpEarned || 0,
+        createdAt: serverTimestamp(),
+        date: new Date().toISOString().slice(0, 10)
+      }
+    );
+
+    console.log("✅ Attempt summary saved");
+  } catch (e) {
+    console.error("❌ Attempt summary failed", e);
+  }
+}

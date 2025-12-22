@@ -1,0 +1,295 @@
+/* =========================
+   PROFILE PAGE
+========================= */
+
+.profile-content {
+  padding: 16px;
+  margin-top: 56px;
+  margin-left: 3vw;
+}
+@media (min-width: 768px){
+  .profile-content{
+    margin-left: 0;
+  }
+}
+/* =========================
+   HEADER (same style as performance)
+========================= */
+
+.perform-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 18px;
+  margin-bottom: 18px;
+
+  border-radius: 18px;
+  border: 2px solid rgba(108,99,255,0.45);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(108,99,255,0.10),
+      rgba(255,255,255,0.85)
+    );
+
+  backdrop-filter: blur(6px);
+  box-shadow:
+    0 10px 25px rgba(108,99,255,0.15),
+    inset 0 0 0 1px rgba(255,255,255,0.6);
+}
+
+/* Title */
+.perform-header h2 {
+  margin-right: auto;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+/* =========================
+   BACK BUTTON
+========================= */
+.back-btn,
+.save-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+margin-right: 3px;
+  padding: 6px 12px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,0.85);
+  border: 1.5px solid rgba(108,99,255,0.45);
+
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--violet);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.back-btn i {
+  font-size: 13px;
+}
+
+/* Hover */
+.back-btn:hover {
+  background: rgba(108,99,255,0.12);
+  box-shadow: 0 6px 16px rgba(108,99,255,0.25);
+}
+
+/* Active (tap) */
+.back-btn:active {
+  transform: scale(0.96);
+}
+.back-btn:hover {
+  background: rgba(108,99,255,0.12);
+}
+
+body.dark .perform-header {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(108,99,255,0.20),
+      rgba(15,23,42,0.95)
+    );
+
+  border-color: rgba(108,99,255,0.6);
+
+  box-shadow:
+    0 14px 32px rgba(0,0,0,0.55),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+body.dark .perform-header h2 {
+  color: #e5e7eb;
+}
+
+body.dark .back-btn {
+  background: rgba(15,23,42,0.85);
+  border-color: rgba(108,99,255,0.6);
+  color: #c7bfff;
+}
+
+body.dark .back-btn:hover {
+  background: rgba(108,99,255,0.18);
+}
+
+/* Back + Save buttons */
+
+
+.back-btn {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(108,99,255,0.45);
+  color: var(--violet);
+}
+
+/* Save */
+.save-btn {
+  background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+  border: none;
+  color: #fff;
+}
+.save-btn:hover {
+  opacity: 0.9;
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+
+.profile-card {
+  padding: 22px;
+  border-radius: 20px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.08);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Avatar */
+.profile-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(108,99,255,0.25),
+      rgba(255,255,255,0.9)
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 12px;
+}
+
+.profile-avatar svg {
+  width: 48px;
+  height: 48px;
+  stroke: var(--violet);
+  stroke-width: 1.5;
+}
+
+/* Username */
+.profile-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+/* Fields */
+/* FIELD */
+.profile-field {
+  position: relative;
+  width: 100%;
+}
+
+/* BUTTON */
+.gender-btn {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #eef2ff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  cursor: pointer;
+}
+
+/* DROPDOWN OVERLAY */
+.gender-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  
+  background: var(--bg-light);
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.15);
+  
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+  z-index: 100;
+}
+
+/* OPTIONS */
+.gender-dropdown button {
+  width: 100%;
+  padding: 12px 14px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gender-dropdown button:hover {
+  background: rgba(108, 99, 255, 0.1);
+}
+
+/* DARK */
+body.dark .gender-btn {
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+}
+
+body.dark .gender-dropdown {
+  background: #020617;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+/* DOB BUTTON ROW */
+.dob-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.dob-btn {
+  flex: 1;
+  height: 42px;              /* 🔒 fixed height */
+  padding: 0 12px;
+  border-radius: 14px;
+  background: #eef2ff;
+  border: 1px solid rgba(0,0,0,0.12);
+  font-size: 13px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;          /* 🔒 no scroll here */
+}
+
+body.dark .dob-btn {
+  background: rgba(15,23,42,0.9);
+  color: #e5e7eb;
+  border-color: rgba(255,255,255,0.18);
+}

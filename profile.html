@@ -3,41 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Profile</title>
+  <title>Profile</title>
 
 <link rel="stylesheet" href="/assets/css/common.css">
+<link rel="stylesheet" href="/assets/css/profile.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- FAVICONS -->
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+<link rel="icon" href="assets/favicon/favicon.ico">
+
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
+
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+
+<meta name="theme-color" content="#6c63ff">
 </head>
 
 <body>
-  <main class="profile-page">
-    <h1>My Profile</h1>
+<main class="profile-content">
 
-    <div class="profile-card">
-      <div class="row">
-        <span>Username</span>
-        <strong id="profileUsername">—</strong>
-      </div>
+  <!-- HEADER -->
+  <div class="perform-header">
+    <h2>My Profile</h2>
 
-      <div class="row">
-        <span>Email</span>
-        <strong id="profileEmail">—</strong>
-      </div>
+    
+      <button class="back-btn" onclick="history.back()">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back
+      </button>
 
-      <div class="row">
-        <span>Joined</span>
-        <strong id="profileJoined">—</strong>
-      </div>
+      <button class="save-btn">
+        <i class="fa-solid fa-check"></i>
+        Save
+      </button>
+    
+  </div>
 
-      <div class="row">
-        <span>XP</span>
-        <strong id="profileXP">0</strong>
+  <!-- PROFILE CARD -->
+  <div class="profile-card">
+
+    <!-- Avatar -->
+    <div class="profile-avatar">
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+      </svg>
+    </div>
+
+    <!-- Username -->
+    <h3 id="profileUsername" class="profile-name">@Username</h3>
+
+    <!-- Email -->
+    <div class="profile-field">
+      <label>Email</label>
+      <div class="profile-box" id="profileEmail">
+        user@email.com
       </div>
     </div>
-  </main>
+
+    <!-- Gender -->
+    <div class="profile-field">
+      <label>Gender</label>
+
+      <button class="gender-btn" id="genderBtn">
+        <span id="genderValue">Select Gender</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+
+      <div class="gender-dropdown" id="genderDropdown">
+        <button>Male</button>
+        <button>Female</button>
+        <button>Other</button>
+      </div>
+    </div>
+<div class="profile-field">
+  <label>Date of Birth</label>
+
+  <div class="dob-row">
+    <button class="dob-btn" id="dobDay"><span>Day</span></button>
+    <button class="dob-btn" id="dobMonth"><span>Month</span></button>
+    <button class="dob-btn" id="dobYear"><span>Year</span></button>
+  </div>
+
+  <div id="dobDropdown" class="gender-dropdown hidden"></div>
+  <input type="hidden" id="dobValue">
+</div>
+  </div>
+</main>
 
   <script src="assets/js/common-layout.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>

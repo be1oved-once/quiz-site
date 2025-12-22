@@ -3,9 +3,13 @@ import {
   doc,
   getDoc,
   updateDoc,
-  increment
+  increment,
+  collection,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+// 🔒 Safe global init
+window.allAttempts = [];
 /* =========================
    STATS
 ========================= */
@@ -14,6 +18,76 @@ const streakEl = document.getElementById("streakVal");
 const mostXpEl = document.getElementById("mostXpVal");
 const attemptsEl = document.getElementById("attemptVal");
 const visitsEl = document.getElementById("visitVal");
+const practiceCards = document.querySelectorAll(".practice-card");
+
+const rtpCard = document.querySelector(".practice-card.rtp .practice-count");
+const mtpCard = document.querySelector(".practice-card.mtp .practice-count");
+const chapterCard = document.querySelector(".practice-card.chapter .practice-count");
+
+
+const applyBtn = document.querySelector(".apply-btn");
+
+const fromDateInput = document.getElementById("fromDate");
+const toDateInput = document.getElementById("toDate");
+
+/* =========================
+   AUTO FILL LAST 7 DAYS
+========================= */
+(function autoFillLast7Days() {
+  if (!fromDateInput || !toDateInput) return;
+
+  const today = new Date();
+  const to = today.toISOString().slice(0, 10);
+
+  const fromDate = new Date();
+  fromDate.setDate(today.getDate() - 6); // last 7 days incl today
+  const from = fromDate.toISOString().slice(0, 10);
+
+  fromDateInput.value = from;
+  toDateInput.value = to;
+
+  // enforce limits silently
+  fromDateInput.max = to;
+  toDateInput.max = to;
+  toDateInput.min = from;
+})();
+
+/* 🔹 Fake placeholder removal */
+fromDateInput?.addEventListener("change", () => {
+  fromDateInput.removeAttribute("data-placeholder");
+});
+
+toDateInput?.addEventListener("change", () => {
+  toDateInput.removeAttribute("data-placeholder");
+});
+
+function addDays(dateStr, days) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function subtractDays(dateStr, days) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() - days);
+  return d.toISOString().slice(0, 10);
+}
+
+// 🔒 Initial hard limits (today based)
+const today = new Date().toISOString().slice(0, 10);
+
+fromDateInput.max = today;
+toDateInput.max = today;
+
+// When TO date changes → limit FROM date
+
+
+function daysBetween(a, b) {
+  const d1 = new Date(a);
+  const d2 = new Date(b);
+  return Math.abs((d2 - d1) / (1000 * 60 * 60 * 24));
+}
+
 
 function formatK(num = 0) {
   if (num < 1000) return num;
@@ -21,6 +95,75 @@ function formatK(num = 0) {
     .toFixed(num >= 10000 ? 0 : 2)
     .replace(/\.0+$/, "") + "k";
 }
+
+function calcAccuracy(attempts) {
+  let correct = 0, total = 0;
+
+  attempts.forEach(a => {
+    correct += a.correct || 0;
+    total += a.total || 0;
+  });
+
+  if (total === 0) return null;
+  return (correct / total) * 100;
+}
+
+function splitAttemptsByTime(attempts) {
+  if (attempts.length < 2) return [[], []];
+
+  const sorted = [...attempts].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
+  const mid = Math.floor(sorted.length / 2);
+  return [sorted.slice(0, mid), sorted.slice(mid)];
+}
+function resolveTrend(delta) {
+  if (delta === null) {
+    return { text: "No Data", icon: "fa-minus", cls: "neutral" };
+  }
+
+  if (delta >= 8) {
+    return { text: "Improving", icon: "fa-arrow-trend-up", cls: "up" };
+  }
+
+  if (delta <= -20) {
+    return { text: "Critical", icon: "fa-triangle-exclamation", cls: "critical" };
+  }
+
+  if (delta <= -8) {
+    return { text: "Needs Focus", icon: "fa-arrow-trend-down", cls: "down" };
+  }
+
+  return { text: "Stable", icon: "fa-circle", cls: "neutral" };
+}
+function updateTrendUI(cardEl, attempts) {
+  const trendEl = cardEl.querySelector(".practice-trend");
+  if (!trendEl) return;
+
+  if (attempts.length < 2) {
+    trendEl.className = "practice-trend neutral";
+    trendEl.innerHTML = `<i class="fa-solid fa-circle"></i> Stable`;
+    return;
+  }
+
+  const [oldSet, newSet] = splitAttemptsByTime(attempts);
+  const oldAcc = calcAccuracy(oldSet);
+  const newAcc = calcAccuracy(newSet);
+
+  if (oldAcc === null || newAcc === null) {
+    trendEl.className = "practice-trend neutral";
+    trendEl.innerHTML = `<i class="fa-solid fa-circle"></i> Stable`;
+    return;
+  }
+
+  const delta = newAcc - oldAcc;
+  const trend = resolveTrend(delta);
+
+  trendEl.className = `practice-trend ${trend.cls}`;
+  trendEl.innerHTML = `<i class="fa-solid ${trend.icon}"></i> ${trend.text}`;
+}
+
 
 /* =========================
    XP WEEK CHART
@@ -48,6 +191,87 @@ function isDarkMode() {
   return document.body.classList.contains("dark");
 }
 
+function syncDateLimits() {
+  const from = fromDateInput.value;
+  const to = toDateInput.value;
+
+  if (from) {
+    toDateInput.min = from;
+    toDateInput.max = addDays(from, 30);
+  }
+
+  if (to) {
+    fromDateInput.max = to;
+    fromDateInput.min = subtractDays(to, 30);
+  }
+
+  // Auto-fix silently
+  if (from && to && new Date(to) - new Date(from) > 30 * 86400000) {
+    toDateInput.value = addDays(from, 30);
+  }
+  
+  updatePracticeTrends(
+  subjectValue?.dataset?.subject || "all",
+  fromDateInput.value,
+  toDateInput.value
+);
+}
+
+applyBtn?.addEventListener("click", async () => {
+  const from = fromDateInput.value;
+  const to = toDateInput.value;
+
+function addDays(dateStr, days) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function subtractDays(dateStr, days) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() - days);
+  return d.toISOString().slice(0, 10);
+}
+
+
+fromDateInput.addEventListener("change", syncDateLimits);
+toDateInput.addEventListener("change", syncDateLimits);
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const snap = await getDocs(
+    collection(db, "users", user.uid, "attempts")
+  );
+
+  let rtp = 0, mtp = 0, chapter = 0;
+
+  snap.forEach(doc => {
+    const a = doc.data();
+    if (a.date < from || a.date > to) return;
+
+    if (a.type === "RTP") rtp++;
+    else if (a.type === "MTP") mtp++;
+    else if (a.type === "CHAPTER") chapter++;
+  });
+
+  if (rtpCard) rtpCard.textContent = `${rtp} Attempts`;
+  if (mtpCard) mtpCard.textContent = `${mtp} Attempts`;
+  if (chapterCard) chapterCard.textContent = `${chapter} Chapters`;
+  const insightText = await fetchGeminiInsight({
+  trend: currentTrend, // Improving / Stable / Needs Focus
+  accuracy: accuracyPercent,
+  subject: selectedSubject,
+  fromDate: from,
+  toDate: to,
+  rtp,
+  mtp,
+  chapter
+});
+
+document.querySelector(".period-insight p").textContent = insightText;
+});
+
 auth.onAuthStateChanged(async user => {
   if (!user) return;
 
@@ -63,17 +287,53 @@ auth.onAuthStateChanged(async user => {
 
   const data = snap.data();
 
+/* =========================
+   PRACTICE OVERVIEW
+========================= */
+
+const attemptsSnap = await getDocs(
+  collection(db, "users", user.uid, "attempts")
+);
+
+let rtpCount = 0;
+let mtpCount = 0;
+let chapterCount = 0;
+
+attemptsSnap.forEach(doc => {
+  const a = doc.data();
+
+  if (a.type === "RTP") rtpCount++;
+  else if (a.type === "MTP") mtpCount++;
+  else if (a.type === "CHAPTER") chapterCount++;
+});
+
+window.allAttempts = [];
+
+attemptsSnap.forEach(doc => {
+  window.allAttempts.push(doc.data());
+});
+
+updatePracticeTrends("all", fromDateInput.value, toDateInput.value);
+
+// Update UI
+if (rtpCard) rtpCard.textContent = `${rtpCount} Attempts`;
+if (mtpCard) mtpCard.textContent = `${mtpCount} Attempts`;
+if (chapterCard) chapterCard.textContent = `${chapterCount} Chapters`;
+
 const weekDates = getWeekDates();
 const values = new Array(7).fill(0);
 
-// Firestore stores only today's daily XP
-if (data.dailyXpDate) {
-  const index = weekDates.indexOf(data.dailyXpDate);
-  if (index !== -1) {
-    values[index] = data.dailyXp || 0;
-  }
-}
+const weeklyXp = data.weeklyXp || {};
 
+weekDates.forEach((date, i) => {
+  values[i] = weeklyXp[date] || 0;
+});
+
+// 🔢 WEEK TOTAL
+const weekTotal = values.reduce((a, b) => a + b, 0);
+if (weekTotalEl) {
+  weekTotalEl.textContent = weekTotal;
+}
   /* ---------- STATS ---------- */
   streakEl.textContent = data.streak ?? 0;
   mostXpEl.textContent = formatK(data.bestXpDay ?? 0);
@@ -103,13 +363,11 @@ xpChart = new Chart(ctx, {
       data: values, // your weekly XP array
       tension: 0.45,
       borderWidth: 2.5,
-      borderColor: isDarkMode() ? "#60a5fa" : "#2563eb",
-      backgroundColor: isDarkMode()
-        ? "rgba(96,165,250,0.18)"
-        : "rgba(37,99,235,0.15)",
+      borderColor: "#6366F1",
+  backgroundColor: "rgba(99,102,241,0.22)",
       pointRadius: 4,
       pointHoverRadius: 6,
-      pointBackgroundColor: isDarkMode() ? "#93c5fd" : "#2563eb",
+      pointBackgroundColor: "#818CF8",
       fill: true
     }]
   },
@@ -137,38 +395,164 @@ xpChart = new Chart(ctx, {
       }
     },
 
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: isDarkMode() ? "#020617" : "#ffffff",
-        titleColor: isDarkMode() ? "#e5e7eb" : "#111827",
-        bodyColor: isDarkMode() ? "#e5e7eb" : "#111827",
-        borderColor: isDarkMode() ? "#334155" : "#e5e7eb",
-        borderWidth: 1
-      }
-    },
+  plugins: {
+  legend: { display: false },
+  tooltip: {
+    backgroundColor: "#0f172a",
+    titleColor: "#e5e7eb",
+    bodyColor: "#e5e7eb",
+    borderColor: "rgba(99,102,241,0.35)",
+    borderWidth: 1
+  }
+},
 
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: {
-          color: isDarkMode() ? "#94a3b8" : "#475569"
-        }
-      },
-      y: {
-        beginAtZero: true,
-        suggestedMax: Math.ceil(Math.max(...values, 10) * 1.25),
-        ticks: {
-          maxTicksLimit: 6,
-          color: isDarkMode() ? "#94a3b8" : "#475569"
-        },
-        grid: {
-          color: isDarkMode()
-            ? "rgba(255,255,255,0.08)"
-            : "rgba(0,0,0,0.08)"
-        }
-      }
+   scales: {
+  x: {
+    grid: { display: false },
+    ticks: {
+      color: "#64748b"
     }
+  },
+  y: {
+    beginAtZero: true,
+    suggestedMax: Math.ceil(Math.max(...values, 10) * 1.25),
+    ticks: {
+      maxTicksLimit: 6,
+      color: "#64748b"
+    },
+    grid: {
+      color: "rgba(99,102,241,0.12)"
+    }
+  }
+}
   }
 });
 });
+const subjectBtn = document.getElementById("practiceSubjectBtn");
+const subjectPopup = document.getElementById("practiceSubjectPopup");
+const subjectValue = document.getElementById("practiceSubjectValue");
+
+function updatePracticeOverview(subject = "all") {
+  let rtp = 0, mtp = 0, chapter = 0;
+
+  (window.allAttempts || []).forEach(a => {
+    if (subject !== "all") {
+      const stored = (a.subject || "").toLowerCase();
+      if (!stored.includes(subject)) return;
+    }
+
+    if (a.type === "RTP") rtp++;
+    else if (a.type === "MTP") mtp++;
+    else if (a.type === "CHAPTER") chapter++;
+  });
+
+  rtpCard.textContent = `${rtp} Attempts`;
+  mtpCard.textContent = `${mtp} Attempts`;
+  chapterCard.textContent = `${chapter} Chapters`;
+}
+const subjectArrow = subjectBtn.querySelector("i");
+subjectBtn?.addEventListener("click", e => {
+  e.stopPropagation();
+
+  const isOpen = subjectPopup.style.maxHeight;
+
+  if (isOpen) {
+    subjectPopup.style.maxHeight = null;
+    subjectArrow.classList.remove("fa-chevron-up");
+    subjectArrow.classList.add("fa-chevron-down");
+  } else {
+    subjectPopup.style.maxHeight = subjectPopup.scrollHeight + "px";
+    subjectArrow.classList.remove("fa-chevron-down");
+    subjectArrow.classList.add("fa-chevron-up");
+  }
+});
+
+subjectPopup?.addEventListener("click", e => {
+  const subject = e.target.dataset.subject;
+  if (!subject) return;
+
+  subjectValue.textContent = e.target.textContent;
+subjectValue.dataset.subject = subject;
+  subjectPopup.style.maxHeight = null;
+
+  // 🔥 THIS WAS MISSING
+  updatePracticeOverview(subject);
+  updatePracticeTrends(
+  e.target.dataset.subject,
+  fromDateInput.value,
+  toDateInput.value
+);
+});
+
+/* Close on outside click */
+document.addEventListener("click", () => {
+  if (subjectPopup) {
+    subjectPopup.style.maxHeight = null;
+    subjectArrow.classList.remove("fa-chevron-up");
+    subjectArrow.classList.add("fa-chevron-down");
+  }
+});
+if (!fromDateInput.value) {
+  fromDateInput.dataset.placeholder = "Select start date";
+}
+
+if (!toDateInput.value) {
+  toDateInput.dataset.placeholder = "Select end date";
+}
+function updatePracticeTrends(subject = "all", from = null, to = null) {
+  const attempts = window.allAttempts || [];
+
+  const filtered = attempts.filter(a => {
+    if (subject !== "all") {
+      const stored = (a.subject || "").toLowerCase();
+      if (!stored.includes(subject)) return false;
+    }
+    if (from && a.date < from) return false;
+    if (to && a.date > to) return false;
+    return true;
+  });
+
+  updateTrendUI(document.querySelector(".practice-card.rtp"),
+    filtered.filter(a => a.type === "RTP")
+  );
+  updateTrendUI(document.querySelector(".practice-card.mtp"),
+    filtered.filter(a => a.type === "MTP")
+  );
+  updateTrendUI(document.querySelector(".practice-card.chapter"),
+    filtered.filter(a => a.type === "CHAPTER")
+  );
+}
+
+// 🔹 Accuracy (overall / subject-filtered)
+const filteredForAccuracy = window.allAttempts.filter(a => {
+  if (subjectValue?.dataset?.subject && subjectValue.dataset.subject !== "all") {
+    return (a.subject || "").toLowerCase().includes(subjectValue.dataset.subject);
+  }
+  return true;
+});
+
+const accuracyPercent = Math.round(calcAccuracy(filteredForAccuracy) || 0);
+
+// 🔹 Trend text (pick strongest among RTP/MTP/Chapter)
+const trendEls = document.querySelectorAll(".practice-trend");
+let currentTrend = "Stable";
+
+trendEls.forEach(el => {
+  if (el.classList.contains("critical")) currentTrend = "Critical";
+  else if (el.classList.contains("down")) currentTrend = "Needs Focus";
+  else if (el.classList.contains("up")) currentTrend = "Improving";
+});
+
+const selectedSubject =
+  subjectValue?.dataset?.subject || "All Subjects";
+  
+async function fetchGeminiInsight(payload) {
+  const res = await fetch("/api/gemini-insight", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+  return data.insight;
+}

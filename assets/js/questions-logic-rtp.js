@@ -6,7 +6,10 @@ import {
   doc,
   getDoc,
   updateDoc,
-  increment
+  increment,
+  addDoc,
+  collection,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 let currentUser = null;
@@ -310,6 +313,11 @@ if (marksBox) marksBox.classList.add("hidden");
 /* =========================
    XP LOCAL STORAGE HELPERS
 ========================= */
+function getLocalDate() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
 function xpKey(uid) {
   return `xp_${uid}`;
 }
@@ -518,49 +526,43 @@ nextBtn.onclick = () => {
 ========================= */
 function finishRound() {
   if (round === 1 && !round1Completed) {
-  round1Completed = true;
-  
-  // 📸 Freeze Round 1 questions for review
-  round1Snapshot = activeQuestions.map(q => ({ ...q }));
-window.round1Snapshot = round1Snapshot;
-  
-  // ✅ Show marks
-  marksValue.textContent = marks.toFixed(2);
-  marksBox.classList.remove("hidden");
-  
-  // ✅ Show result action buttons
-  const resultActions = document.querySelector(".result-actions");
-  if (resultActions) resultActions.classList.remove("hidden");
-}
+    round1Completed = true;
+
+    round1Snapshot = activeQuestions.map(q => ({ ...q }));
+    window.round1Snapshot = round1Snapshot;
+
+    const correctCount = round1Snapshot.filter(q => q.correct).length;
+
+    marksValue.textContent = marks.toFixed(2);
+    marksBox.classList.remove("hidden");
+
+    // 🔥🔥 THIS IS THE MISSING WRITE 🔥🔥
+    recordAttemptSummary({
+      type: selectedAttempt.type,            // RTP or MTP
+      subject: currentSubject?.name || "",
+      attempt: selectedAttempt?.name || "",
+      correct: correctCount,
+      total: round1Snapshot.length,
+      xpEarned: correctCount * 5
+    });
+  }
+
   wrongQuestions = activeQuestions.filter(q => !q.correct);
 
   if (wrongQuestions.length > 0) {
     round++;
-
-updateRoundLabel();
-
-const retrySet = wrongQuestions.map(q => ({
-  ...q,
-  attempted: false
-}));
-
-startRound(retrySet);
+    updateRoundLabel();
+    startRound(wrongQuestions.map(q => ({ ...q, attempted: false })));
   } else {
-  qText.textContent = "सब सही कर दिए! 🤗 मार्क्स नीच दिए है!";
-  optionsBox.innerHTML = "";
-  progressBar.style.width = "100%";
-  
-  // ❌ Disable navigation
-  prevBtn.disabled = true;
-  nextBtn.disabled = true;
-  
-  // ❌ Disable reset again
-  resetBtn.disabled = true;
-  
-  // ⏱ Remove timer
-  clearTimer();
-  timeEl.textContent = "--";
-}
+    qText.textContent = "सब सही कर दिए! 🤗";
+    optionsBox.innerHTML = "";
+    progressBar.style.width = "100%";
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    resetBtn.disabled = true;
+    clearTimer();
+    timeEl.textContent = "--";
+  }
 }
 document.addEventListener("click", e => {
   if (
@@ -587,6 +589,7 @@ function slideToggle(popup, open) {
     popup.classList.remove("show");
   }
 }
+
 async function recordQuestionAttempt(xpGained) {
   if (!currentUser) return;
 
@@ -595,14 +598,18 @@ async function recordQuestionAttempt(xpGained) {
   if (!snap.exists()) return;
 
   const data = snap.data();
-  const today = new Date().toISOString().slice(0, 10);
-
+  const today = getLocalDate();
+  
   let updates = {
     totalAttempts: increment(1),
-    dailyXp: increment(xpGained)
+    dailyXp: increment(xpGained),
+    dailyXpDate: today,
+
+    // 🔥 WEEKLY XP (THIS WAS MISSING)
+    [`weeklyXp.${today}`]: increment(xpGained)
   };
 
-  // 🔥 STREAK LOGIC (ONLY ON FIRST ATTEMPT OF DAY)
+  // 🔥 STREAK (only first attempt of the day)
   if (data.lastActiveDate !== today) {
     let streak = data.streak || 0;
 
@@ -618,11 +625,19 @@ async function recordQuestionAttempt(xpGained) {
 
     updates.streak = streak;
     updates.lastActiveDate = today;
-    updates.dailyXp = xpGained; // reset daily XP
-  }
 
+    // reset day on first attempt
+    updates.dailyXp = xpGained;
+    updates[`weeklyXp.${today}`] = xpGained;
+  }
+// 🧹 RESET weeklyXp on Monday
+const day = new Date().getDay(); // 0 = Sunday, 1 = Monday
+if (day === 1 && data.lastActiveDate !== today) {
+  updates.weeklyXp = {}; // fresh week
+}
   await updateDoc(ref, updates);
 }
+
 async function updateBestXpIfNeeded() {
   if (!currentUser) return;
 
@@ -638,5 +653,31 @@ async function updateBestXpIfNeeded() {
     await updateDoc(ref, {
       bestXpDay: dailyXp
     });
+  }
+}
+async function recordAttemptSummary(data) {
+  if (!currentUser) return;
+
+  try {
+    await addDoc(
+      collection(db, "users", currentUser.uid, "attempts"),
+      {
+        type: selectedAttempt.type,                 // RTP / MTP
+        subject: data.subject || "",
+        chapter: selectedAttempt.name || "",
+        correct: data.correct || 0,
+        total: data.total || 0,
+        score: data.total
+          ? Math.round((data.correct / data.total) * 100)
+          : 0,
+        xpEarned: data.xpEarned || 0,
+        createdAt: serverTimestamp(),
+        date: new Date().toISOString().slice(0, 10)
+      }
+    );
+
+    console.log("✅ RTP/MTP attempt saved");
+  } catch (e) {
+    console.error("❌ RTP/MTP attempt failed", e);
   }
 }
