@@ -18,6 +18,8 @@ const xpEl = document.getElementById("xpValue");
 
 import { onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+
+
 auth.onAuthStateChanged(user => {
   if (!user) {
     currentUser = null;
@@ -681,101 +683,3 @@ async function recordAttemptSummary(data) {
     console.error("❌ RTP/MTP attempt failed", e);
   }
 }
-/* =========================
-   KEYBOARD SCROLL CONTROL
-========================= */
-
-let scrollInterval = null;
-const SCROLL_STEP = 60;     // small scroll (tap)
-const SCROLL_SPEED = 12;   // smooth continuous speed
-
-function startScroll(direction) {
-  if (scrollInterval) return;
-
-  scrollInterval = setInterval(() => {
-    window.scrollBy({
-      top: direction * SCROLL_SPEED,
-      behavior: "auto"
-    });
-  }, 16); // ~60fps
-}
-
-function stopScroll() {
-  if (scrollInterval) {
-    clearInterval(scrollInterval);
-    scrollInterval = null;
-  }
-}
-/* =========================
-   KEYBOARD SHORTCUTS
-========================= */
-document.addEventListener("keydown", e => {
-  const tag = document.activeElement.tagName.toLowerCase();
-  if (tag === "input" || tag === "textarea") return;
-
-  /* -------------------------
-     ↓ ARROW → Scroll Down
-  ------------------------- */
-  if (e.key === "ArrowDown") {
-    e.preventDefault();
-
-    // Small tap scroll
-    window.scrollBy({ top: SCROLL_STEP, behavior: "smooth" });
-
-    // Long press → continuous scroll
-    startScroll(1);
-  }
-
-  /* -------------------------
-     ↑ ARROW → Scroll Up
-  ------------------------- */
-  if (e.key === "ArrowUp") {
-    e.preventDefault();
-
-    window.scrollBy({ top: -SCROLL_STEP, behavior: "smooth" });
-    startScroll(-1);
-  }
-
-  /* -------------------------
-     B → Toggle Bookmark
-  ------------------------- */
-  if (e.key.toLowerCase() === "b") {
-    e.preventDefault();
-
-    const star = document.querySelector(".bookmark-btn");
-    if (star) star.click();
-  }
-
-  /* -------------------------
-     R → Toggle Review
-  ------------------------- */
-  if (e.key.toLowerCase() === "r") {
-    reviewBtn?.click();
-  }
-
-  /* -------------------------
-     ESC → Close Review
-  ------------------------- */
-  if (e.key === "Escape") {
-    if (reviewPanel?.classList.contains("open")) {
-      reviewBtn?.click();
-    }
-  }
-
-  /* -------------------------
-     CTRL + P → Save PDF
-  ------------------------- */
-  if (e.ctrlKey && e.key.toLowerCase() === "p") {
-    e.preventDefault();
-    pdfBtn?.click();
-  }
-});
-
-/* =========================
-   STOP SCROLL ON KEY RELEASE
-========================= */
-document.addEventListener("keyup", e => {
-  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-    stopScroll();
-  }
-});

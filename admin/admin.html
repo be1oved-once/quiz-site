@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin – Notifications</title>
+
+  <link rel="stylesheet" href="admin.css">
+  <script type="module" src="admin.js" defer></script>
+    <link rel="stylesheet" href="/assets/css/common.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="admin-box">
+    <h2>🔔 Push Notification</h2>
+
+    <textarea id="msgInput"
+      placeholder="Enter notification message..."
+      maxlength="200"></textarea>
+
+    <button id="sendBtn">Send Notification</button>
+
+    <hr>
+
+    <h3>Active Notifications</h3>
+    <div id="list"></div>
+  </div>
+    <script src="/assets/js/common-layout.js"></script>
+<script type="module" src="/assets/js/firebase.js"></script>
+
+<script type="module" src="/assets/js/common.js"></script>
+</body>
+</html>

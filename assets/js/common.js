@@ -9,7 +9,11 @@ import {
   doc,
   setDoc,
   getDoc,
-  serverTimestamp
+  serverTimestamp,
+  collection,
+  query,
+  orderBy,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import { auth, db, googleProvider } from "./firebase.js";
@@ -49,7 +53,7 @@ if (menuBtn && sidebar && overlay) {
 }
 
 /* Overlay click */
-overlay.addEventListener("click", () => toggleSidebar(false));
+
 
 /* Smooth swipe physics */
 document.addEventListener("touchstart", e => {
@@ -106,37 +110,6 @@ applyTheme(localStorage.getItem("quizta-theme") || "light");
 /* =========================
    NOTIFICATIONS TOGGLE (SAFE)
 ========================= */
-document.addEventListener("click", () => {
-  const notifyBtn = document.getElementById("notifyBtn");
-  const notifyPanel = document.getElementById("notifyPanel");
-  const notifyClose = document.getElementById("notifyClose");
-
-  if (!notifyBtn || !notifyPanel) return;
-
-  // Toggle on bell click
-  notifyBtn.addEventListener("click", e => {
-    e.stopPropagation();
-    notifyPanel.classList.toggle("show");
-  });
-
-  // Close button
-  notifyClose?.addEventListener("click", () => {
-    notifyPanel.classList.remove("show");
-  });
-
-  // Click outside
-  document.addEventListener("click", e => {
-    if (
-      notifyPanel.classList.contains("show") &&
-      !notifyPanel.contains(e.target) &&
-      !notifyBtn.contains(e.target)
-    ) {
-      notifyPanel.classList.remove("show");
-    }
-  });
-}, { once: true });
-
-
 const leftSidebar = document.getElementById("leftSidebar");
 const leftStrip = document.getElementById("leftStrip");
 const leftOverlay = document.getElementById("leftOverlay");
@@ -214,12 +187,12 @@ function closeAuth() {
   document.body.style.overflow = "auto";
 }
 
-authClose.onclick = closeAuth;
+authClose?.addEventListener("click", closeAuth);
 authModal.onclick = e => {
   if (e.target === authModal) closeAuth();
 };
 
-switchAuth.onclick = () => {
+switchAuth?.addEventListener("click", () => {
   const isLogin = !loginForm.classList.contains("hidden");
 document.getElementById("loginError").textContent = "";
 document.getElementById("signupError").textContent = "";
@@ -231,7 +204,7 @@ document.getElementById("signupError").textContent = "";
   switchText.textContent = isLogin
     ? "Already have an account?"
     : "Not have an account?";
-};
+});
 
 const authError = document.getElementById("authError");
 
@@ -458,4 +431,139 @@ function closeProfilePopup() {
 
 document.addEventListener("click", () => {
   closeProfilePopup();
+});
+/* =========================
+   NOTIFICATIONS (GLOBAL)
+========================= */
+
+/* =========================
+   NOTIFICATIONS (GLOBAL)
+========================= */
+const notifyBtn = document.getElementById("notifyBtn");
+const notifyPanel = document.getElementById("notifyPanel");
+const notifyList = document.getElementById("notifyList");
+const notifyClose = document.getElementById("notifyClose");
+const notifyDot = document.querySelector(".notify-dot");
+
+if (notifyBtn && notifyPanel && notifyList) {
+  
+  /* Toggle panel */
+  notifyBtn?.addEventListener("click", e => {
+  e.stopPropagation();
+  notifyPanel.classList.toggle("show");
+
+  // ✅ Mark notifications as seen
+  setLastSeenNotify(Date.now());
+
+  notifyDot && (notifyDot.style.display = "none");
+});
+  
+  /* Close button */
+  notifyClose?.addEventListener("click", () => {
+    notifyPanel.classList.remove("show");
+  });
+  
+  /* Click outside closes */
+  document.addEventListener("click", e => {
+    if (
+      notifyPanel.classList.contains("show") &&
+      !notifyPanel.contains(e.target) &&
+      !notifyBtn.contains(e.target)
+    ) {
+      notifyPanel.classList.remove("show");
+    }
+  });
+  
+  /* 🔥 REAL-TIME FETCH */
+  const q = query(
+    collection(db, "notifications"),
+    orderBy("createdAt", "desc")
+  );
+  
+  onSnapshot(q, snap => {
+  notifyList.innerHTML = "";
+
+  if (snap.empty) {
+    notifyList.innerHTML =
+      "<div class='notify-item'>No notifications</div>";
+    return;
+  }
+
+  let newestTime = 0;
+  const lastSeen = getLastSeenNotify();
+
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+
+    const created =
+      data.createdAt?.toMillis?.() || 0;
+
+    if (created > newestTime) {
+      newestTime = created;
+    }
+
+    const item = document.createElement("div");
+item.className = "notify-item";
+
+item.innerHTML = `
+  <p class="notify-text">${data.message}</p>
+  <small class="notify-time">${formatTime(data.createdAt)}</small>
+`;
+
+    notifyList.appendChild(item);
+  });
+
+  // 🔔 SHOW DOT ONLY IF NEW NOTIFICATION ARRIVED
+  if (newestTime > lastSeen) {
+    notifyDot && (notifyDot.style.display = "inline-block");
+  }
+});
+}
+function getLastSeenNotify() {
+  return parseInt(localStorage.getItem("lastSeenNotify") || "0");
+}
+
+function setLastSeenNotify(ts) {
+  localStorage.setItem("lastSeenNotify", ts);
+}
+function formatTime(ts) {
+  if (!ts) return "";
+
+  const date = ts.toDate();
+  const now = new Date();
+
+  const diffMin = Math.floor((now - date) / 60000);
+
+  if (diffMin < 1) return "Just now";
+  if (diffMin < 60) return `${diffMin} min ago`;
+
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr} hr ago`;
+
+  return date.toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short"
+  });
+}
+/* =========================
+   ADMIN SIDEBAR VISIBILITY
+========================= */
+const ADMIN_EMAIL = "nicknow20@gmail.com";
+
+onAuthStateChanged(auth, user => {
+  const adminItems = document.querySelectorAll(".admin-only");
+
+  if (!adminItems.length) return;
+
+  if (user && user.email === ADMIN_EMAIL) {
+    // ✅ SHOW admin option
+    adminItems.forEach(el => {
+      el.style.display = "block";
+    });
+  } else {
+    // ❌ HIDE for everyone else
+    adminItems.forEach(el => {
+      el.style.display = "none";
+    });
+  }
 });

@@ -1293,8 +1293,35 @@ body.dark .profile-popup .auth-logout:hover {
 /* =========================
    NOTIFICATION PANEL
 ========================= */
-.notify-panel {
+/* =========================
+   NOTIFICATION DOT
+========================= */
+.notify-dot {
   position: absolute;
+  top: 6px;
+  right: 6px;
+
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  background: #ef4444; /* red */
+  box-shadow: 0 0 0 2px var(--bg-light);
+
+  display: none; /* 🔥 hidden by default */
+}
+
+/* Dark mode fix */
+body.dark .notify-dot {
+  box-shadow: 0 0 0 2px #0f172a;
+}
+
+/* Ensure icon button is positioning context */
+.icon-btn {
+  position: relative;
+}
+.notify-panel {
+  position: fixed;
   top: 56px;
   right: 56px;
   width: 280px;
@@ -1374,6 +1401,7 @@ body.dark #notifyClose {
 
 /* List */
 .notify-list {
+  position: fixed;
   padding: 6px 10px;
   display: flex;
   flex-direction: column;
@@ -1419,6 +1447,12 @@ body.dark .notify-panel {
 body.dark .notify-item:hover {
   background: rgba(108,99,255,0.18);
 }
+.notify-time {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
 /* =========================
    MOBILE NOTIFICATION SLIDE
 ========================= */

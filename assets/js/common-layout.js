@@ -54,20 +54,21 @@
     </button>
   </header>
 <!-- ===== NOTIFICATION PANEL ===== -->
+<!-- ===== NOTIFICATION PANEL ===== -->
 <div id="notifyPanel" class="notify-panel">
   <div class="notify-header">
     <span>Notifications</span>
     <button id="notifyClose">×</button>
   </div>
 
-  <div class="notify-list">
+<div id="notifyList" class="notify-list">
 <div class="notify-item">
-  <p class="notify-text">+5 XP earned</p>
-  <small class="notify-time">Just now</small>
+  <p class="notify-text"></p>
+  <small class="notify-time"></small>
 </div>
     </div>
+    
   </div>
-</div>
 
 <!-- ===== Left Open Strip ===== -->
 <div id="leftStrip" class="left-strip">
@@ -116,6 +117,12 @@
       <span>Articles</span>
     </a>
   </li>
+  <li class="admin-only" style="display:none;">
+  <a href="/admin/admin.html">
+    <i class="fa-solid fa-shield-halved"></i>
+    <span>I'm Admin</span>
+  </a>
+</li>
     <li class="mobile-left"><a href="/thoughts.html"><i class="fa-regular fa-comment-dots"></i><span>Drop Thoughts</span></a></li>
     <li class="desktop-left"><a href="/mtp-rtp.html"><i class="fa-solid fa-file-lines"></i><span>RTP / MTP</span></a></li>
   <li class="desktop-left"><a href="/articles.html"><i class="fa-solid fa-newspaper"></i><span>Articles</span></a></li>
@@ -135,6 +142,7 @@
   <a href="javascript:void(0)" class="auth-btn login-btn auth-logout" style="display:none;">LogOut</a>
 </div>
 </ul>
+
 </aside>
   <!-- ===== Right Sidebar ===== -->
   <aside id="rightSidebar" class="right-sidebar">
