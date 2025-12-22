@@ -9,11 +9,11 @@
 </div>
     <nav class="top-nav">
       <a href="/index.html" class="desk-nav-item">Home</a>
-      <a href="/mtp-rtp/index.html">RTP/MTP</a>
+      <a href="/mtp-rtp.html">RTP/MTP</a>
       <a href="javascript:void(0)" onclick="openSettings()">Settings</a>
-      <a href="/About-Us/index.html">About</a>
-      <a href="/contact-us/index.html">Drop Suggestion</a>
-      <a href="/Sponsor/index.html">Sponsor</a>
+      <a href="/About-us.html">About</a>
+      <a href="/contact.html">Drop Suggestion</a>
+      <a href="/Sponsor.html">Sponsor</a>
 
     </nav>
       <!-- RIGHT : ICON ACTIONS -->
@@ -35,10 +35,10 @@
 
       <!-- PROFILE POPUP -->
       <div class="profile-popup" id="profilePopup">
-        <a href="/profile/index.html">My Profile</a>
-        <a href="/performance/index.html">My Performance</a>
-        <a href="/bookmarks/index.html">Bookmarks</a>
-        <a href="/correction-test/index.html">Correction Test</a>
+        <a href="/profile.html">My Profile</a>
+        <a href="/performance.html">My Performance</a>
+        <a href="/bookmarks.html">Bookmarks</a>
+        <a href="/correction-test.html">Correction Test</a>
         <a href="#">Saved Tests</a>
         <a href="#">Account Settings</a>
         <hr>
@@ -85,43 +85,43 @@
 
 <ul class="sidebar-list">
   <li class="mobile-left">
-    <a href="/profile/index.html">
+    <a href="/profile.html">
       <i class="fa-solid fa-user"></i>
       <span>My Profile</span>
     </a>
   </li>
   <li class="mobile-left">
-    <a href="/performance/index.html">
+    <a href="/performance.html">
       <i class="fa-solid fa-chart-line"></i>
       <span>My Performance</span>
     </a>
   </li>
 
   <li class="mobile-left">
-    <a href="/bookmarks/index.html">
+    <a href="/bookmarks.html">
       <i class="fa-solid fa-star"></i>
       <span>Bookmarks</span>
     </a>
   </li>
   <li class="mobile-left">
-    <a href="/correction-test/index.html">
+    <a href="/correction-test.html">
       <i class="fa-solid fa-pen-to-square"></i>
       <span>Take a Correction Test</span>
     </a>
   </li>
 
   <li class="mobile-left">
-    <a href="/articles/index.html">
+    <a href="/articles.html">
       <i class="fa-solid fa-newspaper"></i>
       <span>Articles</span>
     </a>
   </li>
-    <li class="mobile-left"><a href="/thoughts/index.html"><i class="fa-regular fa-comment-dots"></i><span>Drop Thoughts</span></a></li>
-    <li class="desktop-left"><a href="/mtp-rtp/index.html"><i class="fa-solid fa-file-lines"></i><span>RTP / MTP</span></a></li>
-  <li class="desktop-left"><a href="/articles/index.html"><i class="fa-solid fa-newspaper"></i><span>Articles</span></a></li>
-  <li class="desktop-left"><a href="/About-Us/index.html"><i class="fa-solid fa-circle-info"></i><span>About</span></a></li>
+    <li class="mobile-left"><a href="/thoughts.html"><i class="fa-regular fa-comment-dots"></i><span>Drop Thoughts</span></a></li>
+    <li class="desktop-left"><a href="/mtp-rtp.html"><i class="fa-solid fa-file-lines"></i><span>RTP / MTP</span></a></li>
+  <li class="desktop-left"><a href="/articles.html"><i class="fa-solid fa-newspaper"></i><span>Articles</span></a></li>
+  <li class="desktop-left"><a href="/About-us.html"><i class="fa-solid fa-circle-info"></i><span>About</span></a></li>
   <li class="desktop-left"><a href="javascript:void(0)" onclick="openSettings()"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
-  <li class="desktop-left"><a href="/contact-us/index.html"><i class="fa-solid fa-comment"></i><span>Suggestions</span></a></li>
+  <li class="desktop-left"><a href="/contact.html"><i class="fa-solid fa-comment"></i><span>Suggestions</span></a></li>
     <div class="thought-hint">
   <div class="thought-arrow"></div>
   <p>
@@ -147,11 +147,11 @@
     <hr class="sidebar-hr" />
 <ul class="sidebar-list">
   <li><a href="/index.html">Home</a></li>
-  <li><a href="/chapters/index.html">Chapters</a></li>
-  <li><a href="/mtp-rtp/index.html">RTP / MTP</a></li>
-  <li><a href="/About-Us/index.html">About Us</a></li>
+  <li><a href="/chapters.html">Chapters</a></li>
+  <li><a href="/mtp-rtp.html">RTP / MTP</a></li>
+  <li><a href="/About-us.html">About Us</a></li>
   <li><a href="javascript:void(0)" onclick="openSettings()">Settings</a></li>
-  <li><a href="/contact-us/index.html">Suggestions / contact-us</a></li>
+  <li><a href="/contact.html">Suggestions / Contact</a></li>
   <div class="thought-hint right-hint">
   <div class="thought-arrow right-arrow"></div>
   <p>
