@@ -78,43 +78,68 @@ body.dark .logo-dot {
 }
 /* ===== Menu Button ===== */
 .menu-btn {
-  width: 30px;
-  height: 22px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 1.5px solid transparent;
+
+  border: 1.5px solid rgba(79,70,229,0.6); /* same as icon-btn */
   background: transparent;
+
   cursor: pointer;
   position: relative;
-  display: flex;
-  transition: 
-    border-color 0.25s cubic-bezier(0.4,0,0.2,1),
-    background 0.25s cubic-bezier(0.4,0,0.2,1);
-}
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.menu-btn:hover {
+  background: rgba(108,99,255,0.18);
+  box-shadow: 0 6px 16px rgba(108,99,255,0.25);
+}
 .menu-btn span {
   position: absolute;
-  left: 0;
-  width: 24px;
-  height: 3px;
-  background: #111;
-  transition: 0.3s;
+  width: 18px;
+  height: 2.4px;
+  background: #4f46e5;
+  border-radius: 2px;
+  transition: 0.3s ease;
 }
 
-.menu-btn span:nth-child(1) { top: 0; }
-.menu-btn span:nth-child(2) { top: 9px; }
-.menu-btn span:nth-child(3) { top: 18px; }
+.menu-btn span:nth-child(1) {
+  transform: translateY(-6px);
+}
 
-/* Cross state */
+.menu-btn span:nth-child(2) {
+  transform: translateY(0);
+}
+
+.menu-btn span:nth-child(3) {
+  transform: translateY(6px);
+}
 .menu-btn.active span:nth-child(1) {
   transform: rotate(45deg);
-  top: 9px;
+  top: 17px;
 }
+
 .menu-btn.active span:nth-child(2) {
   opacity: 0;
 }
+
 .menu-btn.active span:nth-child(3) {
   transform: rotate(-45deg);
-  top: 9px;
+  top: 17px;
+}
+body.dark .menu-btn {
+  border-color: rgba(199,210,254,0.6);
+}
+
+body.dark .menu-btn span {
+  background: #A6B8FF;
 }
 
 /* ===== Sidebar ===== */
@@ -1401,7 +1426,7 @@ body.dark #notifyClose {
 
 /* List */
 .notify-list {
-  position: fixed;
+  position: relative;
   padding: 6px 10px;
   display: flex;
   flex-direction: column;
@@ -1456,3 +1481,84 @@ body.dark .notify-item:hover {
 /* =========================
    MOBILE NOTIFICATION SLIDE
 ========================= */
+/* =========================
+   MOBILE HEADER ACTIONS
+========================= */
+
+.mobile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* show mobile actions only on mobile */
+@media (min-width: 768px) {
+  .mobile-header-actions {
+    display: none;
+  }
+}
+
+/* force icon button visible on mobile */
+.mobile-header-actions .icon-btn {
+  display: flex;
+}
+/* =========================
+   MOBILE NOTIFICATION PANEL
+========================= */
+
+@media (max-width: 768px) {
+  .notify-panel {
+    right: 12px;
+    left: 12px;
+    top: 64px;
+
+    width: auto;
+    max-height: 0;
+
+    border-radius: 16px;
+    background: linear-gradient(
+      135deg,
+      rgba(99,102,241,0.12),
+      rgba(99,102,241,0.04)
+    );
+
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(99,102,241,0.25);
+  }
+
+  .notify-panel.show {
+    max-height: 240px; /* 👈 slide height */
+  }
+
+}
+/* FORCE Start button to match PDF button */
+#startQuiz {
+  background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 16px rgba(108, 99, 255, 0.35);
+}
+
+/* Hover */
+#startQuiz:hover {
+  box-shadow: 0 8px 22px rgba(108, 99, 255, 0.45);
+}
+
+/* Active press */
+#startQuiz:active {
+  transform: scale(0.97);
+}
+/* =========================
+   DESKTOP ENHANCEMENT
+========================= */
+@media (min-width: 768px) {
+  .quiz-nav .nav-btn {
+    width: 130px;          /* ⬅ more width */
+    padding: 14px 0;       /* ⬅ more height */
+    font-size: 15px;       /* slightly bigger text */
+  }
+
+  .quiz-nav .nav-text {
+    font-size: 15px;       /* center text matches buttons */
+  }
+}

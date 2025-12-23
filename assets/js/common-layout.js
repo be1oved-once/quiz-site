@@ -47,11 +47,18 @@
     </div>
 
   </div>
-    <button id="menuBtn" class="menu-btn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+<div class="mobile-header-actions">
+  <button class="icon-btn" id="notifyBtnMobile" title="Notifications">
+    <i class="fa-regular fa-bell"></i>
+    <span class="notify-dot"></span>
+  </button>
+
+  <button id="menuBtn" class="menu-btn" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</div>
   </header>
 <!-- ===== NOTIFICATION PANEL ===== -->
 <!-- ===== NOTIFICATION PANEL ===== -->

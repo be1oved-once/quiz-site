@@ -1,4 +1,5 @@
 :root {
+  --accent: #4f46e5;
   --violet: #6c63ff;
   --violet-soft: rgba(108, 99, 255, 0.15);
   --border-light: #e6e6ee;
@@ -7,6 +8,7 @@
 }
 
 body.dark {
+  --accent: #818cf8;
   --bg-light: #0f172a;
   --text-light: #e5e7eb;
   --border-light: rgba(255,255,255,0.08);
@@ -545,4 +547,24 @@ body.dark .marks-box {
   .quiz-area{ 
     justify-content: center;
   }
+}
+#startQuiz {
+  background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 16px rgba(108, 99, 255, 0.35);
+}
+
+/* Hover */
+#startQuiz:hover {
+  box-shadow: 0 8px 22px rgba(108, 99, 255, 0.45);
+}
+
+/* Active press */
+#startQuiz:active {
+  transform: scale(0.97);
+}
+body.dark #startQuiz {
+  background: linear-gradient(135deg, #7c6fff, #9b8cff);
+  box-shadow: 0 6px 16px rgba(124, 111, 255, 0.45);
 }

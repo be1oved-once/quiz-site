@@ -1,7 +1,9 @@
 /* ===============================
    RESULT ACTION BUTTONS
 =============================== */
-
+html {
+  scroll-behavior: smooth;
+}
 .result-actions {
   margin-top: 14px;
   padding-top: 10px;
@@ -125,6 +127,17 @@ body.dark .pdf-btn {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  
+  /* Smooth base */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Elastic containment */
+  overscroll-behavior: none;
+  
+  /* Performance */
+  will-change: scroll-position;
+  contain: content;
 }
 
 /* Individual question block */
@@ -171,16 +184,32 @@ body.dark .pdf-btn {
   border-color: #ef4444;
   color: #dc2626;
 }
+/* =========================
+   DARK MODE – ANSWER STATES
+========================= */
 
 /* Scrollbar (optional polish) */
+.review-content {
+  scrollbar-width: thin;                 /* Firefox */
+  scrollbar-color: var(--violet-soft) transparent;
+}
+
 .review-content::-webkit-scrollbar {
   width: 4px;
 }
-.review-content::-webkit-scrollbar-thumb {
-  background: var(--violet-soft);
-  border-radius: 6px;
+
+.review-content::-webkit-scrollbar-track {
+  background: transparent;
 }
 
+.review-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--violet-soft),
+    rgba(108,99,255,0.35)
+  );
+  border-radius: 10px;
+}
 /* Dark mode */
 body.dark .review-panel {
   border-color: rgba(255,255,255,0.12);
@@ -398,4 +427,28 @@ body.dark .vn-box {
 }
 .hidden{
   display: none;
+}
+.review-content::before,
+.review-content::after {
+  content: "";
+  position: sticky;
+  left: 0;
+  right: 0;
+  height: 18px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.review-content::before {
+  top: 0;
+  background: linear-gradient(to bottom,
+    rgba(108,99,255,0.12),
+    transparent);
+}
+
+.review-content::after {
+  bottom: 0;
+  background: linear-gradient(to top,
+    rgba(108,99,255,0.12),
+    transparent);
 }

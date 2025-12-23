@@ -92,13 +92,46 @@ onSnapshot(q, snap => {
       <button class="delete-btn">Delete</button>
     `;
 
-    row.querySelector(".delete-btn").onclick = async () => {
-      const ok = confirm("Delete this notification permanently?");
-      if (!ok) return;
-
+    row.querySelector(".delete-btn").onclick = () => {
+  showConfirmToast(
+    "Delete this notification permanently?",
+    async () => {
       await deleteDoc(doc(db, "notifications", d.id));
-    };
+    }
+  );
+};
 
     list.appendChild(row);
   });
 });
+/* =========================
+   TOAST CONFIRM (REUSABLE)
+========================= */
+
+const confirmToast = document.getElementById("confirmToast");
+const confirmText  = document.getElementById("confirmText");
+const confirmYes   = document.getElementById("confirmYes");
+const confirmCancel= document.getElementById("confirmCancel");
+
+let confirmAction = null;
+
+function showConfirmToast(message, onConfirm) {
+  confirmText.textContent = message;
+  confirmAction = onConfirm;
+
+  confirmToast.classList.add("show");
+}
+
+function hideConfirmToast() {
+  confirmToast.classList.remove("show");
+  confirmAction = null;
+}
+
+confirmCancel.onclick = hideConfirmToast;
+
+confirmYes.onclick = async () => {
+  if (typeof confirmAction === "function") {
+    await confirmAction();
+  }
+  hideConfirmToast();
+};

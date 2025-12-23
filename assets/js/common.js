@@ -412,6 +412,11 @@ const profilePopup = document.getElementById("profilePopup");
 profileBtn?.addEventListener("click", e => {
   e.stopPropagation();
 
+  // 🔥 CLOSE notification panel if open
+  if (notifyPanel?.classList.contains("show")) {
+    notifyPanel.classList.remove("show");
+  }
+
   if (profilePopup.style.maxHeight) {
     closeProfilePopup();
   } else {
@@ -450,11 +455,12 @@ if (notifyBtn && notifyPanel && notifyList) {
   /* Toggle panel */
   notifyBtn?.addEventListener("click", e => {
   e.stopPropagation();
+
+  // 🔥 CLOSE profile popup if open
+  closeProfilePopup();
+
   notifyPanel.classList.toggle("show");
-
-  // ✅ Mark notifications as seen
   setLastSeenNotify(Date.now());
-
   notifyDot && (notifyDot.style.display = "none");
 });
   
@@ -474,6 +480,13 @@ if (notifyBtn && notifyPanel && notifyList) {
     }
   });
   
+const notifyBtnMobile = document.getElementById("notifyBtnMobile");
+
+notifyBtnMobile?.addEventListener("click", e => {
+  e.stopPropagation();
+  notifyPanel.classList.toggle("show");
+});
+
   /* 🔥 REAL-TIME FETCH */
   const q = query(
     collection(db, "notifications"),
