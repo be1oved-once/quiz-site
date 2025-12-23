@@ -3,7 +3,7 @@
 ========================= */
 
 .page-content {
-  padding: 40px 16px 80px;
+  padding: 16px 16px 80px;
 }
 
 /* MAIN GRID */
@@ -54,6 +54,7 @@
 .contact-form textarea {
   min-height: 120px;
   resize: vertical;
+  max-height: 230px;
 }
 
 .contact-form input:focus,
@@ -65,20 +66,35 @@
 /* BUTTON */
 .contact-form button {
   margin-top: 6px;
-  padding: 12px;
+  padding: 6px;
   font-size: 14px;
   font-weight: 500;
-  border-radius: 12px;
+  border-radius: 50px;
   border: none;
   cursor: pointer;
   color: #fff;
   background: linear-gradient(135deg, #6c63ff, #7a72ff);
   transition: transform 0.15s ease, box-shadow 0.2s ease;
+  width: 50%;
 }
 
 .contact-form button:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(108, 99, 255, 0.35);
+}
+.send-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.send-btn i {
+  font-size: 0.95em;
+}
+.send-btn:hover i {
+  transform: translateX(3px);
+  transition: transform 0.2s ease;
 }
 
 /* =========================

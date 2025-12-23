@@ -6,6 +6,7 @@
   <title>Contact Us</title>
 
   <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/contact.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,11 +29,40 @@
 <body>
 
   <!-- PAGE CONTENT ONLY -->
-  <main class="page-content">
-    <h1>Contact Us</h1>
-  </main>
+<main class="page-content">
+  <section class="contact-layout">
+
+    <!-- LEFT CONTENT -->
+    <div class="contact-info">
+      <h1>Contact Us</h1>
+
+      <p class="contact-intro">
+        Have a suggestion, feedback, collaboration idea,
+        or just want to say hello?
+        <br>
+        We genuinely love to hear from students, teachers,
+        and anyone who wants to improve learning.
+      </p>
+    </div>
+
+    <!-- RIGHT FORM -->
+    <form class="contact-form" id="contactForm">
+      <input type="text" placeholder="Your Name" required />
+      <input type="email" placeholder="Your Email" required />
+      <input type="text" placeholder="Subject (Suggestion / Feedback / Hi)" />
+      <textarea placeholder="Write your message here..." required></textarea>
+
+     <button type="submit" class="send-btn">
+  <i class="fa-solid fa-paper-plane"></i>
+  <span>Send Message</span>
+</button>
+    </form>
+
+  </section>
+</main>
 
   <script src="assets/js/common-layout.js"></script>
+  <script src="assets/js/contact.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
 <script type="module" src="assets/js/common.js"></script>
