@@ -1,3 +1,5 @@
+import nodemailer from "nodemailer";
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -10,20 +12,39 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing fields" });
     }
 
-    // For now just log (later email / db)
-    console.log("New Contact Message:", {
-      name,
-      email,
-      subject,
-      message
+    // 🔐 Mail transporter (Gmail + App Password)
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
     });
+
+    // ✉️ Email content
+    const mailOptions = {
+      from: `"TIC Kar Contact" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      replyTo: email,
+      subject: subject || "New Contact Message",
+      html: `
+        <h3>New Contact Message</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Subject:</strong> ${subject || "—"}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message.replace(/\n/g, "<br>")}</p>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
 
     return res.status(200).json({
       success: true,
-      message: "Message received"
+      message: "Message sent"
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Server error" });
+    console.error("Mail error:", err);
+    return res.status(500).json({ error: "Failed to send message" });
   }
 }
