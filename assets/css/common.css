@@ -1562,3 +1562,69 @@ body.dark .notify-item:hover {
     font-size: 15px;       /* center text matches buttons */
   }
 }
+/* ===== ADMIN DROPDOWN ===== */
+.admin-dropdown {
+  position: relative;
+}
+
+/* =========================
+   ADMIN DROPDOWN (SIDEBAR)
+========================= */
+
+.admin-only {
+  list-style: none;
+}
+
+/* MAIN ADMIN BUTTON (LOOK LIKE OTHER ITEMS) */
+.admin-toggle {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 15px;
+  color: inherit;
+  font-weight: 500;
+}
+
+/* REMOVE ANY HOVER BG */
+.admin-toggle:hover {
+  background: none;
+}
+
+/* ICON STYLE MATCH */
+
+/* =========================
+   DROPDOWN MENU
+========================= */
+
+.admin-menu {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease;
+  margin-left: 42px; /* aligns with text (after icon) */
+}
+
+/* OPEN STATE */
+.admin-menu.open {
+  max-height: 120px; /* enough for 2 links */
+  opacity: 1;
+}
+
+/* DROPDOWN LINKS */
+.admin-menu a {
+  display: block;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #444;
+  text-decoration: none;
+}
+
+/* SIMPLE HOVER (NO BG) */
+.admin-menu a:hover {
+  text-decoration: underline;
+}

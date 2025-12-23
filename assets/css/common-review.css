@@ -452,3 +452,37 @@ body.dark .vn-box {
     rgba(108,99,255,0.12),
     transparent);
 }
+.penalty-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.penalty-overlay.hidden {
+  display: none;
+}
+
+.penalty-box {
+  background: #111;
+  color: #fff;
+  padding: 26px 30px;
+  border-radius: 14px;
+  text-align: center;
+  width: 280px;
+}
+
+.penalty-box h2 {
+  margin: 0 0 8px;
+}
+
+.penalty-timer {
+  margin-top: 14px;
+  font-size: 34px;
+  font-weight: 700;
+  color: #ff5252;
+}

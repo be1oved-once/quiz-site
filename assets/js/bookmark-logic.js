@@ -1,58 +1,35 @@
-console.log("🔥 questions-logic.js executing", Date.now());
+
 /* =========================
    FIREBASE + XP
 ========================= */
 import { auth, db } from "./firebase.js";
 import {
-  doc,
   collection,
-  addDoc,
-  getDoc,
   getDocs,
-  setDoc,
-  deleteDoc,
-  updateDoc,
-  increment,
-  serverTimestamp
+  setDoc,      // ✅ ADD
+  deleteDoc,   // ✅ ADD
+  doc          // ✅ ADD
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import { onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 let currentUser = null;
-let currentXP = 0;
-const xpEl = document.getElementById("xpValue");
 
-auth.onAuthStateChanged(user => {
-  if (!user) {
-    currentUser = null;
-    currentXP = 0;
-    if (xpEl) xpEl.textContent = "00";
-    return;
-  }
 
-  currentUser = user;
+document.addEventListener("DOMContentLoaded", () => {
+  auth.onAuthStateChanged(async user => {
+    if (!user) return;
 
-  // 🔥 REAL-TIME XP SYNC
-  onSnapshot(doc(db, "users", user.uid), snap => {
-    if (!snap.exists()) return;
+    currentUser = user; // ✅ THIS WAS MISSING
 
-    const data = snap.data();
-    currentXP = data.xp || 0;
-
-    if (xpEl) {
-      xpEl.textContent = String(currentXP).padStart(2, "0");
-    }
+    await loadBookmarkMap(user.uid);
+    await loadSubjectsFromFirebase(user.uid);
   });
-
-  // 🔹 Load bookmarks once (fine as is)
-  loadBookmarksOnce(user.uid);
 });
 
 /* =========================
    DATA
 ========================= */
-import { subjects } from "./questions.js";
-
 let currentSubject = null;
 let currentChapter = null;
 
@@ -72,7 +49,76 @@ let answered = false;
 let activeQuestions = [];
 let round1Snapshot = [];
 
-// 🔥 expose globally
+let subjects = [];
+
+let bookmarkMap = {};
+
+async function loadBookmarkMap(uid) {
+  bookmarkMap = {};
+
+  const snap = await getDocs(
+    collection(db, "users", uid, "bookmarks")
+  );
+
+  snap.forEach(docSnap => {
+    bookmarkMap[docSnap.id] = true;
+  });
+
+  console.log("⭐ Bookmark map loaded", bookmarkMap);
+}
+
+async function loadSubjectsFromFirebase(uid) {
+  console.log("🔄 Fetching questions from Firestore...");
+
+  subjects = [];
+
+  try {
+    const snap = await getDocs(
+      collection(db, "users", uid, "bookmarks")
+    );
+
+    if (snap.empty) {
+      console.warn("⚠️ No questions found in bookmarks");
+      return;
+    }
+
+    const map = {}; // subject → chapter → questions
+
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+
+      if (!d.subject || !d.chapter || !d.question) {
+        console.warn("⚠️ Skipped invalid doc:", docSnap.id, d);
+        return;
+      }
+
+      if (!map[d.subject]) map[d.subject] = {};
+      if (!map[d.subject][d.chapter]) map[d.subject][d.chapter] = [];
+
+      map[d.subject][d.chapter].push({
+        text: d.question,
+        options: d.options,
+        correctIndex: d.correctIndex
+      });
+    });
+
+    // convert to UI-friendly structure
+    subjects = Object.keys(map).map(subjectName => ({
+      name: subjectName,
+      chapters: Object.keys(map[subjectName]).map(chName => ({
+        name: chName,
+        questions: map[subjectName][chName]
+      }))
+    }));
+
+    console.log("✅ Firestore fetch SUCCESS");
+    console.log("📘 Subjects parsed:", subjects);
+
+  } catch (err) {
+    console.error("❌ Firestore fetch FAILED", err);
+  }
+}
+
 window.round1Snapshot = round1Snapshot;
 /* =========================
    DOM
@@ -212,8 +258,11 @@ if (resultActions) resultActions.classList.add("hidden");
    START
 ========================= */
 startBtn.onclick = () => {
-  requestExamFullscreen();
   resetReviewState();
+// 🔥 Filter out removed bookmarks (safety)
+baseQuestions = baseQuestions.filter(
+  q => bookmarkMap[getQuestionId(q)]
+);
   if (resultActions) resultActions.classList.add("hidden");
   // 🔒 Hide marks when starting a new quiz
 marks = 0;
@@ -248,7 +297,11 @@ if (marksValue) marksValue.textContent = "0";
 /* =========================
    RESET
 ========================= */
-resetBtn.onclick = () => {
+resetBtn.onclick = async () => {
+  if (currentUser) {
+  await loadBookmarkMap(currentUser.uid);
+  await loadSubjectsFromFirebase(currentUser.uid);
+}
   // 🔥 Clear previous attempt data
 resetReviewState();
 round1Completed = false;
@@ -280,7 +333,7 @@ marksBox.classList.add("hidden");
 };
 
 /* =========================
-   XP LOCAL STORAGE HELPERS
+
 
 
 ========================= */
@@ -291,17 +344,6 @@ function getLocalDate() {
   return d.toISOString().slice(0, 10);
 }
 
-function xpKey(uid) {
-  return `xp_${uid}`;
-}
-
-function getLocalXP(uid) {
-  return parseInt(localStorage.getItem(xpKey(uid))) || 0;
-}
-
-function setLocalXP(uid, xp) {
-  localStorage.setItem(xpKey(uid), xp);
-}
 /* =========================
    ROUND CONTROL
 ========================= */
@@ -444,31 +486,65 @@ function renderQuestion() {
 
   /* ⭐ BOOKMARK BUTTON */
 /* ⭐ BOOKMARK BUTTON (Font Awesome) */
+/* ⭐ BOOKMARK BUTTON (AUTO-FILL FROM FIREBASE) */
 const star = document.createElement("i");
-star.className = "bookmark-btn fa-regular fa-star";
+star.className = "bookmark-btn fa-star";
 
-if (currentUser) {
-  const local = getLocalBookmarks(currentUser.uid);
-  q.bookmarked = !!local[getQuestionId(q)];
-}
+const qid = getQuestionId(q);
+
+// 🔥 auto-fill state
+q.bookmarked = !!bookmarkMap[qid];
 
 if (q.bookmarked) {
-  star.classList.remove("fa-regular");
   star.classList.add("fa-solid", "active");
+} else {
+  star.classList.add("fa-regular");
 }
 
 star.onclick = async () => {
+  console.log("⭐ toggle", qid, q.bookmarked);
+  if (!currentUser) return;
+
   q.bookmarked = !q.bookmarked;
 
   if (q.bookmarked) {
     star.classList.remove("fa-regular");
     star.classList.add("fa-solid", "active");
     await saveBookmark(q);
-  } else {
-    star.classList.remove("fa-solid", "active");
-    star.classList.add("fa-regular");
-    await removeBookmark(q);
+    bookmarkMap[qid] = true;
+} else {
+  // ❌ UNBOOKMARK
+  star.classList.remove("fa-solid", "active");
+  star.classList.add("fa-regular");
+
+  await removeBookmark(q);
+  delete bookmarkMap[qid];
+
+  // 🔥 REMOVE FROM ALL ACTIVE QUIZ STATE
+  activeQuestions = activeQuestions.filter(
+    item => getQuestionId(item) !== qid
+  );
+
+  baseQuestions = baseQuestions.filter(
+    item => getQuestionId(item) !== qid
+  );
+
+  round1Snapshot = round1Snapshot.filter(
+    item => getQuestionId(item) !== qid
+  );
+
+  // 🔥 IF CURRENT QUESTION WAS REMOVED → MOVE SAFELY
+  if (qIndex >= activeQuestions.length) {
+    qIndex = Math.max(0, activeQuestions.length - 1);
   }
+
+  // 🔥 RE-RENDER OR END QUIZ
+  if (activeQuestions.length === 0) {
+    finishRound(); // nothing left
+  } else {
+    renderQuestion();
+  }
+}
 };
 
 qText.appendChild(star);
@@ -483,15 +559,9 @@ qText.appendChild(star);
     btn.textContent = opt;
     btn.disabled = q.attempted;
 
-    // show correct ONLY if user answered correctly
-if (q.correct && i === q.correctIndex) {
-  btn.classList.add("correct");
-}
-
-// show wrong ONLY if user selected wrong
-if (q.selectedIndex === i && !q.correct) {
-  btn.classList.add("wrong");
-}
+    if (q.attempted && i === q.correctIndex) {
+      btn.classList.add("correct");
+    }
 
     btn.onclick = () => handleAnswer(btn, i);
     optionsBox.appendChild(btn);
@@ -524,18 +594,6 @@ if (idx === q.correctIndex) {
     marks += 1;
   }
 
-  if (currentUser) {
-
-    // 🔥 Firebase XP
-    updateDoc(doc(db, "users", currentUser.uid), {
-      xp: increment(5)
-    });
-
-    // 🔥🔥 PERFORMANCE METRICS (THIS WAS MISSING)
-    recordQuestionAttempt(5);     // +1 attempt, +5 daily XP, streak
-updateBestXpIfNeeded();       // update best XP if today beats record
-  }
-
   setTimeout(next, 1000);
 } else {
   btn.classList.add("wrong");
@@ -544,9 +602,7 @@ updateBestXpIfNeeded();       // update best XP if today beats record
 if (round === 1) {
     marks -= 0.25;
   }
-  if (currentUser) {
-  recordQuestionAttempt(0); // attempt counted, no XP
-}
+  
   // ✅ Enable next immediately
   nextBtn.disabled = false;
 
@@ -567,8 +623,6 @@ autoNextTimeout = null;
   const q = activeQuestions[qIndex];
   q.attempted = true;
   q.correct = false;
-    q.timedOut = true;      // ✅ ADD THIS
-  q.selectedIndex = null; // ✅ ENSURE NO SELECTION
   next();
 }
 
@@ -616,16 +670,7 @@ if (!round1Completed) {
   marksValue.textContent = marks.toFixed(2);
   marksBox.classList.remove("hidden");
   if (resultActions) resultActions.classList.remove("hidden");
-
-  // 🔥🔥🔥 SAVE ATTEMPT SUMMARY (AUTO CREATES attempts/)
-  recordAttemptSummary({
-    type: "CHAPTER",
-    subject: currentSubject?.name || "",
-    chapter: currentChapter?.name || "",
-    correct: round1Snapshot.filter(q => q.correct).length,
-    total: round1Snapshot.length,
-    xpEarned: round1Snapshot.filter(q => q.correct).length * 5
-  });
+  
 }
   wrongQuestions = activeQuestions.filter(q => !q.correct);
 
@@ -679,79 +724,6 @@ function slideToggle(popup, open) {
   }
 }
 
-async function recordQuestionAttempt(xpGained) {
-  if (!currentUser) return;
-
-  const ref = doc(db, "users", currentUser.uid);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
-
-  const data = snap.data();
-  const today = getLocalDate();
-  let updates = {
-    totalAttempts: increment(1),
-    dailyXp: increment(xpGained),
-    dailyXpDate: today,
-
-    // ✅ PER-DAY XP STORAGE (WEEK SAFE)
-    [`weeklyXp.${today}`]: increment(xpGained)
-  };
-
-  /* =========================
-     STREAK LOGIC
-  ========================= */
-  if (data.lastActiveDate !== today) {
-    let streak = data.streak || 0;
-
-    if (data.lastActiveDate) {
-      const diff =
-        (new Date(today) - new Date(data.lastActiveDate)) /
-        (1000 * 60 * 60 * 24);
-
-      streak = diff === 1 ? streak + 1 : 1;
-    } else {
-      streak = 1;
-    }
-
-    updates.streak = streak;
-    updates.lastActiveDate = today;
-
-    // 🔥 RESET daily XP ONLY ON NEW DAY
-    updates.dailyXp = xpGained;
-
-    // 🔥 RESET weekly day XP ONLY ON NEW DAY
-    updates[`weeklyXp.${today}`] = xpGained;
-  }
-
-// 🧹 RESET weeklyXp on Monday
-const day = new Date().getDay(); // 0 = Sunday, 1 = Monday
-if (day === 1 && data.lastActiveDate !== today) {
-  updates.weeklyXp = {}; // fresh week
-}
-
-  await updateDoc(ref, updates);
-}
-
-async function updateBestXpIfNeeded() {
-  if (!currentUser) return;
-
-  const ref = doc(db, "users", currentUser.uid);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
-
-  const data = snap.data();
-  const dailyXp = data.dailyXp || 0;
-  const bestXpDay = data.bestXpDay || 0;
-
-  if (dailyXp > bestXpDay) {
-    await updateDoc(ref, {
-      bestXpDay: dailyXp
-    });
-  }
-}
-
-
-// 🔓 EXPOSE CONTROLLED QUIZ START (for bookmarks / special modes)
 window.__startQuizWithQuestions = function (questions, meta = {}) {
   baseQuestions = questions.map(q => ({
     ...q,
@@ -772,34 +744,6 @@ window.__startQuizWithQuestions = function (questions, meta = {}) {
   updateRoundLabel();
   startRound(baseQuestions);
 };
-
-
-async function recordAttemptSummary(data) {
-  if (!currentUser) return;
-
-  try {
-    await addDoc(
-      collection(db, "users", currentUser.uid, "attempts"),
-      {
-        type: data.type,                 // CHAPTER / RTP / MTP
-        subject: data.subject || "",
-        chapter: data.chapter || "",
-        correct: data.correct || 0,
-        total: data.total || 0,
-        score: data.total
-          ? Math.round((data.correct / data.total) * 100)
-          : 0,
-        xpEarned: data.xpEarned || 0,
-        createdAt: serverTimestamp(),
-        date: new Date().toISOString().slice(0, 10)
-      }
-    );
-
-    console.log("✅ Attempt summary saved");
-  } catch (e) {
-    console.error("❌ Attempt summary failed", e);
-  }
-}
 /* =========================
    KEYBOARD CONTROLS (DESKTOP)
 ========================= */
@@ -901,28 +845,3 @@ document.addEventListener("keyup", e => {
     stopScroll();
   }
 });
-
-
-function requestExamFullscreen() {
-  const el = document.documentElement;
-  if (el.requestFullscreen) el.requestFullscreen();
-  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-}
-document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement) {
-    triggerPenalty();
-  }
-});
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    triggerPenalty();
-  }
-});
-let penaltyRunning = false;
-
-function triggerPenalty() {
-  if (penaltyRunning) return;
-  penaltyRunning = true;
-
-  showPenaltyOverlay(45);
-}

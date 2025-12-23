@@ -92,6 +92,17 @@
   <hr class="sidebar-hr" />
 
 <ul class="sidebar-list">
+<li class="admin-only admin-dropdown" style="display:none;">
+  <button class="admin-toggle" id="adminToggle">
+    <i class="fa-solid fa-shield-halved"></i>
+    <span>I'm Admin</span>
+  </button>
+
+  <div class="admin-menu" id="adminMenu">
+    <a href="/admin/admin.html">Push Notifications</a>
+    <a href="/admin/temp-test.html">Temp Test</a>
+  </div>
+</li>
   <li class="mobile-left">
     <a href="/profile.html">
       <i class="fa-solid fa-user"></i>
@@ -124,13 +135,10 @@
       <span>Articles</span>
     </a>
   </li>
-  <li class="admin-only" style="display:none;">
-  <a href="/admin/admin.html">
-    <i class="fa-solid fa-shield-halved"></i>
-    <span>I'm Admin</span>
-  </a>
-</li>
     <li class="mobile-left"><a href="/thoughts.html"><i class="fa-regular fa-comment-dots"></i><span>Drop Thoughts</span></a></li>
+    <li class="desktop-left"><a href="/chapters.html"><i class="fa-solid fa-book"></i>
+    <span>Chapters</span></a>
+</li>
     <li class="desktop-left"><a href="/mtp-rtp.html"><i class="fa-solid fa-file-lines"></i><span>RTP / MTP</span></a></li>
   <li class="desktop-left"><a href="/articles.html"><i class="fa-solid fa-newspaper"></i><span>Articles</span></a></li>
   <li class="desktop-left"><a href="/About-us.html"><i class="fa-solid fa-circle-info"></i><span>About</span></a></li>
@@ -302,3 +310,23 @@
   document.body.insertAdjacentHTML("afterbegin", layoutHTML);
 
 })();
+const adminToggle = document.getElementById("adminToggle");
+const adminMenu = document.getElementById("adminMenu");
+
+if (adminToggle && adminMenu) {
+  // Toggle on click
+  adminToggle.addEventListener("click", e => {
+    e.stopPropagation(); // prevent document click
+    adminMenu.classList.toggle("open");
+  });
+
+  // Prevent closing when clicking inside menu
+  adminMenu.addEventListener("click", e => {
+    e.stopPropagation();
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", () => {
+    adminMenu.classList.remove("open");
+  });
+}

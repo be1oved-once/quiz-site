@@ -1,0 +1,149 @@
+/* =========================
+   ABOUT PAGE
+========================= */
+
+.about-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+  line-height: 1.75;
+  font-size: 15.5px;
+  color: #1f2937;
+}
+
+.about-page h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #111827;
+}
+
+.about-page h2 {
+  font-size: 21px;
+  font-weight: 600;
+  margin-top: 36px;
+  margin-bottom: 12px;
+  color: #4f46e5;
+}
+
+.about-page p {
+  margin-bottom: 14px;
+}
+
+.about-page ul {
+  padding-left: 20px;
+  margin: 10px 0 18px;
+}
+
+.about-page li {
+  margin-bottom: 6px;
+  list-style: disc;
+}
+
+.about-page a {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.about-page a:hover {
+  text-decoration: underline;
+}
+
+/* Subtle emphasis text */
+.about-page strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Motivation line */
+.about-page p[style*="font-weight"] {
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Footer note */
+.about-page p[style*="opacity"] {
+  font-size: 14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .about-page {
+    font-size: 15px;
+    padding: 22px 16px 50px;
+  }
+
+  .about-page h1 {
+    font-size: 26px;
+  }
+
+  .about-page h2 {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 420px) {
+  .about-page {
+    font-size: 14.6px;
+    line-height: 1.7;
+  }
+
+  .about-page h1 {
+    font-size: 24px;
+  }
+
+  .about-page h2 {
+    font-size: 18px;
+  }
+}
+/* =========================
+   ABOUT PAGE – DARK MODE
+========================= */
+
+/* Support both systems */
+body.dark .about-page,
+[data-theme="dark"] .about-page {
+  color: #e5e7eb;
+}
+
+body.dark .about-page h1,
+[data-theme="dark"] .about-page h1 {
+  color: #f9fafb;
+}
+
+body.dark .about-page h2,
+[data-theme="dark"] .about-page h2 {
+  color: #a5b4fc;
+}
+
+body.dark .about-page p,
+[data-theme="dark"] .about-page li,
+[data-theme="dark"] .about-page p,
+[data-theme="dark"] .about-page li {
+  color: #e5e7eb;
+}
+
+body.dark .about-page strong,
+[data-theme="dark"] .about-page strong {
+  color: #f3f4f6;
+}
+
+body.dark .about-page a,
+[data-theme="dark"] .about-page a {
+  color: #c7d2fe;
+}
+
+body.dark .about-page a:hover,
+[data-theme="dark"] .about-page a:hover {
+  color: #eef2ff;
+}
+
+/* Muted / footer text */
+body.dark .about-page p[style*="opacity"],
+[data-theme="dark"] .about-page p[style*="opacity"] {
+  color: #9ca3af !important;
+}

@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bookmarks</title>
+  <title>Chapters</title>
 
   <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://accounts.google.com">
+<link rel="preconnect" href="https://apis.google.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,12 +18,9 @@
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
 <link rel="icon" href="assets/favicon/favicon.ico">
-
 <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
-
 <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
-
 <link rel="manifest" href="assets/favicon/site.webmanifest">
 
 <meta name="theme-color" content="#6c63ff">
@@ -34,7 +33,7 @@
   <div class="head-box">
     
   <div class="header-text">
-    <h3>Bookmark<span>'</span>Wise</h3>
+    <h3>Chapter<span>'</span>Wise</h3>
   </div>
 
   </div>
@@ -47,9 +46,6 @@
   <button id="subjectBtn" class="select-btn">
     <span id="subjectText">None Selected</span>
   </button>
-    <div class="xp-box">
-    XP: <span id="xpValue">00</span>
-  </div>
 </div>
 
 <!-- CHAPTER ROW (NO XP HERE) -->
@@ -76,7 +72,7 @@
   min="1"
   inputmode="numeric"
   pattern="[0-9]*"
-  value="5" disabled
+  value="N/A" disabled
 />
 </div>
   </div>
@@ -102,7 +98,7 @@
   <button id="prevBtn" class="nav-btn">Previous</button>
 
   <div class="nav-text">
-    <span id="roundLabel">Practice</span>
+    <span id="roundLabel">Practic</span>
   </div>
 
   <button id="nextBtn" class="nav-btn primary">Next</button>
@@ -122,21 +118,42 @@
     Save as PDF
   </button>
 </div>
+<!-- Voice Note Explanation -->
+<div id="voiceNoteBox" class="vn-box hidden">
+  <div class="vn-left">
+    <i class="fa-solid fa-volume-high vn-icon"></i>
+  </div>
+
+  <div class="vn-body">
+    <div class="vn-title">Voice Explanation</div>
+    <div class="vn-sub" id="vnStatus">
+       click ▶
+    </div>
+
+    <div class="vn-controls hidden" id="vnControls">
+      <button id="vnPlay" class="vn-play">
+        <i class="fa-solid fa-play"></i>
+      </button>
+      <span class="vn-time" id="vnTime">00:00</span>
+    </div>
+
+    <audio id="vnAudio" preload="metadata">
+      <!-- YOU WILL PUT MP3 HERE LATER -->
+      <!-- <source src="assets/audio/chapter1.mp3" type="audio/mpeg"> -->
+    </audio>
+  </div>
+</div>
 <!-- Review Questions Panel -->
 <div id="reviewPanel" class="review-panel hidden">
   <div id="reviewContent" class="review-content"></div>
 </div>
 </section>
 </main>
-<script>
-  window.BOOKMARK_MODE = true;
-</script>
+
   <script src="assets/js/common-layout.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
-<script type="module" src="assets/js/xp.js"></script>
-<script type="module" src="assets/js/questions-logic.js"></script>
-<script type="module" src="assets/js/bookmark-practice.js"></script>
+<script type="module" src="assets/js/bookmark-logic.js"></script>
 <script type="module" src="assets/js/common.js"></script>
 <script src="assets/js/common-logic.js"></script>
 </body>
