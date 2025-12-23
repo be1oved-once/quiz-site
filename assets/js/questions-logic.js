@@ -902,7 +902,6 @@ document.addEventListener("keyup", e => {
   }
 });
 
-
 function requestExamFullscreen() {
   const el = document.documentElement;
   if (el.requestFullscreen) el.requestFullscreen();
@@ -919,6 +918,34 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 let penaltyRunning = false;
+
+function showPenaltyOverlay(seconds) {
+  const overlay = document.getElementById("penaltyOverlay");
+  const timerEl = document.getElementById("penaltyTime");
+
+  if (!overlay || !timerEl) {
+    console.warn("Penalty overlay missing in DOM");
+    return;
+  }
+
+  let t = seconds;
+  overlay.classList.remove("hidden");
+  document.body.style.pointerEvents = "none";
+
+  timerEl.textContent = t;
+
+  const int = setInterval(() => {
+    t--;
+    timerEl.textContent = t;
+
+    if (t <= 0) {
+      clearInterval(int);
+      overlay.classList.add("hidden");
+      document.body.style.pointerEvents = "";
+      requestExamFullscreen();
+    }
+  }, 1000);
+}
 
 function triggerPenalty() {
   if (penaltyRunning) return;
