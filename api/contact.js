@@ -27,6 +27,9 @@ export default async function handler(req, res) {
   }
 });
 
+await transporter.verify();
+await transporter.sendMail(mailOptions);
+
     // ✉️ Email content
     const mailOptions = {
       from: `"TIC Kar Contact" <${process.env.EMAIL_USER}>`,
@@ -50,10 +53,8 @@ export default async function handler(req, res) {
       message: "Message sent"
     });
   } catch (err) {
-    console.error("Mail error:", err);
-    return res.status(500).json({ error: "Failed to send message" });
-  }
+  console.error("Mail error message:", err.message);
+  console.error("Mail error stack:", err.stack);
+  return res.status(500).json({ error: "Failed to send message" });
 }
-
-await transporter.verify();
-await transporter.sendMail(mailOptions);
+}
