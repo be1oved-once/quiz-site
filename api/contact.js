@@ -10,28 +10,28 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log("EMAIL_USER exists:", !!process.env.EMAIL_USER);
+    console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+
     const { name, email, subject, message } = req.body;
 
     if (!name || !email || !message) {
       return res.status(400).json({ error: "Missing fields" });
     }
 
-    // 🔐 Mail transporter (Gmail + App Password)
     const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
 
-await transporter.verify();
-await transporter.sendMail(mailOptions);
+    await transporter.verify(); // 🔥 important
 
-    // ✉️ Email content
-    const mailOptions = {
+    await transporter.sendMail({
       from: `"TIC Kar Contact" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER,
       replyTo: email,
@@ -40,21 +40,14 @@ await transporter.sendMail(mailOptions);
         <h3>New Contact Message</h3>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Subject:</strong> ${subject || "—"}</p>
-        <p><strong>Message:</strong></p>
         <p>${message.replace(/\n/g, "<br>")}</p>
       `
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    return res.status(200).json({
-      success: true,
-      message: "Message sent"
     });
+
+    return res.status(200).json({ success: true });
   } catch (err) {
-  console.error("Mail error message:", err.message);
-  console.error("Mail error stack:", err.stack);
-  return res.status(500).json({ error: "Failed to send message" });
-}
+    console.error("MAIL ERROR:", err.message);
+    console.error(err.stack);
+    return res.status(500).json({ error: "Mail failed" });
+  }
 }
