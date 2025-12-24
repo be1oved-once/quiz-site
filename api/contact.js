@@ -26,60 +26,56 @@ export default async function handler(req, res) {
         reply_to: email,
         subject: subject || "New Contact Message",
         html: `
-  <div style="
-    font-family: 'Poppins', Arial, sans-serif;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-  ">
+<div style="
+  max-width:520px;
+  margin:20px auto;
+  background:#0f172a;
+  color:#e5e7eb;
+  border-radius:14px;
+  padding:22px;
+  font-family:Arial,Helvetica,sans-serif;
+">
 
-    <!-- HEADER -->
-    <div style="margin-bottom: 18px;">
-      <span style="
-        font-size: 20px;
-        font-weight: 600;
-        color: #111827;
-      ">TIC</span>
-
-      <span style="
-        font-size: 20px;
-        margin: 0 2px;
-        -webkit-text-stroke: 1.5px #6c63ff;
-        color: transparent;
-      ">.</span>
-
-      <span style="
-        font-size: 12px;
-        font-weight: 500;
-        color: #374151;
-        margin-left: 2px;
-      ">Kar</span>
-    </div>
-
-    <hr style="border: none; border-top: 1px solid #e5e7eb; margin-bottom: 16px;">
-
-    <!-- BODY -->
-    <h3 style="margin: 0 0 10px; color: #111827;">
-      New Contact Message
-    </h3>
-
-    <p><strong>Name:</strong> ${name}</p>
-    <p><strong>Email:</strong> ${email}</p>
-    <p><strong>Subject:</strong> ${subject || "—"}</p>
-
-    <p style="margin-top: 12px;">
-      ${message.replace(/\n/g, "<br>")}
-    </p>
-
-    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;">
-
-    <p style="
-      font-size: 12px;
-      color: #6b7280;
-    ">
-      Sent via TIC.Kar Contact Form
-    </p>
+  <!-- LOGO -->
+  <div style="font-size:22px;font-weight:600;letter-spacing:0.5px;">
+    <span style="color:#ffffff;">TIC</span>
+    <span style="color:#6366f1;font-weight:700;">.</span>
+    <span style="font-size:13px;color:#c7d2fe;">Kar</span>
   </div>
+
+  <hr style="border:none;border-top:1px solid #1e293b;margin:14px 0;">
+
+  <h3 style="margin:10px 0 16px;font-size:16px;color:#f8fafc;">
+    New Contact Message
+  </h3>
+
+  <p style="margin:6px 0;"><b>Name:</b> ${name}</p>
+  <p style="margin:6px 0;">
+    <b>Email:</b>
+    <a href="mailto:${email}" style="color:#93c5fd;text-decoration:none;">
+      ${email}
+    </a>
+  </p>
+  <p style="margin:6px 0;"><b>Subject:</b> ${subject || "—"}</p>
+
+  <div style="
+    margin-top:14px;
+    padding:12px;
+    background:#020617;
+    border-radius:10px;
+    font-size:14px;
+    line-height:1.5;
+  ">
+    ${message.replace(/\n/g, "<br>")}
+  </div>
+
+  <hr style="border:none;border-top:1px solid #1e293b;margin:16px 0;">
+
+  <div style="font-size:12px;color:#94a3b8;text-align:center;">
+    Sent via <b>TIC.Kar</b> Contact Form
+  </div>
+
+</div>
 `
       })
     });
