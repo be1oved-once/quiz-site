@@ -51,7 +51,20 @@
       <input type="email" placeholder="Your Email" required />
       <input type="text" placeholder="Subject (Suggestion / Feedback / Hi)" />
       <textarea placeholder="Write your message here..." required></textarea>
+<!-- CAPTCHA -->
+<div class="captcha-box" id="captchaBox">
+  <label class="captcha-label">
+    <input type="checkbox" id="captchaCheck">
+    <span class="custom-check"></span>
+    <span class="captcha-text">I’m not a robot</span>
+  </label>
 
+  <!-- Loader overlay -->
+  <div class="captcha-overlay" id="captchaOverlay">
+    <div class="captcha-spinner"></div>
+    <span>Verifying…</span>
+  </div>
+</div>
      <button type="submit" class="send-btn">
   <i class="fa-solid fa-paper-plane"></i>
   <span>Send Message</span>

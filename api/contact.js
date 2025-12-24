@@ -26,11 +26,61 @@ export default async function handler(req, res) {
         reply_to: email,
         subject: subject || "New Contact Message",
         html: `
-          <h3>New Contact Message</h3>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p>${message.replace(/\n/g, "<br>")}</p>
-        `
+  <div style="
+    font-family: 'Poppins', Arial, sans-serif;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+  ">
+
+    <!-- HEADER -->
+    <div style="margin-bottom: 18px;">
+      <span style="
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+      ">TIC</span>
+
+      <span style="
+        font-size: 20px;
+        margin: 0 2px;
+        -webkit-text-stroke: 1.5px #6c63ff;
+        color: transparent;
+      ">.</span>
+
+      <span style="
+        font-size: 12px;
+        font-weight: 500;
+        color: #374151;
+        margin-left: 2px;
+      ">Kar</span>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #e5e7eb; margin-bottom: 16px;">
+
+    <!-- BODY -->
+    <h3 style="margin: 0 0 10px; color: #111827;">
+      New Contact Message
+    </h3>
+
+    <p><strong>Name:</strong> ${name}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Subject:</strong> ${subject || "—"}</p>
+
+    <p style="margin-top: 12px;">
+      ${message.replace(/\n/g, "<br>")}
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;">
+
+    <p style="
+      font-size: 12px;
+      color: #6b7280;
+    ">
+      Sent via TIC.Kar Contact Form
+    </p>
+  </div>
+`
       })
     });
 

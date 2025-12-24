@@ -164,3 +164,115 @@ body.dark .contact-form textarea:focus {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+/* ===== CAPTCHA CONTAINER ===== */
+.captcha-box {
+  position: relative;
+  border: 1.5px solid rgba(99,102,241,0.35);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  background: rgba(99,102,241,0.04);
+  transition: opacity 0.3s ease;
+}
+
+/* Dark mode */
+body.dark .captcha-box {
+  background: rgba(199,210,254,0.05);
+  border-color: rgba(199,210,254,0.35);
+}
+
+/* ===== LABEL ===== */
+.captcha-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+}
+
+/* Hide native checkbox */
+.captcha-label input {
+  display: none;
+}
+
+/* ===== CUSTOM CHECKBOX ===== */
+.custom-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--accent);
+  display: grid;
+  place-items: center;
+  transition: all 0.25s ease;
+  background: transparent;
+}
+
+.custom-check::after {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(-45deg) scale(0);
+  transition: transform 0.2s ease;
+}
+
+/* Checked state */
+.captcha-label input:checked + .custom-check {
+  background: var(--accent);
+}
+
+.captcha-label input:checked + .custom-check::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+/* Text */
+.captcha-text {
+  font-weight: 500;
+}
+
+/* ===== OVERLAY ===== */
+.captcha-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(2px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+body.dark .captcha-overlay {
+  background: rgba(15,23,42,0.85);
+}
+
+/* Active overlay */
+.captcha-box.verifying {
+  opacity: 0.6;
+}
+
+.captcha-box.verifying .captcha-overlay {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ===== SPINNER ===== */
+.captcha-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(99,102,241,0.3);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
