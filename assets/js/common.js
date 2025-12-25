@@ -561,24 +561,19 @@ function formatTime(ts) {
 /* =========================
    ADMIN SIDEBAR VISIBILITY
 ========================= */
-const ADMIN_EMAIL = "nicknow20@gmail.com";
+const ADMIN_EMAILS = [
+  "nicknow20@gmail.com",
+  "saurabhjoshionly@gmail.com"
+];
 
 onAuthStateChanged(auth, user => {
   const adminItems = document.querySelectorAll(".admin-only");
-
   if (!adminItems.length) return;
 
-  if (user && user.email === ADMIN_EMAIL) {
-    // ✅ SHOW admin option
-    adminItems.forEach(el => {
-      el.style.display = "block";
-    });
-  } else {
-    // ❌ HIDE for everyone else
-    adminItems.forEach(el => {
-      el.style.display = "none";
-    });
-  }
-});
+  const isAdmin =
+    user && ADMIN_EMAILS.includes(user.email);
 
-// ===== ADMIN DROPDOWN TOGGLE =====
+  adminItems.forEach(el => {
+    el.style.display = isAdmin ? "block" : "none";
+  });
+});
