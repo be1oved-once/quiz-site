@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin – Create Live Questions</title>
+
+  <!-- Base styles -->
+  <link rel="stylesheet" href="/assets/css/common.css">
+  <link rel="stylesheet" href="temp.css">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Admin logic -->
+  <script type="module" src="temp-test.js" defer></script>
+</head>
+
+<body>
+
+<div class="admin-create">
+
+  <!-- ================= HEADER ================= -->
+  <div class="admin-head">
+    <h2>Create Live Questions</h2>
+    <p>These questions will appear on the student test page</p>
+  </div>
+<!-- LIVE TIMER BAR (HIDDEN INITIALLY) -->
+<div id="liveTimerBar" class="live-timer hidden">
+  <span>⏱ Live Timer:</span>
+  <strong id="liveTimerText">00:00</strong>
+</div>
+  <!-- ================= SUBJECT SELECT ================= -->
+  <div class="card">
+    <label class="label">Select Subject</label>
+
+    <div class="subject-wrap">
+      <button type="button" class="subject-btn" id="subjectBtn">
+        <span id="subjectValue">Select Subject</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+
+      <div class="subject-popup hidden" id="subjectPopup">
+        <div class="subject-item" data-subject="Economics">Economics</div>
+        <div class="subject-item" data-subject="Maths">Maths (QA)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAGE TEXT ================= -->
+  <div class="card">
+    <label class="label">Page Text (optional)</label>
+
+    <textarea
+      id="pageText"
+      class="admin-textarea page-text"
+      placeholder="chapter name or instructions?"></textarea>
+  </div>
+
+  <!-- ================= QUESTIONS ================= -->
+  <div class="card">
+    <div class="section-title">Questions</div>
+
+<!-- QUESTION TYPE (GLOBAL) -->
+<div class="question-type global-type">
+  <button type="button"
+          class="type-btn active"
+          data-type="mcq"
+          id="withOptionsBtn">
+    With Options
+  </button>
+
+  <button type="button"
+          class="type-btn"
+          data-type="direct"
+          id="withoutOptionsBtn">
+    Without Options
+  </button>
+</div>
+    <!-- QUESTIONS CONTAINER -->
+    <div id="questionsContainer"></div>
+
+    <!-- ADD QUESTION -->
+    <button type="button" id="addQuestionBtn" class="outline-btn">
+      + Add Question
+    </button>
+  </div>
+
+  <!-- ================= PUBLISH MODE ================= -->
+  <div class="card">
+    <div class="section-title">Publish Mode</div>
+
+    <div class="mode-row">
+      <button type="button" class="mode-btn active" data-mode="live" id="liveBtn">
+        Live
+      </button>
+
+      <button type="button" class="mode-btn" data-mode="schedule" id="scheduleBtn">
+        Schedule
+      </button>
+    </div>
+
+    <!-- SCHEDULE INPUTS -->
+    <div id="scheduleBox" class="schedule hidden">
+<input
+  type="date"
+  id="scheduleDate"
+  class="admin-input date-in">
+
+<input
+  type="time"
+  id="scheduleTime"
+  class="admin-input time-in"
+  placeholder="None">
+    </div>
+<div class="card">
+  <label class="label">Test Timer (minutes)</label>
+
+  <input
+    id="timerInput"
+    class="admin-input"
+    type="number"
+    min="1"
+    max="60"
+    placeholder="Max 60 minutes"
+  />
+</div>
+    <!-- PUBLISH -->
+    <button type="button" id="publishBtn" class="primary-btn pill">
+      Publish Questions
+    </button>
+    <button id="clearTestBtn" class="clear-test-btn">
+  Clear Test
+</button>
+  </div>
+
+</div>
+<div id="timerPage" class="timer-setup hidden">
+  <div class="timer-card">
+  <div class="timer-head">
+<button id="closeTimer" class="timer-close">✕</button>
+  </div>
+
+<div class="timer-display" id="timerDisplay">00:00</div>
+</div>
+</div>
+</div>
+<!-- CONFIRM TOAST -->
+<div id="confirmToast" class="confirm-toast">
+  <p id="confirmText">Are you sure?</p>
+
+  <div class="confirm-actions">
+    <button id="confirmCancel" class="btn-cancel">Cancel</button>
+    <button id="confirmYes" class="btn-danger">Delete</button>
+  </div>
+</div>
+
+<div id="toastBackdrop" class="toast-backdrop"></div>
+<!-- Global layout / auth -->
+<script src="/assets/js/common-layout.js"></script>
+<script type="module" src="/assets/js/firebase.js"></script>
+<script type="module" src="/assets/js/common.js"></script>
+
+</body>
+</html>

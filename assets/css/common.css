@@ -51,8 +51,12 @@ border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   align-items: baseline;
   font-weight: 600;
   letter-spacing: 0.5px;
+  word-spacing: 0;
 }
-
+.logo a{
+  text-decoration: none;
+  color: inherit;
+}
 /* TIC */
 .logo-main {
   font-size: 20px;          /* same as previous logo */
@@ -1360,7 +1364,7 @@ body.dark .notify-dot {
 
   box-shadow: 0 14px 30px rgba(0,0,0,0.18);
 
-  overflow: hidden;
+  overflow: auto;
   max-height: 0;
   opacity: 0;
 

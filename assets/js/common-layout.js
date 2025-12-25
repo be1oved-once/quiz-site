@@ -2,10 +2,10 @@
 
   const layoutHTML = `
   <header class="top-header">
-<div class="logo">
+<div class="logo"><a href="index.html">
   <span class="logo-main">TIC</span>
   <span class="logo-dot">.</span>
-  <span class="logo-sub">Kar</span>
+  <span class="logo-sub">Kar</span></a>
 </div>
     <nav class="top-nav">
       <a href="/index.html" class="desk-nav-item">Home</a>
@@ -99,8 +99,8 @@
   </button>
 
   <div class="admin-menu" id="adminMenu">
-    <a href="/admin/admin.html">Push Notifications</a>
-    <a href="/admin/temp-test.html">Temp Test</a>
+    <a href="/admin/push-noti.html">Push Notifications</a>
+    <a href="/admin/test-setup.html">Temp Test</a>
   </div>
 </li>
   <li class="mobile-left">

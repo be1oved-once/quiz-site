@@ -132,7 +132,9 @@ body.dark .contact-form textarea:focus {
     grid-template-columns: 1fr;
     gap: 26px;
   }
-
+  .desktop-intro{
+    display: none;
+  }
   .contact-form {
     max-width: 100%;
   }

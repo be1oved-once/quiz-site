@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+
+  <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/chatroom.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- FAVICONS -->
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+<link rel="icon" href="assets/favicon/favicon.ico">
+
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
+
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+
+<meta name="theme-color" content="#6c63ff">
+</head>
+
+<body>
+
+<main class="page-content chat-page">
+
+  <!-- ===== CHAT HOME ===== -->
+  <section class="chat-home" id="chatHome" style="padding-top:56px;">
+
+    <h1 class="chat-title">Community Chat</h1>
+    <p class="chat-sub">
+      Talk freely, discuss seriously, or just time-pass.  
+      Choose the space that fits your mood.
+    </p>
+
+    <div class="chat-options">
+
+      <button class="chat-card" onclick="openChat('Serious Discussions')">
+        <h3>Serious Discussions</h3>
+        <p>
+          Study doubts, exam strategies, conceptual clarity and focused talks.
+        </p>
+      </button>
+
+      <button class="chat-card" onclick="openChat('Timepass')">
+        <h3>Timepass</h3>
+        <p>
+          Chill zone. Casual talks, fun thoughts, random conversations.
+        </p>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- ===== CHAT SCREEN ===== -->
+  <section class="chat-screen hidden" id="chatScreen">
+
+    <!-- HEADER -->
+<div class="chat-header">
+  <h3 id="chatRoomName">Chat</h3>
+
+  <button class="back-btn" onclick="closeChat()">
+    <i class="fa-solid fa-arrow-left"></i>
+  </button>
+</div>
+
+    <!-- MESSAGES -->
+    <div class="chat-messages" id="chatMessages">
+
+      <!-- Dummy other-side message -->
+      <div class="msg msg-other">
+        <span>Hello 👋 Welcome to the chat.</span>
+      </div>
+
+    </div>
+
+    <!-- INPUT -->
+    <div class="chat-input">
+      <input
+        type="text"
+        id="chatInput"
+        placeholder="Type your message..."
+      />
+      <button id="sendBtn">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+
+  </section>
+
+</main>
+
+  <script src="assets/js/common-layout.js"></script>
+<script type="module" src="assets/js/firebase.js"></script>
+<script type="module" src="assets/js/chatroom.js"></script>
+<script type="module" src="assets/js/user-metrics-init.js"></script>
+<script type="module" src="assets/js/common.js"></script></body>
+</html>

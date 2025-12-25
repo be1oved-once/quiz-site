@@ -568,3 +568,84 @@ body.dark #startQuiz {
   background: linear-gradient(135deg, #7c6fff, #9b8cff);
   box-shadow: 0 6px 16px rgba(124, 111, 255, 0.45);
 }
+/* ===== Direct answer styled like option ===== */
+.direct-answer.option-like {
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 14px;
+
+  font-size: 14px;
+  font-family: inherit;
+
+  border-radius: 14px;
+  border: 1.5px solid var(--border-light);
+  background: var(--bg-light);
+  color: var(--text-light);
+
+  resize: none;
+  outline: none;
+  transition: background 0.18s ease, border 0.18s ease;
+}
+
+/* Hover */
+.direct-answer.option-like:hover {
+  border-color: var(--violet);
+}
+
+/* Focus */
+.direct-answer.option-like:focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 2px rgba(108,99,255,.15);
+}
+
+/* Dark mode */
+body.dark .direct-answer.option-like {
+  background: var(--card-bg);
+  color: #e5e7eb;
+  border-color: rgba(255,255,255,0.15);
+}
+/* ===============================
+   UNIFIED OPTION TEXTAREA
+=============================== */
+
+.option-textarea {
+  width: 100%;
+  padding: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.4;
+  
+  border-radius: 14px;
+  border: 1.5px solid var(--border-light);
+  background: var(--bg-light);
+  color: var(--text-light);
+  
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus (ONLY for editable one) */
+.option-textarea:not(.readonly):focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.15);
+}
+
+/* Readonly instruction box */
+.option-textarea.readonly {
+  cursor: default;
+  background: var(--bg-light);
+  opacity: 0.95;
+}
+
+/* Dark mode */
+body.dark .option-textarea {
+  background: var(--bg-light);
+  color: var(--text-light);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+body.dark .option-textarea:not(.readonly):focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.25);
+}
