@@ -42,28 +42,28 @@
         <br>
         We genuinely love to hear from students, teachers,
         and anyone who wants to improve learning.
-      <br><br>
-      </p>
-<p class="contact-intro desktop-intro">We’re building <strong>TIC.Kar</strong> as a focused, distraction-free
-    learning platform — and your voice genuinely matters here. <br>
-    Many features on this platform exist because students shared honest thoughts.
-    If something feels confusing, unnecessary, or could be done better —
-    this is the right place to tell us.
       </p>
     </div>
 
     <!-- RIGHT FORM -->
     <form class="contact-form" id="contactForm">
-
-
       <input type="text" placeholder="Your Name" required />
       <input type="email" placeholder="Your Email" required />
       <input type="text" placeholder="Subject (Suggestion / Feedback / Hi)" />
       <textarea placeholder="Write your message here..." required></textarea>
 <!-- CAPTCHA -->
-<div class="cf-turnstile"
-     data-sitekey="0x4AAAAAACJINcs7IR4NRhGI"
-     data-theme="auto">
+<div class="captcha-box" id="captchaBox">
+  <label class="captcha-label">
+    <input type="checkbox" id="captchaCheck">
+    <span class="custom-check"></span>
+    <span class="captcha-text">I’m not a robot</span>
+  </label>
+
+  <!-- Loader overlay -->
+  <div class="captcha-overlay" id="captchaOverlay">
+    <div class="captcha-spinner"></div>
+    <span>Verifying…</span>
+  </div>
 </div>
      <button type="submit" class="send-btn">
   <i class="fa-solid fa-paper-plane"></i>
@@ -73,7 +73,7 @@
 
   </section>
 </main>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
   <script src="assets/js/common-layout.js"></script>
   <script src="assets/js/contact.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
