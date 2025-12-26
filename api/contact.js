@@ -18,6 +18,8 @@ if (!verifyData.success) {
   return res.status(403).json({ error: "Captcha failed" });
 }
 
+console.log("Turnstile verify:", verifyData);
+
 export const config = {
   runtime: "nodejs"
 };
