@@ -1,17 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   const form = document.getElementById("contactForm");
-  let locked = false;
-
   if (!form) return;
 
-  form.addEventListener("submit", async e => {
+  let locked = false;
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (locked) return;
 
-    // CAPTCHA check
-    if (!captcha || !captcha.checked) {
-      showToast("Please confirm you are not a robot");
+    // 🔐 Cloudflare Turnstile token
+    const token = document.querySelector(
+      'input[name="cf-turnstile-response"]'
+    )?.value;
+
+    if (!token) {
+      showToast("Please verify captcha");
       return;
     }
 
@@ -19,13 +22,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const btn = form.querySelector("button");
     btn.disabled = true;
-    btn.innerHTML = "Sending...";
+    btn.innerText = "Sending...";
 
     const data = {
       name: form[0].value.trim(),
       email: form[1].value.trim(),
       subject: form[2].value.trim(),
-      message: form[3].value.trim()
+      message: form[3].value.trim(),
+      token
     };
 
     try {
@@ -35,52 +39,49 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(data)
       });
 
-      if (!res.ok) throw new Error("Failed");
+      let result = {};
+      try {
+        result = await res.json();
+      } catch {}
+
+      if (!res.ok) {
+        throw new Error(result.error || "Server error");
+      }
 
       showToast("Message sent successfully");
       form.reset();
-      captcha.checked = false; // reset captcha
+
+      if (window.turnstile) {
+        turnstile.reset();
+      }
+
     } catch (err) {
       showToast("Something went wrong. Try again.");
     }
 
-    setTimeout(() => {
-      locked = false;
-      btn.disabled = false;
-      btn.innerHTML = `
-        <i class="fa-solid fa-paper-plane"></i>
-        <span>Send Message</span>
-      `;
-    }, 2000);
-  });
-
-  function showToast(text) {
-    const t = document.createElement("div");
-    t.className = "toast";
-    t.innerHTML = `
-      <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4ec.svg">
-      <span>${text}</span>
+    locked = false;
+    btn.disabled = false;
+    btn.innerHTML = `
+      <i class="fa-solid fa-paper-plane"></i>
+      <span>Send Message</span>
     `;
+  });
+});
 
-    document.body.appendChild(t);
-    setTimeout(() => t.classList.add("show"), 50);
+/* ===== TOAST ===== */
+function showToast(text) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.innerHTML = `
+    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4ec.svg">
+    <span>${text}</span>
+  `;
 
-    setTimeout(() => {
-      t.classList.remove("show");
-      setTimeout(() => t.remove(), 300);
-    }, 2400);
-  }
-const captcha = document.getElementById("captchaCheck");
-const captchaBox = document.getElementById("captchaBox");
-
-captcha?.addEventListener("change", () => {
-  if (!captcha.checked) return;
-
-  // Start fake verification
-  captchaBox.classList.add("verifying");
+  document.body.appendChild(t);
+  setTimeout(() => t.classList.add("show"), 50);
 
   setTimeout(() => {
-    captchaBox.classList.remove("verifying");
-  }, 3000);
-});
-});
+    t.classList.remove("show");
+    setTimeout(() => t.remove(), 300);
+  }, 2400);
+}

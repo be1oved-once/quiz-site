@@ -8,16 +8,48 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, email, subject, message } = req.body;
+    const { name, email, subject, message, token } = req.body;
 
+    // Basic validation
     if (!name || !email || !message) {
       return res.status(400).json({ error: "Missing fields" });
     }
 
+    if (!token) {
+      return res.status(400).json({ error: "Captcha missing" });
+    }
+
+    /* =========================
+       VERIFY CLOUDFLARE TURNSTILE
+    ========================= */
+    const verifyRes = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          secret: process.env.CLOUDFLARE_TURNSTILE_SECRET,
+          response: token
+        })
+      }
+    );
+
+    const verifyData = await verifyRes.json();
+
+    if (!verifyData.success) {
+      return res.status(403).json({ error: "Captcha failed" });
+    }
+
+    /* =========================
+       SEND EMAIL (RESEND)
+       ✨ STYLING UNCHANGED ✨
+    ========================= */
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -36,7 +68,6 @@ export default async function handler(req, res) {
   font-family:Arial,Helvetica,sans-serif;
 ">
 
-  <!-- LOGO -->
   <div style="font-size:22px;font-weight:600;letter-spacing:0.5px;">
     <span style="color:#ffffff;">TIC</span>
     <span style="color:#6366f1;font-weight:700;">.</span>
@@ -81,14 +112,15 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error("Resend error:", error);
-      throw new Error("Resend failed");
+      const errText = await response.text();
+      console.error("Resend error:", errText);
+      return res.status(500).json({ error: "Email failed" });
     }
 
     return res.status(200).json({ success: true });
+
   } catch (err) {
     console.error("API ERROR:", err);
-    return res.status(500).json({ error: "Failed to send message" });
+    return res.status(500).json({ error: "Server error" });
   }
 }

@@ -6,36 +6,36 @@
   <title>Contact Us</title>
 
   <link rel="stylesheet" href="assets/css/common.css">
-    <link rel="stylesheet" href="assets/css/contact.css">
+  <link rel="stylesheet" href="assets/css/contact.css">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <!-- FAVICONS -->
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
-<link rel="icon" href="assets/favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+  <link rel="icon" href="assets/favicon/favicon.ico">
 
-<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
+  <link rel="manifest" href="assets/favicon/site.webmanifest">
 
-<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
-
-<link rel="manifest" href="assets/favicon/site.webmanifest">
-
-<meta name="theme-color" content="#6c63ff">
+  <meta name="theme-color" content="#6c63ff">
 </head>
 
 <body>
 
-  <!-- PAGE CONTENT ONLY -->
+<!-- PAGE CONTENT ONLY -->
 <main class="page-content">
   <section class="contact-layout">
 
     <!-- LEFT CONTENT -->
     <div class="contact-info">
       <h1>Contact Us</h1>
-
       <p class="contact-intro">
         Have a suggestion, feedback, collaboration idea,
         or just want to say hello?
@@ -47,37 +47,39 @@
 
     <!-- RIGHT FORM -->
     <form class="contact-form" id="contactForm">
+
       <input type="text" placeholder="Your Name" required />
       <input type="email" placeholder="Your Email" required />
       <input type="text" placeholder="Subject (Suggestion / Feedback / Hi)" />
       <textarea placeholder="Write your message here..." required></textarea>
-<!-- CAPTCHA -->
-<div class="captcha-box" id="captchaBox">
-  <label class="captcha-label">
-    <input type="checkbox" id="captchaCheck">
-    <span class="custom-check"></span>
-    <span class="captcha-text">I’m not a robot</span>
-  </label>
 
-  <!-- Loader overlay -->
-  <div class="captcha-overlay" id="captchaOverlay">
-    <div class="captcha-spinner"></div>
-    <span>Verifying…</span>
-  </div>
-</div>
-     <button type="submit" class="send-btn">
-  <i class="fa-solid fa-paper-plane"></i>
-  <span>Send Message</span>
-</button>
+      <!-- ✅ CLOUDFLARE TURNSTILE (REAL CAPTCHA) -->
+      <div
+        class="cf-turnstile"
+        data-sitekey="0x4AAAAAACJINcs7IR4NRhGI"
+        data-theme="auto">
+      </div>
+
+      <button type="submit" class="send-btn">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Send Message</span>
+      </button>
+
     </form>
 
   </section>
 </main>
 
-  <script src="assets/js/common-layout.js"></script>
-  <script src="assets/js/contact.js"></script>
+<!-- ===== SCRIPTS ===== -->
+<script src="assets/js/common-layout.js"></script>
+<script src="assets/js/contact.js"></script>
+
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
 <script type="module" src="assets/js/common.js"></script>
+
+<!-- 🔐 Cloudflare Turnstile -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 </body>
 </html>
