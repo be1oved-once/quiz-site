@@ -1,21 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   const form = document.getElementById("contactForm");
-  if (!form) return;
-
   let locked = false;
 
-  form.addEventListener("submit", async (e) => {
+  if (!form) return;
+
+  form.addEventListener("submit", async e => {
     e.preventDefault();
     if (locked) return;
 
-    // 🔐 Cloudflare Turnstile token
-    const token = document.querySelector(
-      'input[name="cf-turnstile-response"]'
-    )?.value;
-
-    if (!token) {
-      showToast("Please verify captcha");
+    // CAPTCHA check
+    if (!captcha || !captcha.checked) {
+      showToast("Please confirm you are not a robot");
       return;
     }
 
@@ -29,8 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: form[0].value.trim(),
       email: form[1].value.trim(),
       subject: form[2].value.trim(),
-      message: form[3].value.trim(),
-      token
+      message: form[3].value.trim()
     };
 
     try {
@@ -40,44 +35,52 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(data)
       });
 
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error("Failed");
 
       showToast("Message sent successfully");
       form.reset();
-
-      // Reset Turnstile safely
-      if (window.turnstile) {
-        turnstile.reset();
-      }
-
+      captcha.checked = false; // reset captcha
     } catch (err) {
       showToast("Something went wrong. Try again.");
     }
 
-    locked = false;
-    btn.disabled = false;
-    btn.innerHTML = `
-      <i class="fa-solid fa-paper-plane"></i>
-      <span>Send Message</span>
-    `;
+    setTimeout(() => {
+      locked = false;
+      btn.disabled = false;
+      btn.innerHTML = `
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Send Message</span>
+      `;
+    }, 2000);
   });
 
-});
+  function showToast(text) {
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.innerHTML = `
+      <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4ec.svg">
+      <span>${text}</span>
+    `;
 
-// 🔔 Toast (same as before)
-function showToast(text) {
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.innerHTML = `
-    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4ec.svg">
-    <span>${text}</span>
-  `;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add("show"), 50);
 
-  document.body.appendChild(t);
-  setTimeout(() => t.classList.add("show"), 50);
+    setTimeout(() => {
+      t.classList.remove("show");
+      setTimeout(() => t.remove(), 300);
+    }, 2400);
+  }
+const captcha = document.getElementById("captchaCheck");
+const captchaBox = document.getElementById("captchaBox");
+
+captcha?.addEventListener("change", () => {
+  if (!captcha.checked) return;
+
+  // Start fake verification
+  captchaBox.classList.add("verifying");
 
   setTimeout(() => {
-    t.classList.remove("show");
-    setTimeout(() => t.remove(), 300);
-  }, 2400);
-}
+    captchaBox.classList.remove("verifying");
+  }, 3000);
+});
+});
