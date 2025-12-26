@@ -782,3 +782,214 @@ body.dark .option-textarea:not(.readonly):focus {
   border-color: var(--violet);
   box-shadow: 0 0 0 2px rgba(108,99,255,0.25);
 }
+/* ================= LEADERBOARD BUTTON ================= */
+.leaderboard-btn {
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.leaderboard-btn:hover {
+  background: var(--violet-soft);
+  color: var(--violet);
+  border-color: var(--violet);
+}
+
+/* ================= FULL PAGE LEADERBOARD ================= */
+/* ===== FULL PAGE LEADERBOARD ===== */
+.leaderboard-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* hide */
+.leaderboard-overlay.hidden {
+  display: none;
+}
+
+/* Header spacing (top navbar height assumed ~60px) */
+.leaderboard-head {
+  position: sticky;
+  top: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 14px 16px;
+  background: var(--panel);
+  border-bottom: 1.5px solid var(--border);
+  z-index: 2;
+}
+
+.leaderboard-head h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.leaderboard-close {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+/* Scroll area */
+.leaderboard-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* Student card */
+.leaderboard-item {
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+
+  background: var(--panel);
+  cursor: pointer;
+}
+
+/* Top row */
+.leaderboard-item .top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rank {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--violet);
+  color: #fff;
+
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+}
+
+/* Expanded section */
+.leaderboard-detail {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.leaderboard-detail.hidden {
+  display: none;
+}
+
+.answer-block {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+/* ================= USER BLOCK ================= */
+.leaderboard-user {
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: border .2s ease;
+}
+
+.leaderboard-user:hover {
+  border-color: var(--violet);
+}
+
+/* HEADER */
+.leaderboard-user-head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+}
+
+.rank-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--violet);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+}
+
+.user-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.user-marks {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* BODY */
+.leaderboard-user-body {
+  padding: 14px;
+  border-top: 1.5px dashed var(--border);
+  animation: slideDown .25s ease;
+}
+
+.leaderboard-user-body.hidden {
+  display: none;
+}
+
+/* ANSWERS */
+.answer-row {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.answer-selected {
+  color: var(--violet);
+  font-weight: 500;
+}
+
+.direct-answer {
+  margin-top: 6px;
+  padding: 8px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+/* STATS */
+.user-stats {
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+/* ANIMATION */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

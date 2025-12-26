@@ -290,27 +290,38 @@ const googleBtn = document.querySelector(".google-btn");
 
 if (googleBtn) {
   googleBtn.addEventListener("click", async () => {
-    // keep your code
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const userRef = doc(db, "users", result.user.uid);
-    const snap = await getDoc(userRef);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
 
-    if (!snap.exists()) {
-      await setDoc(userRef, {
-        username: result.user.displayName || "User",
-        email: result.user.email,
-        createdAt: serverTimestamp(),
-        xp: 0,
-        bookmarks: []
-      });
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+
+      const name =
+        user.displayName ||
+        user.email?.split("@")[0] ||
+        "Student";
+
+      if (!snap.exists()) {
+        await setDoc(userRef, {
+          name,                     // 🔥 IMPORTANT
+          username: name,           // backward safe
+          email: user.email,
+          createdAt: serverTimestamp(),
+          xp: 0,
+          bookmarks: [],
+          settings: {
+            theme: localStorage.getItem("quizta-theme") || "light"
+          }
+        });
+      }
+
+      closeAuth();
+    } catch (err) {
+      alert(err.message);
     }
-
-    closeAuth();
-  } catch (err) {
-    alert(err.message);
-  }
-}); }
+  });
+}
 
 onAuthStateChanged(auth, user => {
 

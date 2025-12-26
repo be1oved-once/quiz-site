@@ -4,7 +4,11 @@ import {
   deleteDoc,
   onSnapshot,
   updateDoc,
-  serverTimestamp
+  serverTimestamp,
+  query,
+  collectionGroup,
+  where,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import { db } from "/assets/js/firebase.js";
@@ -20,6 +24,36 @@ let scheduledTimeCache = null;
 
 const TEMP_TEST_REF = doc(db, "tempTests", "current");
 console.log("🟢 temp-test.js loaded");
+
+function listenLeaderboard() {
+  if (leaderboardUnsub) return;
+
+  const q = query(
+    collectionGroup(db, "testSubmissions"),
+    where("testId", "==", "tempTests/current"),
+    orderBy("marks", "desc"),
+    orderBy("submittedAt", "asc")
+  );
+
+  leaderboardUnsub = onSnapshot(q, snap => {
+    leaderboardList.replaceChildren();
+
+    if (snap.empty) {
+      const p = document.createElement("p");
+      p.textContent = "No submissions yet";
+      p.style.opacity = ".6";
+      p.style.padding = "12px";
+      leaderboardList.appendChild(p);
+      return;
+    }
+
+    let rank = 1;
+    snap.forEach(docSnap => {
+      renderStudentRow(docSnap.data(), rank++);
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================
@@ -31,9 +65,25 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================= */
 console.log("🟢 Attaching onSnapshot to TEMP_TEST_REF");
 onSnapshot(TEMP_TEST_REF, (snap) => {
-  if (!snap.exists()) return;
+
+if (!snap.exists()) return;
 
   const data = snap.data();
+  console.log("Firestore data:", data);
+
+  // ✅ If test already finished (refresh safe)
+  if (data.status === "finished") {
+    console.log("📊 Test finished – leaderboard unlocked");
+    liveTimerBar.classList.remove("hidden");
+    showLeaderboardAccess();
+    return;
+  }
+
+  if (data.status === "finished") {
+  console.log("📊 Test already finished");
+  liveTimerBar.classList.remove("hidden");
+  showLeaderboardAccess(); // 👈 ADD HERE
+}
   console.log("Firestore data:", data);
 
   if (data.publishMode !== "schedule") return;
@@ -570,13 +620,19 @@ function startTimer() {
     remainingSeconds--;
     updateTimerDisplay();
 
-    if (remainingSeconds <= 0) {
+if (remainingSeconds <= 0) {
   clearInterval(timerInterval);
   timerDisplay.textContent = "TIME UP";
 
-  deleteDoc(TEMP_TEST_REF)
-    .then(() => console.log("🔥 Test auto-cleared (TIME UP)"))
-    .catch(console.error);
+  // ✅ mark test as finished (DO NOT DELETE)
+  updateDoc(TEMP_TEST_REF, {
+    status: "finished",
+    finishedAt: serverTimestamp()
+  }).then(() => {
+    console.log("🏁 Test finished (leaderboard available)");
+    liveTimerBar.classList.remove("hidden");
+    showLeaderboardAccess(); 
+  }).catch(console.error);
 }
   }, 1000);
 }
@@ -660,5 +716,133 @@ confirmYes.onclick = () => {
   }
   hideConfirmToast();
 };
+
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const leaderboardOverlay = document.getElementById("leaderboardOverlay");
+  const leaderboardList = document.querySelector(".leaderboard-list");
+  const leaderboardBtn = document.getElementById("leaderboardBtn");
+  const closeLeaderboard = document.getElementById("closeLeaderboard");
+
+  let leaderboardUnsub = null;
+  let openBlock = null;
+
+  /* =========================
+     LISTEN LEADERBOARD
+  ========================= */
+  function listenLeaderboard() {
+    if (leaderboardUnsub) return;
+
+    const q = query(
+      collectionGroup(db, "testSubmissions"),
+      where("testId", "==", "tempTests/current"),
+      orderBy("marks", "desc"),
+      orderBy("submittedAt", "asc") // tie-break
+    );
+
+function showLeaderboardAccess() {
+  if (leaderboardBtn) {
+    leaderboardBtn.classList.remove("hidden");
+  }
+}
+
+    leaderboardUnsub = onSnapshot(q, snap => {
+      leaderboardList.replaceChildren();
+
+      if (snap.empty) {
+        const p = document.createElement("p");
+        p.style.opacity = ".6";
+        p.style.padding = "12px";
+        p.textContent = "No submissions yet";
+        leaderboardList.appendChild(p);
+        return;
+      }
+
+      let rank = 1;
+      snap.forEach(docSnap => {
+        renderStudentRow(docSnap.data(), rank++);
+      });
+    });
+  }
+
+  /* =========================
+     RENDER STUDENT ROW
+  ========================= */
+function renderStudentRow(data, rank) {
+  const row = document.createElement("div");
+  row.className = "leaderboard-user";
+
+  row.innerHTML = `
+    <div class="leaderboard-user-head">
+      <div class="rank-badge">${rank}</div>
+      <div class="user-main">
+        <div class="user-name">${data.name || "Student"}</div>
+        <div class="user-marks">
+          ${data.marks} / ${data.total}
+        </div>
+      </div>
+    </div>
+
+    <div class="leaderboard-user-body hidden">
+      ${renderAnswers(data.answers || [])}
+      <div class="user-stats">
+        ✔ Correct: ${data.correct || 0}
+        &nbsp;&nbsp;✖ Wrong: ${data.wrong || 0}
+      </div>
+    </div>
+  `;
+
+  const body = row.querySelector(".leaderboard-user-body");
+
+  row.addEventListener("click", () => {
+    document
+      .querySelectorAll(".leaderboard-user-body")
+      .forEach(b => b !== body && b.classList.add("hidden"));
+
+    body.classList.toggle("hidden");
+  });
+
+  leaderboardList.appendChild(row);
+}
+
+  /* =========================
+     RENDER ANSWERS
+  ========================= */
+function renderAnswers(answers) {
+  return answers.map((a, i) => {
+    if (a.type === "mcq") {
+      return `
+        <div class="answer-row">
+          <strong>Q${i + 1}:</strong> ${a.question}<br/>
+          <span class="answer-selected">
+            Selected: ${a.selectedText || "—"}
+          </span>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="answer-row">
+        <strong>Q${i + 1}:</strong> ${a.question}
+        <div class="direct-answer">
+          ${a.answerText || ""}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+  /* =========================
+     OPEN / CLOSE
+  ========================= */
+  leaderboardBtn?.addEventListener("click", () => {
+    leaderboardOverlay.classList.remove("hidden");
+    listenLeaderboard();
+  });
+
+  closeLeaderboard?.addEventListener("click", () => {
+    leaderboardOverlay.classList.add("hidden");
+  });
 
 });

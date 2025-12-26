@@ -3,6 +3,7 @@ console.log("🎓 student-test.js loaded");
 import {
   collection,
   addDoc,
+  setDoc,
   serverTimestamp,
   doc,
   onSnapshot,
@@ -17,6 +18,7 @@ const TEMP_TEST_REF = doc(db, "tempTests", "current");
 let testStarted = false;
 let serverTimerInterval = null;
 let remainingSeconds = 0;
+let user = null;
 
 onSnapshot(TEMP_TEST_REF, (snap) => {
   if (!snap.exists()) {
@@ -376,6 +378,72 @@ function handleAnswer(btn, idx) {
   }
 }
 
+async function saveUserMarks() {
+  const user = auth.currentUser;
+  if (!user) return;
+  if (!user) {
+  console.error("❌ user not ready, abort saving");
+  return;
+}
+
+  const testId = "tempTests/current";
+  const submissionRef = doc(
+    db,
+    "users",
+    user.uid,
+    "testSubmissions",
+    "tempTests_current" // 🔒 FIXED ID
+  );
+
+  const answers = activeQuestions.map(q => {
+    if (q.type === "mcq") {
+      return {
+        type: "mcq",
+        question: q.text,
+        selectedIndex: q.selectedIndex,
+        correctIndex: q.correctIndex,
+        isCorrect: q.selectedIndex === q.correctIndex,
+        evaluated: true
+      };
+    }
+
+   // direct answer (NO evaluation)
+return {
+  type: "direct",
+  question: q.text,
+  answerText: q.userAnswer || "",
+  evaluated: false
+};
+  });
+
+const mcqQuestions = activeQuestions.filter(q => q.type === "mcq");
+
+const total = mcqQuestions.length;
+const correct = mcqQuestions.filter(q => q.correct).length;
+const wrong = mcqQuestions.filter(q => q.attempted && !q.correct).length;
+
+  await setDoc(
+    submissionRef,
+    {
+      uid: user.uid,
+      name: user?.name || user?.username || "Student",
+      testId,
+      subject: subjectText.textContent || "",
+
+      marks: Number(marks.toFixed(2)),
+      total,
+      correct,
+      wrong,
+
+      answers,
+      submittedAt: serverTimestamp()
+    },
+    { merge: true } // 🔥 KEY LINE
+  );
+
+  console.log("✅ Submission merged into single document");
+}
+
 function autoNext() {
   clearTimeout(autoNextTimeout);
 autoNextTimeout = null;
@@ -395,7 +463,6 @@ function next() {
     renderQuestion();
   } else {
     // 🔥 LAST QUESTION → SUBMIT
-    submitStudentTest();
     finishRound();
   }
 }
@@ -415,117 +482,20 @@ nextBtn.onclick = async () => {
 
   // 🔥 LAST QUESTION → SUBMIT
   if (qIndex === activeQuestions.length - 1) {
-    await submitStudentAttempt();
     finishRound();
     return;
   }
 
   next();
 };
-
-async function submitStudentTest() {
-  if (submissionDone) return;
-  submissionDone = true;
-  try {
-    const user = auth.currentUser;
-    if (!user) {
-      console.error("❌ No user logged in at submit");
-      return;
-    }
-
-    console.log("📤 Preparing submission…");
-
-const answers = activeQuestions.map(q => {
-  if (q.type === "mcq") {
-    const isCorrect = q.selectedIndex === q.correctIndex;
-
-    return {
-      type: "mcq",
-      question: q.text,
-      selectedIndex: q.selectedIndex,
-      correctIndex: q.correctIndex,
-      isCorrect,
-      evaluated: true   // ✅ AUTO-EVALUATED
-    };
-  }
-
-  // direct answer
-  return {
-    type: "direct",
-    question: q.text,
-    answerText: q.userAnswer || "",
-    evaluated: false    // ❌ admin will evaluate
-  };
-});
-
-    console.log("📦 Answers payload:", answers);
-
-    await addDoc(
-      collection(db, "users", user.uid, "testSubmissions"),
-      {
-        testId: "tempTests/current",
-        subject: subjectText.textContent || "",
-        answers,
-        submittedAt: serverTimestamp(),
-      }
-    );
-
-    console.log("✅ Test submission saved");
-
-  } catch (err) {
-    console.error("❌ Failed to save test submission", err);
-  }
-}
-
-async function submitStudentAttempt() {
-  console.log("🚨 SUBMIT FUNCTION CALLED");
-  const user = auth.currentUser;
-  if (!user) {
-    console.warn("⚠️ No user, submission skipped");
-    return;
-  }
-
-  const answers = activeQuestions.map(q => {
-    if (q.type === "mcq") {
-      return {
-        type: "mcq",
-        question: q.text,
-        selectedIndex: q.selectedIndex ?? null,
-        correctIndex: q.correctIndex
-      };
-    } else {
-      return {
-        type: "direct",
-        question: q.text,
-        answerText: q.userAnswer || ""
-      };
-    }
-  });
-
-  try {
-    await addDoc(
-      collection(db, "users", user.uid, "testSubmissions"),
-      {
-        testId: "tempTests/current",
-        subject: subjectText.textContent || "",
-        answers,
-        submittedAt: serverTimestamp(),
-      }
-    );
-
-    console.log("✅ Test submission saved");
-  } catch (err) {
-    console.error("❌ Failed to save test submission", err);
-  }
-}
-
 /* =========================
    FINISH ROUND
 ========================= */
 function finishRound() {
   if (round1Completed) return;
   round1Completed = true;
-
+  saveUserMarks(); // ✅ ADD THIS LINE
+  
   round1Snapshot = activeQuestions.map(q => ({ ...q }));
   window.round1Snapshot = round1Snapshot;
 

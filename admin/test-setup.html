@@ -32,9 +32,12 @@
     <p>These questions will appear on the student test page</p>
   </div>
 <!-- LIVE TIMER BAR (HIDDEN INITIALLY) -->
-<div id="liveTimerBar" class="live-timer hidden">
-  <span>⏱ Live Timer:</span>
-  <strong id="liveTimerText">00:00</strong>
+<div id="liveTimerBar" class="live-timer">
+  <span>⏱ Live Timer: <strong id="liveTimerText">00:00</strong></span>
+  
+<button id="leaderboardBtn" class="leaderboard-btn hidden">
+    🏆 Leaderboard
+  </button>
 </div>
   <!-- ================= SUBJECT SELECT ================= -->
   <div class="card">
@@ -162,6 +165,21 @@
 </div>
 
 <div id="toastBackdrop" class="toast-backdrop"></div>
+<!-- ================= LEADERBOARD OVERLAY ================= -->
+<!-- ================= FULL PAGE LEADERBOARD ================= -->
+<div id="leaderboardOverlay" class="leaderboard-page hidden">
+
+  <div class="leaderboard-page-head">
+    <h2>Leaderboard</h2>
+    <button id="closeLeaderboard" class="leaderboard-close">✕</button>
+  </div>
+
+  <div class="leaderboard-list">
+    <!-- JS injects users here -->
+  </div>
+
+</div>
+
 <!-- Global layout / auth -->
 <script src="/assets/js/common-layout.js"></script>
 <script type="module" src="/assets/js/firebase.js"></script>
