@@ -569,15 +569,37 @@ trendEls.forEach(el => {
 const selectedSubject =
   subjectValue?.dataset?.subject || "All Subjects";
   
-async function fetchGeminiInsight(payload) {
-  const res = await fetch("/api/insight", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
+let insightBusy = false;
 
-  const data = await res.json();
-  return data.insight;
+async function fetchGeminiInsight(payload) {
+  if (insightBusy) return null;
+  insightBusy = true;
+
+  try {
+    const res = await fetch("/api/insight", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    // 🔒 network / server safety
+    if (!res.ok) {
+      console.warn("Insight API failed:", res.status);
+      return "Stay consistent. Your preparation is moving in the right direction.";
+    }
+
+    const data = await res.json();
+
+    return (
+      data?.insight ||
+      "Consistency matters more than intensity. Keep practising."
+    );
+  } catch (err) {
+    console.error("Insight fetch error:", err);
+    return "Your analysis is in progress. Focus on steady practice.";
+  } finally {
+    insightBusy = false;
+  }
 }
 /* =========================
    KEYBOARD SCROLL CONTROL
