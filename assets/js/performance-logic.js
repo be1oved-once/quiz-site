@@ -570,7 +570,7 @@ const selectedSubject =
   subjectValue?.dataset?.subject || "All Subjects";
   
 async function fetchGeminiInsight(payload) {
-  const res = await fetch("/api/gemini-insight", {
+  const res = await fetch("/api/insight", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
