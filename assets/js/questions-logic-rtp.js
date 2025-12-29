@@ -358,7 +358,7 @@ function startTimer() {
       clearInterval(timer);
       autoNext(); // ⬅ NO correct shown
     }
-  }, 1000);
+  }, 700);
 }
 
 function updateTimer() {

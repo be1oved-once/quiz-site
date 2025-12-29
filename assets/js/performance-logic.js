@@ -355,6 +355,30 @@ if (xpChart) {
   xpChart = null;
 }
 
+// 🔥 Vertical crosshair plugin (Trading-style)
+const verticalLinePlugin = {
+  id: "verticalLine",
+  afterDraw(chart) {
+    if (!chart.tooltip || !chart.tooltip._active?.length) return;
+
+    const ctx = chart.ctx;
+    const activePoint = chart.tooltip._active[0];
+    const x = activePoint.element.x;
+    const topY = chart.chartArea.top;
+    const bottomY = chart.chartArea.bottom;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x, topY);
+    ctx.lineTo(x, bottomY);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(99,102,241,0.35)"; // 🔵 subtle indigo
+    ctx.setLineDash([4, 4]); // dashed like trading apps
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+
 xpChart = new Chart(ctx, {
   type: "line",
   data: {
@@ -371,61 +395,60 @@ xpChart = new Chart(ctx, {
       fill: true
     }]
   },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
+options: {
+  responsive: true,
+  maintainAspectRatio: false,
 
-    // 🔥 SMOOTH ANIMATION
-    animation: {
-      duration: 900,
-      easing: "easeOutQuart",
-      from: ctx => {
-        if (ctx.type === "data") {
-          return 0; // 👈 makes graph rise from bottom
-        }
-      }
-    },
+  // 🔥 THIS IS THE MAIN FIX
+  interaction: {
+    mode: "index",     // 👈 whole vertical line
+    intersect: false   // 👈 not just point
+  },
 
-    transitions: {
-      active: {
-        animation: {
-          duration: 600,
-          easing: "easeOutCubic"
-        }
-      }
-    },
+  hover: {
+    mode: "index",
+    intersect: false
+  },
 
-  plugins: {
-  legend: { display: false },
-  tooltip: {
-    backgroundColor: "#0f172a",
-    titleColor: "#e5e7eb",
-    bodyColor: "#e5e7eb",
-    borderColor: "rgba(99,102,241,0.35)",
-    borderWidth: 1
-  }
-},
-
-   scales: {
-  x: {
-    grid: { display: false },
-    ticks: {
-      color: "#64748b"
+  animation: {
+    duration: 900,
+    easing: "easeOutQuart",
+    from: ctx => {
+      if (ctx.type === "data") return 0;
     }
   },
-  y: {
-    beginAtZero: true,
-    suggestedMax: Math.ceil(Math.max(...values, 10) * 1.25),
-    ticks: {
-      maxTicksLimit: 6,
-      color: "#64748b"
+
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: "#0f172a",
+      titleColor: "#e5e7eb",
+      bodyColor: "#e5e7eb",
+      borderColor: "rgba(99,102,241,0.35)",
+      borderWidth: 1
+    }
+  },
+
+  scales: {
+    x: {
+      grid: { display: false },
+      ticks: { color: "#64748b" }
     },
-    grid: {
-      color: "rgba(99,102,241,0.12)"
+    y: {
+      beginAtZero: true,
+      suggestedMax: Math.ceil(Math.max(...values, 10) * 1.25),
+      ticks: {
+        maxTicksLimit: 6,
+        color: "#64748b"
+      },
+      grid: {
+        color: "rgba(99,102,241,0.12)"
+      }
     }
   }
 }
-  }
+,
+  plugins: [verticalLinePlugin]
 });
 });
 const subjectBtn = document.getElementById("practiceSubjectBtn");

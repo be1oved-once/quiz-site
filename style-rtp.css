@@ -135,7 +135,7 @@ body.dark .select-popup{
   color: var(--text-light);
 }
 .sub-select{
-  width: 160px;
+  width: 140px;
 }
 .select-popup button:hover {
   background: var(--violet-soft);

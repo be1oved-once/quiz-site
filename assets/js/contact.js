@@ -54,6 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.turnstile) {
         turnstile.reset();
       }
+      setTimeout(() => {
+  window.location.href = "index.html";
+}, 1500);
 
     } catch (err) {
       showToast("Something went wrong. Try again.");

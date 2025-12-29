@@ -17,7 +17,16 @@
   <!-- Icons -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+<link rel="icon" href="/assets/favicon/favicon.ico">
 
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon/android-chrome-512x512.png">
+
+<link rel="manifest" href="/assets/favicon/site.webmanifest">
   <!-- Admin logic -->
   <script type="module" src="temp-test.js" defer></script>
 </head>
@@ -33,10 +42,21 @@
   </div>
 <!-- LIVE TIMER BAR (HIDDEN INITIALLY) -->
 <div id="liveTimerBar" class="live-timer">
-  <span>⏱ Live Timer: <strong id="liveTimerText">00:00</strong></span>
+<span>
+  <span class="timer-icon">
+    <svg viewBox="0 0 24 24" class="clock-svg">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 7v5l3 3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"/>
+    </svg>
+  </span>Live Timer:
+  <strong id="liveTimerText">00:00</strong>
+</span>
   
-<button id="leaderboardBtn" class="leaderboard-btn hidden">
-    🏆 Leaderboard
+<button id="leaderboardBtn" class="leaderboard-btn hidden">Leaderboard
   </button>
 </div>
   <!-- ================= SUBJECT SELECT ================= -->
@@ -167,17 +187,19 @@
 <div id="toastBackdrop" class="toast-backdrop"></div>
 <!-- ================= LEADERBOARD OVERLAY ================= -->
 <!-- ================= FULL PAGE LEADERBOARD ================= -->
-<div id="leaderboardOverlay" class="leaderboard-page hidden">
+<div id="leaderboardOverlay" class="leaderboard-overlay hidden">
+  <div class="leaderboard-card">
 
-  <div class="leaderboard-page-head">
-    <h2>Leaderboard</h2>
-    <button id="closeLeaderboard" class="leaderboard-close">✕</button>
+    <div class="leaderboard-header">
+      <h2><i class="fa-solid fa-trophy"></i> Leaderboard</h2>
+      <button id="closeLeaderboard" class="lb-close-btn">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div id="leaderboardList" class="leaderboard-list"></div>
+
   </div>
-
-  <div class="leaderboard-list">
-    <!-- JS injects users here -->
-  </div>
-
 </div>
 
 <!-- Global layout / auth -->

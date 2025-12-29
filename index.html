@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html,>
+<html lang="jp">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,7 +75,7 @@
   min="1"
   inputmode="numeric"
   pattern="[0-9]*"
-  value="5" disabled
+  value="25" disabled
 />
 </div>
   </div>
@@ -153,15 +153,21 @@
 </section>
 </main>
 
-<!----<div id="penaltyOverlay" class="penalty-overlay hidden">
-  <div class="penalty-box">
-    <h2>⚠️ Warning</h2>
-    <p>You left exam mode</p>
-    <p class="penalty-time">
-      Resume in <span id="penaltyTime">45</span>s
+<div id="penaltyOverlay" class="penalty-overlay hidden" aria-live="assertive">
+  <div class="penalty-content">
+    <h1>Focus Lost</h1>
+
+    <p>
+      This action is recorded.
     </p>
+
+    <div class="penalty-time">
+      <span id="penaltyTime">45</span>
+      <small>seconds</small>
+    </div>
   </div>
-</div>-->
+</div>
+
   <script src="assets/js/common-layout.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>

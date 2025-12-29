@@ -1,0 +1,13 @@
+body{
+  background:
+  radial-gradient(1200px at top left, rgba(108,99,255,0.18), transparent 40%),
+  linear-gradient(135deg, #0c0f1a, #14182b);
+}
+.Landing-header{
+  margin-top: 56px;
+}
+.H{
+  text-align: center;
+  margin: 20px;
+  font-size: 30px;
+}

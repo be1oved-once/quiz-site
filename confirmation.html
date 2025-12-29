@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thoughts</title>
+
+  <link rel="stylesheet" href="assets/css/common.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- FAVICONS -->
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+<link rel="icon" href="assets/favicon/favicon.ico">
+
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
+
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+
+<meta name="theme-color" content="#6c63ff">
+</head>
+
+<body>
+
+<main class="page-content thank-full">
+  
+  <section class="thank-wrap">
+    
+    <!-- Professional success icon -->
+    <i class="fa-solid fa-circle-check success-icon"></i>
+    
+    <h1>Suggestion Sent Successfully</h1>
+    
+    <p class="lead">
+      Thank you for taking a moment to share your thoughts.<br>
+      Your feedback has been received successfully.
+    </p>
+    
+    <p class="affirm">
+      Thoughtful feedback helps us build better experiences.
+    </p>
+    
+    <div class="redirect">
+      Redirecting to home in
+      <strong id="countdown">5</strong> seconds
+    </div>
+    
+    <a href="index.html" class="link-home">
+      Go to Home
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+    
+  </section>
+  
+</main>
+
+<style>
+  /* ===== FULL PAGE THANK YOU ===== */
+  
+  .thank-full {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  
+  .thank-wrap {
+    max-width: 620px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .success-icon {
+    font-size: 42px;
+    color: var(--violet, #6c63ff);
+    margin-bottom: 16px;
+  }
+  
+  .thank-wrap h1 {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    letter-spacing: -0.3px;
+  }
+  
+  .thank-wrap .lead {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text, #333);
+    margin-bottom: 14px;
+  }
+  
+  .thank-wrap .affirm {
+    font-size: 14px;
+    color: var(--muted, #777);
+    margin-bottom: 28px;
+  }
+  
+  .thank-wrap .redirect {
+    font-size: 13px;
+    color: var(--muted, #777);
+    margin-bottom: 16px;
+  }
+  
+  .link-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--violet, #6c63ff);
+    text-decoration: none;
+  }
+  
+  .link-home:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  /* ===== AUTO REDIRECT ===== */
+  let t = 5;
+  const cd = document.getElementById("countdown");
+  
+  const timer = setInterval(() => {
+    t--;
+    cd.textContent = t;
+    
+    if (t <= 0) {
+      clearInterval(timer);
+      location.href = "index.html";
+    }
+  }, 1000);
+</script>
+
+  <script src="assets/js/common-layout.js"></script>
+<script type="module" src="assets/js/firebase.js"></script>
+<script type="module" src="assets/js/user-metrics-init.js"></script>
+<script type="module" src="assets/js/common.js"></script></body>
+</html>

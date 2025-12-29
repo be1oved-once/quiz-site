@@ -2,6 +2,7 @@ console.log("🎓 student-test.js loaded");
 
 import {
   collection,
+  getDoc,
   addDoc,
   setDoc,
   serverTimestamp,
@@ -27,7 +28,7 @@ onSnapshot(TEMP_TEST_REF, (snap) => {
   }
 
   const data = snap.data();
-
+  window.currentTestId = data.testId;
   // ✅ Only react when test is LIVE
   if (data.status !== "live") {
     console.log("⌛ Test not live yet");
@@ -386,14 +387,14 @@ async function saveUserMarks() {
   return;
 }
 
-  const testId = "tempTests/current";
+  const testId = window.currentTestId;
   const submissionRef = doc(
-    db,
-    "users",
-    user.uid,
-    "testSubmissions",
-    "tempTests_current" // 🔒 FIXED ID
-  );
+  db,
+  "users",
+  user.uid,
+  "testSubmissions",
+  `submission_${testId}`
+);
 
   const answers = activeQuestions.map(q => {
     if (q.type === "mcq") {
@@ -422,24 +423,30 @@ const total = mcqQuestions.length;
 const correct = mcqQuestions.filter(q => q.correct).length;
 const wrong = mcqQuestions.filter(q => q.attempted && !q.correct).length;
 
-  await setDoc(
-    submissionRef,
-    {
-      uid: user.uid,
-      name: user?.name || user?.username || "Student",
-      testId,
-      subject: subjectText.textContent || "",
+const userRef = doc(db, "users", user.uid);
+const userSnap = await getDoc(userRef);
 
-      marks: Number(marks.toFixed(2)),
-      total,
-      correct,
-      wrong,
+const username = userSnap.exists()
+  ? userSnap.data().username
+  : "Student";
+await setDoc(
+  submissionRef,
+  {
+    uid: user.uid,
+    username,               // ✅ REAL username
+    testId,                 // ✅ unique test
+    subject: subjectText.textContent || "",
 
-      answers,
-      submittedAt: serverTimestamp()
-    },
-    { merge: true } // 🔥 KEY LINE
-  );
+    marks: Number(marks.toFixed(2)),
+    total,
+    correct,
+    wrong,
+
+    answers,
+    submittedAt: serverTimestamp()
+  },
+  { merge: true }
+);
 
   console.log("✅ Submission merged into single document");
 }

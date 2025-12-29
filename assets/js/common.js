@@ -272,6 +272,37 @@ if (signupForm) {
   }
 }); }
 
+async function ensureUserProfile(user) {
+  if (!user) return;
+
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+
+  const username =
+    user.displayName ||
+    user.email?.split("@")[0] ||
+    "Student";
+
+  if (!snap.exists()) {
+    await setDoc(
+      userRef,
+      {
+        uid: user.uid,
+        username,
+        email: user.email || "",
+        provider: user.providerData[0]?.providerId || "password",
+        createdAt: serverTimestamp(),
+        xp: 0,
+        bookmarks: [],
+        settings: {
+          theme: localStorage.getItem("quizta-theme") || "light"
+        }
+      },
+      { merge: true }
+    );
+  }
+}
+
 document.addEventListener("click", e => {
   if (!e.target.classList.contains("toggle-pass")) return;
 
@@ -289,41 +320,17 @@ document.addEventListener("click", e => {
 const googleBtn = document.querySelector(".google-btn");
 
 if (googleBtn) {
-  googleBtn.addEventListener("click", async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
-
-      const name =
-        user.displayName ||
-        user.email?.split("@")[0] ||
-        "Student";
-
-      if (!snap.exists()) {
-        await setDoc(userRef, {
-          name,                     // 🔥 IMPORTANT
-          username: name,           // backward safe
-          email: user.email,
-          createdAt: serverTimestamp(),
-          xp: 0,
-          bookmarks: [],
-          settings: {
-            theme: localStorage.getItem("quizta-theme") || "light"
-          }
-        });
-      }
-
-      closeAuth();
-    } catch (err) {
-      alert(err.message);
-    }
-  });
+googleBtn.addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+    closeAuth();
+  } catch (err) {
+    alert(err.message);
+  }
+});
 }
 
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async user => {
 
   const loginBtns = document.querySelectorAll(".auth-login");
   const signupBtns = document.querySelectorAll(".auth-signup");
@@ -337,6 +344,7 @@ onAuthStateChanged(auth, user => {
 
     console.log("User logged in:", user.uid);
 
+    await ensureUserProfile(user);
     // ⏳ Load Firestore data separately
     loadUserProfile(user.uid);
 
@@ -587,4 +595,23 @@ onAuthStateChanged(auth, user => {
   adminItems.forEach(el => {
     el.style.display = isAdmin ? "block" : "none";
   });
+  
+  
+});
+
+const TEMP_TEST_REF = doc(db, "tempTests", "current");
+
+onSnapshot(TEMP_TEST_REF, snap => {
+  if (!snap.exists()) {
+    injectTempTestItem(false);
+    return;
+  }
+  
+  const data = snap.data();
+  
+  if (data.status === "live") {
+    injectTempTestItem(true);
+  } else {
+    injectTempTestItem(false);
+  }
 });

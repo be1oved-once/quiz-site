@@ -70,6 +70,8 @@ let answered = false;
 
 let activeQuestions = [];
 let round1Snapshot = [];
+let quizActive = false;
+let penaltyRunning = false;
 
 // 🔥 expose globally
 window.round1Snapshot = round1Snapshot;
@@ -211,6 +213,7 @@ if (resultActions) resultActions.classList.add("hidden");
    START
 ========================= */
 startBtn.onclick = () => {
+  quizActive = true;   
   resetReviewState();
   if (resultActions) resultActions.classList.add("hidden");
   // 🔒 Hide marks when starting a new quiz
@@ -247,6 +250,8 @@ if (marksValue) marksValue.textContent = "0";
    RESET
 ========================= */
 resetBtn.onclick = () => {
+  quizActive = false;          // 🔥 ADD THIS
+  penaltyRunning = false;
   // 🔥 Clear previous attempt data
 resetReviewState();
 round1Completed = false;
@@ -595,6 +600,10 @@ nextBtn.onclick = () => {
    FINISH ROUND
 ========================= */
 function finishRound() {
+  quizActive = false; // 🔥 DISABLE CHEAT CHECK
+penaltyRunning = false;
+
+console.log("🔴 Quiz finished → Penalty system OFF");
 if (!round1Completed) {
   round1Completed = true;
 
@@ -797,97 +806,3 @@ async function recordAttemptSummary(data) {
    KEYBOARD SCROLL CONTROL
 ========================= */
 
-let scrollInterval = null;
-const SCROLL_STEP = 60;     // small scroll (tap)
-const SCROLL_SPEED = 12;   // smooth continuous speed
-
-function startScroll(direction) {
-  if (scrollInterval) return;
-
-  scrollInterval = setInterval(() => {
-    window.scrollBy({
-      top: direction * SCROLL_SPEED,
-      behavior: "auto"
-    });
-  }, 16); // ~60fps
-}
-
-function stopScroll() {
-  if (scrollInterval) {
-    clearInterval(scrollInterval);
-    scrollInterval = null;
-  }
-}
-/* =========================
-   KEYBOARD SHORTCUTS
-========================= */
-document.addEventListener("keydown", e => {
-  const tag = document.activeElement.tagName.toLowerCase();
-  if (tag === "input" || tag === "textarea") return;
-
-  /* -------------------------
-     ↓ ARROW → Scroll Down
-  ------------------------- */
-  if (e.key === "ArrowDown") {
-    e.preventDefault();
-
-    // Small tap scroll
-    window.scrollBy({ top: SCROLL_STEP, behavior: "smooth" });
-
-    // Long press → continuous scroll
-    startScroll(1);
-  }
-
-  /* -------------------------
-     ↑ ARROW → Scroll Up
-  ------------------------- */
-  if (e.key === "ArrowUp") {
-    e.preventDefault();
-
-    window.scrollBy({ top: -SCROLL_STEP, behavior: "smooth" });
-    startScroll(-1);
-  }
-
-  /* -------------------------
-     B → Toggle Bookmark
-  ------------------------- */
-  if (e.key.toLowerCase() === "b") {
-    e.preventDefault();
-
-    const star = document.querySelector(".bookmark-btn");
-    if (star) star.click();
-  }
-
-  /* -------------------------
-     R → Toggle Review
-  ------------------------- */
-  if (e.key.toLowerCase() === "r") {
-    reviewBtn?.click();
-  }
-
-  /* -------------------------
-     ESC → Close Review
-  ------------------------- */
-  if (e.key === "Escape") {
-    if (reviewPanel?.classList.contains("open")) {
-      reviewBtn?.click();
-    }
-  }
-
-  /* -------------------------
-     CTRL + P → Save PDF
-  ------------------------- */
-  if (e.ctrlKey && e.key.toLowerCase() === "p") {
-    e.preventDefault();
-    pdfBtn?.click();
-  }
-});
-
-/* =========================
-   STOP SCROLL ON KEY RELEASE
-========================= */
-document.addEventListener("keyup", e => {
-  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-    stopScroll();
-  }
-});

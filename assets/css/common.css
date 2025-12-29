@@ -1587,7 +1587,7 @@ body.dark .notify-item:hover {
   all: unset;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 5px;
   width: 100%;
   cursor: pointer;
   font-size: 15px;
@@ -1634,4 +1634,81 @@ body.dark .notify-item:hover {
 /* SIMPLE HOVER (NO BG) */
 .admin-menu a:hover {
   text-decoration: underline;
+}
+
+/* ===== FULLSCREEN PENALTY OVERLAY ===== */
+.penalty-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #050814;
+  color: #ffffff;
+
+  pointer-events: all;
+}
+
+/* Light mode */
+body:not(.dark) .penalty-overlay {
+  background: #f6f7fb;
+  color: #0b1020;
+}
+
+/* Hide state */
+.penalty-overlay.hidden {
+  display: none;
+}
+
+/* CONTENT */
+.penalty-content {
+  text-align: center;
+  max-width: 90%;
+  animation: fadeIn 0.2s ease;
+}
+
+/* TITLE */
+.penalty-content h1 {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* MESSAGE */
+.penalty-content p {
+  margin-top: 6px;
+  font-size: 13px;
+  letter-spacing: 0.4px;
+  opacity: 0.55;
+}
+
+/* TIMER */
+.penalty-time {
+  margin-top: 36px;
+  font-size: 72px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.penalty-time small {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.6;
+  margin-top: 6px;
+}
+
+/* Light mode timer */
+body:not(.dark) .penalty-time {
+  color: #5b4dff;
+}
+
+/* Subtle fade */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }

@@ -159,14 +159,17 @@
 </div>
 </section>
 </main>
-<div id="penaltyOverlay" class="penalty-overlay hidden">
-  <div class="penalty-box">
-    <h2>⚠️ Focus Lost</h2>
-    <p>You left the test.<br>
-      Please wait before continuing.</p>
-    
-    <div class="penalty-timer">
-      <span id="penaltyTime">45</span>s
+<div id="penaltyOverlay" class="penalty-overlay hidden" aria-live="assertive">
+  <div class="penalty-content">
+    <h1>Focus Lost</h1>
+
+    <p>
+      This action is recorded.
+    </p>
+
+    <div class="penalty-time">
+      <span id="penaltyTime">45</span>
+      <small>seconds</small>
     </div>
   </div>
 </div>
