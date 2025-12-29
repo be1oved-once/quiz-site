@@ -732,6 +732,34 @@ function renderLeaderboard(list) {
       u.email?.split("@")[0] ||
       "Student";
 
+    // 🔥 BUILD ANSWERS BLOCK SMARTLY
+    const answersHTML = (u.answers || [])
+      .map((a, idx) => {
+
+        // ✅ MCQ → show correct / wrong
+        if (a.type === "mcq") {
+          const status = a.isCorrect ? "✅ Correct" : "❌ Wrong";
+
+          return `
+            <div class="lb-answer">
+              <b>Q${idx + 1}:</b> ${a.question}<br>
+              ${status}<br>
+              Selected: Option ${a.selectedIndex + 1},
+              Correct: Option ${a.correctIndex + 1}
+            </div>
+          `;
+        }
+
+        // ✅ DIRECT → ONLY ANSWER TEXT (NO WRONG/RIGHT)
+        return `
+          <div class="lb-answer">
+            <b>Q${idx + 1}:</b> ${a.question}<br>
+            📝 <i>${a.answerText || "—"}</i>
+          </div>
+        `;
+      })
+      .join("");
+
     div.innerHTML = `
       <div class="lb-row">
         <div class="lb-rank">
@@ -742,25 +770,13 @@ function renderLeaderboard(list) {
       </div>
 
       <div class="lb-expand">
-        <div class="lb-stat">
-          <i class="fa-solid fa-circle-check"></i>
-          Correct: <b>${u.correct}</b>
-        </div>
-        <div class="lb-stat">
-          <i class="fa-solid fa-circle-xmark"></i>
-          Wrong: <b>${u.wrong}</b>
-        </div>
-        <div class="lb-stat">
-          <i class="fa-solid fa-chart-column"></i>
-          Attempts: <b>${u.total}</b>
-        </div>
+        <div class="lb-stat">📊 Attempts: <b>${u.total}</b></div>
+        <hr>
+        ${answersHTML}
       </div>
     `;
 
-    div.addEventListener("click", () => {
-      div.classList.toggle("active");
-    });
-
+    div.onclick = () => div.classList.toggle("active");
     leaderboardList.appendChild(div);
   });
 }

@@ -3,8 +3,7 @@
   const layoutHTML = `
   <header class="top-header">
 <div class="logo"><a href="index.html">
-  <span class="logo-main">TIC</span>
-  <span class="logo-dot">.</span>
+  <span class="logo-main">TIC</span><span class="logo-dot">.</span>
   <span class="logo-sub">Kar</span></a>
 </div>
     <nav class="top-nav">
@@ -50,7 +49,6 @@
 <div class="mobile-header-actions">
   <button class="icon-btn" id="notifyBtnMobile" title="Notifications">
     <i class="fa-regular fa-bell"></i>
-    <span class="notify-dot"></span>
   </button>
 
   <button id="menuBtn" class="menu-btn" aria-label="Menu">
@@ -144,6 +142,9 @@
   <li class="desktop-left"><a href="/About-us.html"><i class="fa-solid fa-circle-info"></i><span>About</span></a></li>
   <li class="desktop-left"><a href="javascript:void(0)" onclick="openSettings()"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
   <li class="desktop-left"><a href="/contact.html"><i class="fa-solid fa-comment"></i><span>Suggestions</span></a></li>
+  <li class="desktop-left"><a href="/sponsor-us.html"><i class="fa-solid fa-hand-holding-heart"></i>
+    <span>Sponsor Us</span></a>
+</li>
     <div class="thought-hint">
   <div class="thought-arrow"></div>
   <p>
@@ -175,6 +176,7 @@
   <li><a href="/About-us.html">About Us</a></li>
   <li><a href="javascript:void(0)" onclick="openSettings()">Settings</a></li>
   <li><a href="/contact.html">Suggestions / Contact</a></li>
+    <li><a href="/sponsor-us.html">Sponsor Us</a></li>
   <div class="thought-hint right-hint">
   <div class="thought-arrow right-arrow"></div>
   <p>
@@ -359,7 +361,7 @@ function injectTempTestItem(show) {
   // CREATE item
   const liHTML = `
     <li class="temp-test-item">
-      <a href="/student-test.html">
+      <a href="/temp-test.html">
         <i class="fa-solid fa-bolt"></i>
         <span>Temp Test</span>
       </a>
