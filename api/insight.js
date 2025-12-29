@@ -1,39 +1,24 @@
 export default async function handler(req, res) {
+  console.log("🔥 /api/insight HIT");
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const {
-      trend,
-      accuracy,
-      subject,
-      fromDate,
-      toDate,
-      rtp,
-      mtp,
-      chapter
-    } = req.body;
+    console.log("📩 Payload:", req.body);
+    console.log("🔑 HF key exists:", !!process.env.HF_API_KEY);
 
     const prompt = `
 You are an academic mentor for CA Foundation students.
+Trend: ${req.body.trend}
+Accuracy: ${req.body.accuracy}%
 
-Student performance:
-- Trend: ${trend}
-- Accuracy: ${accuracy}%
-- Subject: ${subject || "All Subjects"}
-- Period: ${fromDate} to ${toDate}
-- RTP attempts: ${rtp}
-- MTP attempts: ${mtp}
-- Chapter practice: ${chapter}
-
-Write a short motivational insight (2–3 lines).
-Tone: supportive, exam-focused.
-Avoid emojis, avoid repetition.
+Write a short, supportive insight (2–3 lines).
 `;
 
     const response = await fetch(
-      "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2",
+      "https://api-inference.huggingface.co/models/google/flan-t5-small",
       {
         method: "POST",
         headers: {
@@ -42,34 +27,27 @@ Avoid emojis, avoid repetition.
         },
         body: JSON.stringify({
           inputs: prompt,
-          parameters: {
-            max_new_tokens: 80,
-            temperature: 0.7,
-            return_full_text: false
-          }
+          parameters: { max_new_tokens: 80 }
         })
       }
     );
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error("HF error:", err);
-      throw new Error("HF failed");
-    }
+    const raw = await response.text();
+    console.log("📡 HF status:", response.status);
+    console.log("📦 HF raw:", raw);
 
-    const data = await response.json();
+    const data = JSON.parse(raw);
 
     const text =
-      data?.[0]?.generated_text?.trim() ||
-      "Consistency matters more than intensity. Keep practising daily.";
+      data?.[0]?.generated_text ||
+      "Consistency matters more than intensity. Keep practising.";
 
-    res.status(200).json({ insight: text });
+    return res.status(200).json({ insight: text.trim() });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      insight:
-        "Your performance is improving gradually. Stay consistent and focused."
+    console.error("❌ Insight error:", err);
+    return res.status(200).json({
+      insight: "Stay consistent. Your preparation is moving in the right direction."
     });
   }
 }
