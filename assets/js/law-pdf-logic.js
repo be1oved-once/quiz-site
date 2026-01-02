@@ -31,74 +31,53 @@ enableVoiceNote();
 }
   });
 }
+
 function renderReviewQuestions() {
-  
   if (!reviewContent) return;
 
-  if (!window.round1Snapshot || window.round1Snapshot.length === 0) {
-    reviewPanel.classList.add("hidden");
+  const questions = window.round1Snapshot || [];
+
+  if (questions.length === 0) {
     reviewContent.innerHTML =
-      "<div style='text-align:center;font-size:13px;opacity:0.7'>No round 1 data available. पहला Round One पूरा करो तब खोलो।</div>";
-      enableVoiceNote();
+      "<div style='text-align:center;font-size:13px;opacity:0.7'>पहले attempt करो 🙂</div>";
     return;
   }
 
   reviewContent.innerHTML = "";
 
-  const attempted = window.round1Snapshot.filter(q => q.attempted);
+  questions.forEach((q, i) => {
+    const wrap = document.createElement("div");
+    wrap.className = "review-question";
 
-  attempted.forEach((q, idx) => {
-    const block = document.createElement("div");
-    block.className = "review-question";
+    const ques = document.createElement("div");
+    ques.className = "review-question-title";
+    ques.textContent = `${i + 1}. ${q.question}`;
 
-    /* =========================
-       QUESTION LEVEL BORDER
-    ========================= */
-    if (q.correct) {
-      block.style.border = "2px solid #16a34a";
-      block.style.background = "rgba(22,163,74,0.08)";
-    } else {
-      block.style.border = "2px solid #dc2626";
-      block.style.background = "rgba(220,38,38,0.08)";
-    }
+    const ans = document.createElement("div");
+    ans.className = "law-answer-box readonly";
+    ans.innerHTML = q.userAnswer || "<i>No answer</i>";
+    ans.style.whiteSpace = "pre-wrap";
+    ans.style.minHeight = "unset";
 
-    const title = document.createElement("div");
-    title.className = "review-question-title";
-    title.textContent = `${idx + 1}. ${q.text}`;
+    const keyBox = document.createElement("div");
+    keyBox.className = "law-keywords-needed";
 
-    const optionsWrap = document.createElement("div");
-    optionsWrap.className = "review-options";
+    q.keywords.forEach(k => {
+      const used = q.userAnswer
+        ? new RegExp(`\\b${k}\\b`, "i").test(q.userAnswer)
+        : false;
 
-    q.options.forEach((opt, i) => {
-      const btn = document.createElement("button");
-      btn.textContent = opt;
-
-      /* =========================
-         CORRECT OPTION
-      ========================= */
-      if (i === q.correctIndex) {
-        btn.style.border = "2px solid #16a34a";
-        btn.style.background = "rgba(22,163,74,0.18)";
-        btn.style.color = "#065f46";
-        btn.style.fontWeight = "600";
-      }
-
-      /* =========================
-         WRONG SELECTED OPTION
-      ========================= */
-      if (q.selectedIndex === i && i !== q.correctIndex) {
-        btn.style.border = "2px solid #dc2626";
-        btn.style.background = "rgba(220,38,38,0.18)";
-        btn.style.color = "#7f1d1d";
-        btn.style.fontWeight = "600";
-      }
-
-      optionsWrap.appendChild(btn);
+      const span = document.createElement("span");
+      span.className = "law-keyword" + (used ? " used" : "");
+      span.textContent = k;
+      keyBox.appendChild(span);
     });
 
-    block.appendChild(title);
-    block.appendChild(optionsWrap);
-    reviewContent.appendChild(block);
+    wrap.appendChild(ques);
+    wrap.appendChild(ans);
+    wrap.appendChild(keyBox);
+
+    reviewContent.appendChild(wrap);
   });
 }
 
@@ -114,10 +93,10 @@ console.log("PDF TITLE:", pdfTitle);
 <head>
 <title>${pdfTitle}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Poppins, Arial, sans-serif;
+      font-family: "Poppins", system-ui, sans-serif;
       background: #fff;
       padding: 8px;
       margin: 0;
@@ -127,6 +106,7 @@ console.log("PDF TITLE:", pdfTitle);
       text-align: center;
       margin: 4px 0 8px;
       font-size: 14px;
+      font-weight: 600;
     }
 
     /* 🔥 TIGHT GRID */
@@ -137,54 +117,56 @@ console.log("PDF TITLE:", pdfTitle);
     }
 
     /* 🔥 COMPACT QUESTION BOX */
-    .question {
-      border-radius: 8px;
-      padding: 5px 6px;
-      font-size: 10.5px;
-      line-height: 1.25;
-      break-inside: avoid;
-    }
-
-    .question.correct {
-      border: 1.5px solid #16a34a;
-      background: rgba(22,163,74,0.07);
-    }
-
-    .question.wrong {
-      border: 1.5px solid #dc2626;
-      background: rgba(220,38,38,0.07);
-    }
+.question {
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  padding: 5px 6px;
+  font-size: 10.5px;
+  line-height: 1.25;
+  break-inside: avoid;
+}
 
     /* QUESTION TITLE */
     .title {
-      font-weight: 600;
+      font-weight: 500;
       margin-bottom: 4px;
       font-size: 10.8px;
     }
 
-    /* OPTIONS */
-    .option {
-      padding: 3px 6px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-bottom: 3px;
-      font-size: 10px;
-    }
+.Keywords {
+  margin-top: 6px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1.5px dashed #c7c7c7;   /* base border */
+  background: #f9fafb;            /* neutral bg */
+}
+.question.correct .Keywords {
+  border-color: #16a34a;
+  background: rgba(22,163,74,0.08);
+}
 
-    .option.correct {
-      border-color: #16a34a;
-      background: rgba(22,163,74,0.18);
-      color: #065f46;
-      font-weight: 600;
-    }
-
-    .option.wrong {
-      border-color: #dc2626;
-      background: rgba(220,38,38,0.18);
-      color: #7f1d1d;
-      font-weight: 600;
-    }
-
+.question.wrong .Keywords {
+  border-color: #dc2626;
+  background: rgba(220,38,38,0.08);
+}
+.answer-box {
+  margin-top: 4px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1.2px solid #d1d5db;
+  background: #ffffff;
+  white-space: pre-wrap;
+}
+.answer-keyword {
+  display: inline-block;
+  padding: 1px 4px;
+  margin: 1px;
+  border-radius: 4px;
+  border: 1.5px solid #16a34a;
+  background: #dcfce7;
+  color: #077E3B;
+  font-weight: 500;
+}
     /* PRINT TUNING */
     @media print {
       body {
@@ -199,16 +181,43 @@ console.log("PDF TITLE:", pdfTitle);
 
   <div class="grid">
     ${attempted.map((q, idx) => `
-      <div class="question ${q.correct ? "correct" : "wrong"}">
-        <div class="title">${idx + 1}. ${q.text}</div>
-        ${q.options.map((opt, i) => {
-          let cls = "option";
-          if (i === q.correctIndex) cls += " correct";
-          if (q.selectedIndex === i && i !== q.correctIndex) cls += " wrong";
-          return `<div class="${cls}">${opt}</div>`;
-        }).join("")}
-      </div>
-    `).join("")}
+<div class="question ${q.correct ? "correct" : "wrong"}">
+    <div class="title">${idx + 1}. ${q.question}</div>
+<div class="answer-box">
+  ${
+    (() => {
+      let ans = q.userAnswer || "";
+
+      q.keywords.forEach(k => {
+        const r = new RegExp(`\\b(${k})\\b`, "gi");
+        ans = ans.replace(
+          r,
+          `<span class="answer-keyword">$1</span>`
+        );
+      });
+
+      return ans;
+    })()
+  }
+</div>
+    <div class="Keywords" style="margin-top:6px">
+      ${q.keywords.map(k => {
+        const used = q.userAnswer
+          ? new RegExp(`\\b${k}\\b`, "i").test(q.userAnswer)
+          : false;
+        return `<span style="
+          display:inline-block;
+          margin:2px;
+          padding:3px 6px;
+          border-radius:6px;
+          border:1px solid ${used ? "#16a34a" : "#dc2626"};
+          background:${used ? "#dcfce7" : "#fee2e2"};
+          font-size:9px;
+        ">${k}</span>`;
+      }).join("")}
+    </div>
+  </div>
+`).join("")}
   </div>
 
   <script>
@@ -226,7 +235,7 @@ console.log("PDF TITLE:", pdfTitle);
     }
 
     window.onafterprint = () => {
-      setTimeout(safeClose, 7000);
+      setTimeout(safeClose, 15000);
     };
 
     setTimeout(safeClose, 15000);
@@ -258,8 +267,7 @@ const pdfOverlayLoader = `
   </circle>
 </svg>
 `;
-let currentChapter = null;
-window.currentChapter = null;
+
 function getPdfTitle() {
   const chapter = window.currentChapterName?.trim();
   return chapter
@@ -315,12 +323,10 @@ function enableVoiceNote() {
 }
 
 /* ⏱ Load duration automatically */
-/* ⏱ Load total duration */
 vnAudio?.addEventListener("loadedmetadata", () => {
-  const d = Math.floor(vnAudio.duration);
+  const d = vnAudio.duration;
   const m = Math.floor(d / 60);
-  const s = d % 60;
-
+  const s = Math.floor(d % 60);
   vnTime.textContent =
     String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 });
@@ -336,17 +342,7 @@ vnPlay?.addEventListener("click", () => {
   }
 });
 
-/* ⏱ Running time update */
-vnAudio?.addEventListener("timeupdate", () => {
-  const t = Math.floor(vnAudio.currentTime);
-  const m = Math.floor(t / 60);
-  const s = t % 60;
-
-  vnTime.textContent =
-    String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
-});
-
-/* ⏹ Reset when finished */
+/* ⏹ Reset icon when finished */
 vnAudio?.addEventListener("ended", () => {
   vnPlay.innerHTML = '<i class="fa-solid fa-play"></i>';
 });

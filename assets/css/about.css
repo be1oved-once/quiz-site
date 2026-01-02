@@ -29,17 +29,38 @@
 .about-page p {
   margin-bottom: 14px;
 }
+/* =========================
+   CUSTOM DIAMOND BULLETS
+   (Used in About / Disclaimer / Privacy / Terms)
+========================= */
 
-.about-page ul {
-  padding-left: 20px;
-  margin: 10px 0 18px;
+.about-page ul {           /* ❌ remove • bullets */
+  padding-left: 0;
+  margin: 14px 0 20px;
+  list-style: none;
 }
 
 .about-page li {
-  margin-bottom: 6px;
-  list-style: disc;
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 10px;
+  line-height: 1.55;
+  font-size: 15px;
 }
 
+/* 🔷 Filled rotated square */
+.about-page li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  margin-left: -6px;
+  top: 8px;
+  width: 9px;
+  height: 9px;
+  background: #4f46e5;          /* SAME healthy indigo */
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
 .about-page a {
   color: #4f46e5;
   text-decoration: none;
@@ -146,4 +167,32 @@ body.dark .about-page a:hover,
 body.dark .about-page p[style*="opacity"],
 [data-theme="dark"] .about-page p[style*="opacity"] {
   color: #9ca3af !important;
+}
+/* =========================
+   ARTICLE READING PROGRESS
+========================= */
+#readingProgress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 0%;
+  z-index: 9999;
+  background: linear-gradient(
+    90deg,
+    #4f46e5,
+    #6366f1,
+    #818cf8
+  );
+  transition: width 0.12s linear;
+}
+
+/* Dark mode */
+body.dark #readingProgress {
+  background: linear-gradient(
+    90deg,
+    #a5b4fc,
+    #818cf8,
+    #6366f1
+  );
 }

@@ -60,7 +60,6 @@
 .contact-form input:focus,
 .contact-form textarea:focus {
   border-color: #6c63ff;
-  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.18);
 }
 
 /* BUTTON */
@@ -80,7 +79,6 @@
 
 .contact-form button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(108, 99, 255, 0.35);
 }
 .send-btn {
   display: inline-flex;
@@ -166,4 +164,3 @@ body.dark .contact-form textarea:focus {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-

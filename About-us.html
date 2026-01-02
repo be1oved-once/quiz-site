@@ -26,7 +26,7 @@
 <meta name="twitter:title" content="About TIC.Kar – Smart Practice Platform">
 <meta name="twitter:description" content="Built by a CA Foundation student to help learners practice smarter, not longer.">
 <meta name="twitter:image" content="https://tickar.in/assets/og/about-preview.png">
-
+ 
     <link rel="stylesheet" href="assets/css/about.css">
   <link rel="stylesheet" href="assets/css/common.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +50,7 @@
 </head>
 
 <body>
-
+  <div id="readingProgress"></div>
   <!-- PAGE CONTENT ONLY -->
 <main class="page-content about-page">
 
@@ -218,7 +218,28 @@
   </p>
 
 </main>
+<script>
+(function () {
+  const bar = document.getElementById("readingProgress");
+  if (!bar) return;
 
+  function updateProgress() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
+
+    const percent = docHeight > 0
+      ? (scrollTop / docHeight) * 100
+      : 0;
+
+    bar.style.width = percent + "%";
+  }
+
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  updateProgress();
+})();
+</script>
   <script src="assets/js/common-layout.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>

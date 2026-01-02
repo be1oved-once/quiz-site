@@ -1358,7 +1358,7 @@ body.dark .notify-dot {
   right: 56px;
   width: 280px;
 
-  background: var(--bg-light);
+  background: #CCD2E1;
   border: 1px solid var(--border-light);
   border-radius: 14px;
 
@@ -1711,4 +1711,220 @@ body:not(.dark) .penalty-time {
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+/* ===== FOOTER ===== */
+/* ===== FOOTER ===== */
+.site-footer {
+  margin-top: 60px;
+  margin-left: 6vw;   /* ✅ THIS WORKS */
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  padding: 20px 10px;
+  padding-left: 0;
+
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 30px;
+}
+
+.footer-logo {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.footer-tagline {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.footer-col h4 {
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 6px;
+  text-decoration: none;
+}
+
+.footer-col a:hover {
+  color: #111827;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 14px;
+  font-size: 12px;
+  color: #6b7280;
+  border-top: 1px solid #e5e7eb;
+}
+body.dark .site-footer {
+  background: #0f172a;
+  border-top: 1px solid #1e293b;
+  color: #e5e7eb;
+}
+
+body.dark .footer-tagline {
+  color: #94a3b8;
+}
+
+body.dark .footer-col h4 {
+  color: #e5e7eb;
+}
+
+body.dark .footer-col a {
+  color: #94a3b8;
+}
+
+body.dark .footer-col a:hover {
+  color: #ffffff;
+}
+
+body.dark .footer-bottom {
+  color: #94a3b8;
+  border-top: 1px solid #1e293b;
+}
+@media (max-width: 900px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    margin-left: 6vw;
+  }
+  .footer-links {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+/* ===== PWA INSTALL BANNER ===== */
+.pwa-banner {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 24px);
+  max-width: 420px;
+  z-index: 9999;
+  animation: slideUp 0.35s ease-out;
+}
+
+.pwa-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 16px;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+  color: #fff;
+}
+
+/* icon */
+.pwa-icon {
+  font-size: 22px;
+  background: rgba(255,255,255,0.15);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* text */
+.pwa-text {
+  flex: 1;
+  line-height: 1.2;
+}
+
+.pwa-text strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.pwa-text span {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* install button */
+.pwa-install-btn {
+  background: linear-gradient(135deg, #7c7cff, #5b5bff);
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pwa-install-btn:active {
+  transform: scale(0.96);
+}
+
+/* close */
+.pwa-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  opacity: 0.6;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.pwa-close:hover {
+  opacity: 1;
+}
+
+/* hidden */
+.hidden {
+  display: none;
+}
+
+/* animation */
+@keyframes slideUp {
+  from {
+    transform: translate(-50%, 20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+/* subtle attention animation */
+.pwa-attention {
+  animation: breathe 3.2s ease-in-out infinite;
+}
+
+/* breathing glow */
+@keyframes breathe {
+  0% {
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 16px 38px rgba(124,124,255,0.45);
+    transform: translateX(-50%) scale(1.02);
+  }
+  100% {
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    transform: translateX(-50%) scale(1);
+  }
 }

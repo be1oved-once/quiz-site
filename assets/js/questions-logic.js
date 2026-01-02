@@ -343,8 +343,12 @@ function clearTimer() {
   clearInterval(timer);
 }
 function getQuestionId(q) {
-  // stable unique id
-  return btoa(q.text).replace(/=/g, "");
+  return btoa(
+    encodeURIComponent(q.text)
+      .replace(/%([0-9A-F]{2})/g, (_, p1) =>
+        String.fromCharCode("0x" + p1)
+      )
+  ).replace(/=/g, "");
 }
 
 async function loadBookmarksOnce(uid) {
@@ -806,3 +810,20 @@ async function recordAttemptSummary(data) {
    KEYBOARD SCROLL CONTROL
 ========================= */
 
+// INDEX SKELETON LOADER
+const skeleton = document.getElementById("indexSkeleton");
+const content = document.getElementById("indexContent");
+
+// A/B perceived speed control
+const delay =
+  navigator.connection &&
+  navigator.connection.effectiveType.includes("4g")
+    ? 180   // fast net
+    : 900;  // slow net
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    skeleton.style.display = "none";
+    content.style.display = "block";
+  }, delay);
+});

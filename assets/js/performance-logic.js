@@ -8,6 +8,8 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+import { generatePerformanceInsight } from "./insight-engine.js";
+
 // 🔒 Safe global init
 window.allAttempts = [];
 /* =========================
@@ -258,18 +260,19 @@ toDateInput.addEventListener("change", syncDateLimits);
   if (rtpCard) rtpCard.textContent = `${rtp} Attempts`;
   if (mtpCard) mtpCard.textContent = `${mtp} Attempts`;
   if (chapterCard) chapterCard.textContent = `${chapter} Chapters`;
-  const insightText = await fetchGeminiInsight({
-  trend: currentTrend, // Improving / Stable / Needs Focus
+  const insightText = generatePerformanceInsight({
+  trend: currentTrend,
   accuracy: accuracyPercent,
   subject: selectedSubject,
-  fromDate: from,
-  toDate: to,
   rtp,
   mtp,
   chapter
 });
 
-document.querySelector(".period-insight p").textContent = insightText;
+const insightEl = document.querySelector(".period-insight p");
+if (insightEl) {
+  insightEl.textContent = insightText;
+}
 });
 
 auth.onAuthStateChanged(async user => {
@@ -568,39 +571,6 @@ trendEls.forEach(el => {
 
 const selectedSubject =
   subjectValue?.dataset?.subject || "All Subjects";
-  
-let insightBusy = false;
-
-async function fetchGeminiInsight(payload) {
-  if (insightBusy) return null;
-  insightBusy = true;
-
-  try {
-    const res = await fetch("/api/insight", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    // 🔒 network / server safety
-    if (!res.ok) {
-      console.warn("Insight API failed:", res.status);
-      return "Stay consistent. Your preparation is moving in the right direction.";
-    }
-
-    const data = await res.json();
-
-    return (
-      data?.insight ||
-      "Consistency matters more than intensity. Keep practising."
-    );
-  } catch (err) {
-    console.error("Insight fetch error:", err);
-    return "Your analysis is in progress. Focus on steady practice.";
-  } finally {
-    insightBusy = false;
-  }
-}
 /* =========================
    KEYBOARD SCROLL CONTROL
 ========================= */

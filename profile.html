@@ -6,8 +6,9 @@
   <title>Profile</title>
 
 <link rel="stylesheet" href="assets/css/common.css">
-<link rel="stylesheet" href="assets/css/profile.css">
+<link rel="stylesheet" href="/assets/css/profile.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -38,85 +39,56 @@
         <i class="fa-solid fa-arrow-left"></i>
         Back
       </button>
-
-      <button class="save-btn">
-        <i class="fa-solid fa-check"></i>
-        Save
-      </button>
-    
   </div>
 
-<!-- ===== NOTIFICATION PANEL ===== -->
-<div id="notifyPanel" class="notify-panel">
-  <div class="notify-header">
-    <span>Notifications</span>
-    <button id="notifyClose">×</button>
-  </div>
-
-  <div class="notify-list" >
-<div class="notify-item">
-  <p class="notify-text">+5 XP earned</p>
-  <small class="notify-time">Just now</small>
-</div>
-    </div>
-  </div>
-</div>
-  <!-- PROFILE CARD -->
   <div class="profile-card">
 
-    <!-- Avatar -->
-    <div class="profile-avatar">
-      <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-      </svg>
-    </div>
+    <h3 class="profile-title">Profile Details</h3>
 
     <!-- Username -->
-    <h3 id="profileUsername" class="profile-name">@Username</h3>
-
-    <!-- Email -->
-    <div class="profile-field">
-      <label>Email</label>
-      <div class="profile-box" id="profileEmail">
-        user@email.com
-      </div>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Your name">
     </div>
 
-    <!-- Gender -->
-    <div class="profile-field">
+    <!-- DOB -->
+    <div class="field">
+      <label>Date of Birth</label>
+      <input type="date" id="dob">
+      <small class="hint">You must be at least 17 years old</small>
+    </div>
+
+    <!-- Gender (custom select) -->
+    <div class="field">
       <label>Gender</label>
 
-      <button class="gender-btn" id="genderBtn">
-        <span id="genderValue">Select Gender</span>
-        <i class="fa-solid fa-chevron-down"></i>
+      <button id="genderBtn" class="select-btn">
+        <span id="genderText">Select Gender</span>
       </button>
 
-      <div class="gender-dropdown" id="genderDropdown">
-        <button>Male</button>
-        <button>Female</button>
-        <button>Other</button>
+      <div id="genderPopup" class="select-popup">
+        <button data-val="Male">Male</button>
+        <button data-val="Female">Female</button>
+        <button data-val="Other">Other</button>
+        <button data-val="Prefer not to say">Prefer not to say</button>
       </div>
     </div>
-<div class="profile-field">
-  <label>Date of Birth</label>
 
-  <div class="dob-row">
-    <button class="dob-btn" id="dobDay"><span>Day</span></button>
-    <button class="dob-btn" id="dobMonth"><span>Month</span></button>
-    <button class="dob-btn" id="dobYear"><span>Year</span></button>
+    <!-- Save -->
+    <button id="saveProfile" class="save-btn">
+      Save Profile
+    </button>
+
+    <p id="profileMsg" class="msg"></p>
+
   </div>
 
-  <div id="dobDropdown" class="gender-dropdown hidden"></div>
-  <input type="hidden" id="dobValue">
-</div>
-  </div>
 </main>
 
   <script src="assets/js/common-layout.js"></script>
+  <script type="module" src="assets/js/profile.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
-<script type="module" src="assets/js/profile.js"></script>
 <script type="module" src="assets/js/common.js"></script>
 </body>
 </html>

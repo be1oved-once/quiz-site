@@ -17,7 +17,38 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import { auth, db, googleProvider } from "./firebase.js";
+import {
+  signInWithCredential,
+  GoogleAuthProvider
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
+function initGoogleOneTap() {
+  if (!window.google || !auth) return;
+
+  google.accounts.id.initialize({
+    client_id:
+      "54581941326-9bsoei7p9gem6bff3pjsl5tju1ckst8l.apps.googleusercontent.com",
+    callback: async response => {
+      try {
+        const credential = GoogleAuthProvider.credential(
+          response.credential
+        );
+        await signInWithCredential(auth, credential);
+        console.log("✅ One Tap login success");
+      } catch (e) {
+        console.error("❌ One Tap failed", e);
+      }
+    },
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+
+  google.accounts.id.prompt();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initGoogleOneTap();
+});
 
 const sidebar = document.getElementById("rightSidebar");
 const menuBtn = document.getElementById("menuBtn");
@@ -240,38 +271,54 @@ if (loginForm) {
 }
 /* ---------- SIGNUP ---------- */
 if (signupForm) {
-  signupForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    // (keep your existing code inside)
-
+signupForm.addEventListener("submit", async e => {
+  e.preventDefault();
 
   const errorBox = document.getElementById("signupError");
 
-  const username = document.getElementById("signupUsername").value.trim();
-  const email = document.getElementById("signupEmail").value.trim();
-  const password = document.getElementById("signupPassword").value;
+  const username = signupUsername.value.trim();
+  const email = signupEmail.value.trim();
+  const password = signupPassword.value;
+
+  if (!signupTurnstileToken) {
+    errorBox.textContent = "Please verify you are human";
+    return;
+  }
 
   try {
-    const userCred = await createUserWithEmailAndPassword(auth, email, password);
-
-    // Create Firestore user document
-    await setDoc(doc(db, "users", userCred.user.uid), {
-      username,
-      email,
-      createdAt: serverTimestamp(),
-      xp: 0,
-      bookmarks: [],
-      settings: {
-        theme: localStorage.getItem("quizta-theme") || "light"
-      }
+    const verify = await fetch("/api/verify-signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        token: signupTurnstileToken
+      })
     });
 
-    closeAuth();
-  } catch (err) {
-    errorBox.textContent = err.message.replace("Firebase:", "");
-  }
-}); }
+    const data = await verify.json();
 
+    if (!verify.ok) {
+      errorBox.textContent = data.error || "Signup failed";
+      return;
+    }
+
+    // reset token so replay is impossible
+    signupTurnstileToken = null;
+
+    closeAuth();
+
+  } catch (err) {
+    errorBox.textContent = "Signup failed. Try again.";
+  }
+});
+}
+let signupTurnstileToken = null;
+
+window.onSignupTurnstile = function (token) {
+  signupTurnstileToken = token;
+};
 async function ensureUserProfile(user) {
   if (!user) return;
 
@@ -615,3 +662,73 @@ onSnapshot(TEMP_TEST_REF, snap => {
     injectTempTestItem(false);
   }
 });
+
+/* =========================
+   PWA SERVICE WORKER
+========================= */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try {
+      const reg = await navigator.serviceWorker.register("/sw.js");
+      console.log("✅ Service Worker registered");
+
+      // 🔄 Force update check
+      reg.update();
+    } catch (err) {
+      console.error("❌ SW failed", err);
+    }
+  });
+}
+
+/* =========================
+   PWA INSTALL LOGIC
+========================= */
+let installPrompt = null;
+let installTimer = null;
+
+function initPWAInstall() {
+  const banner = document.getElementById("installBanner");
+  const installBtn = document.getElementById("installBtn");
+  const closeBtn = document.getElementById("installClose");
+
+  if (!banner || !installBtn || !closeBtn) {
+    console.warn("❌ PWA banner elements missing");
+    return;
+  }
+
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    installPrompt = e;
+
+    installTimer = setTimeout(() => {
+      if (!localStorage.getItem("pwaDismissed")) {
+        banner.classList.remove("hidden");
+        banner.classList.add("pwa-attention");
+      }
+    }, 10000); // ⏱ 10 seconds
+  });
+
+  installBtn.addEventListener("click", async () => {
+    if (!installPrompt) return;
+
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+
+    installPrompt = null;
+    hide();
+  });
+
+  closeBtn.addEventListener("click", () => {
+    localStorage.setItem("pwaDismissed", "1");
+    hide();
+  });
+
+  function hide() {
+    banner.classList.add("hidden");
+    banner.classList.remove("pwa-attention");
+    if (installTimer) clearTimeout(installTimer);
+  }
+}
+
+/* ✅ SAFE AUTO INIT */
+document.addEventListener("DOMContentLoaded", initPWAInstall);

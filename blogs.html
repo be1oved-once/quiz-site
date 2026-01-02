@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Offline</title>
+  <link rel="stylesheet" href="assets/css/common.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- FAVICONS -->
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+<link rel="icon" href="assets/favicon/favicon.ico">
+
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
+
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+
+<meta name="theme-color" content="#6c63ff">
+<style>
+:root {
+  --accent: #4f46e5;
+  --violet: #6c63ff;
+  --violet-soft: rgba(108, 99, 255, 0.15);
+  --border-light: #e6e6ee;
+  --bg-light: #ffffff;
+  --text-light: #1c1c1c;
+}
+
+body.dark {
+  --accent: #818cf8;
+  --bg-light: #0f172a;
+  --text-light: #e5e7eb;
+  --border-light: rgba(255,255,255,0.08);
+  --violet-soft: rgba(108, 99, 255, 0.25);
+}
+/* =========================
+   SKELETON LOADER
+========================= */
+
+.skeleton {
+  pointer-events: none;
+}
+
+.skeleton .sk-title,
+.skeleton .sk-line,
+.skeleton .sk-date,
+.skeleton .sk-btn {
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.06) 25%,
+    rgba(0,0,0,0.12) 37%,
+    rgba(0,0,0,0.06) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 8px;
+}
+
+/* Sizes */
+.sk-title {
+  height: 22px;
+  width: 70%;
+  margin-bottom: 10px;
+}
+
+.sk-line {
+  height: 14px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.sk-line.short {
+  width: 80%;
+}
+
+.sk-date {
+  height: 20px;
+  width: 90px;
+  border-radius: 999px;
+}
+
+.sk-btn {
+  height: 32px;
+  width: 110px;
+  border-radius: 999px;
+}
+
+/* Dark mode */
+body.dark .skeleton .sk-title,
+body.dark .skeleton .sk-line,
+body.dark .skeleton .sk-date,
+body.dark .skeleton .sk-btn {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.06) 25%,
+    rgba(255,255,255,0.12) 37%,
+    rgba(255,255,255,0.06) 63%
+  );
+}
+
+/* Animation */
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+.blogs-page {
+  padding: 20px 16px;
+  max-width: 900px;
+  margin-top: 35px;
+  margin-left: 12px;
+}
+
+.blogs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;                 /* 🔽 reduced gap */
+  margin: 28px 8px;         /* 🔽 tighter margins */
+}
+
+/* Blog Card */
+.blog-card {
+  background: var(--bg-light);
+  border: 1.5px solid var(--border-light);
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+.blog-card {
+  padding: 12px 14px;       /* 🔽 reduced padding */
+  border-radius: 14px;      /* 🔽 slightly smaller radius */
+}
+.blog-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+/* Title */
+.blog-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-light);
+}
+
+/* Excerpt */
+.blog-excerpt {
+  color: rgba(0,0,0,0.75);
+}
+.blog-title {
+  font-size: 16px;          /* 🔽 smaller heading */
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+
+/* Excerpt */
+.blog-excerpt {
+  font-size: 13px;          /* 🔽 smaller text */
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+/* Footer */
+.blog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Date pill */
+.blog-date {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(108,99,255,0.12);
+  color: var(--violet);
+  font-weight: 600;
+}
+
+/* Read More button */
+.read-more-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--violet);
+  color: var(--violet);
+  background: transparent;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.read-more-btn:hover {
+  background: var(--violet);
+  color: #fff;
+}
+
+/* --------------------
+   DARK MODE
+-------------------- */
+body.dark .blog-card {
+  background: #0f172a;
+  border-color: rgba(255,255,255,0.12);
+}
+
+body.dark .blog-title {
+  color: #e5e7eb;
+}
+
+body.dark .blog-excerpt {
+  color: rgba(229,231,235,0.75);
+}
+
+body.dark .blog-date {
+  background: rgba(139,92,246,0.25);
+  color: #c7bfff;
+}
+
+body.dark .read-more-btn {
+  border-color: #8b5cf6;
+  color: #c7bfff;
+}
+
+body.dark .read-more-btn:hover {
+  background: #8b5cf6;
+  color: #fff;
+}
+.blog-search {
+  margin: 10px 8px 8px;
+}
+
+.blog-search input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-light);
+  font-size: 14px;
+  background: var(--bg-light);
+  color: var(--text-light);
+}
+
+.blog-search input:focus {
+  outline: none;
+  border-color: var(--violet);
+}
+
+/* Dark mode */
+body.dark .blog-search input {
+  background: #0f172a;
+  color: #e5e7eb;
+  border-color: rgba(255,255,255,0.15);
+}
+.blogs-list:not(.skeleton-list) {
+  display: none;
+}
+</style>
+</head>
+<body>
+<main class="blogs-page page-content">
+<div class="blog-search">
+  <input
+    type="text"
+    id="blogSearch"
+    placeholder="Search articles..."
+    aria-label="Search blogs"
+  />
+</div>
+<!-- SKELETON LOADER -->
+<div id="blogSkeleton" class="blogs-list skeleton-list">
+
+  <div class="blog-card skeleton">
+    <div class="sk-title"></div>
+    <div class="sk-line"></div>
+    <div class="sk-line short"></div>
+
+    <div class="blog-footer">
+      <div class="sk-date"></div>
+      <div class="sk-btn"></div>
+    </div>
+  </div>
+
+  <div class="blog-card skeleton">
+    <div class="sk-title"></div>
+    <div class="sk-line"></div>
+    <div class="sk-line short"></div>
+
+    <div class="blog-footer">
+      <div class="sk-date"></div>
+      <div class="sk-btn"></div>
+    </div>
+  </div>
+
+  <div class="blog-card skeleton">
+    <div class="sk-title"></div>
+    <div class="sk-line"></div>
+    <div class="sk-line short"></div>
+
+    <div class="blog-footer">
+      <div class="sk-date"></div>
+      <div class="sk-btn"></div>
+    </div>
+  </div>
+
+</div>
+  <section class="blogs-list">
+
+    <!-- BLOG 1 -->
+    <article class="blog-card">
+      <h1 class="blog-title">
+        Understanding Demand in Economics
+      </h1>
+
+      <p class="blog-excerpt">
+        Demand is one of the most fundamental concepts in economics.
+        It explains how consumers react to changes in price, income,
+        and preferences in a market.
+      </p>
+
+      <div class="blog-footer">
+        <span class="blog-date">01/01/2026</span>
+        <a href="/blogs/demand-theory.html" class="read-more-btn">
+          Read More
+        </a>
+      </div>
+    </article>
+
+    <!-- BLOG 2 -->
+    <article class="blog-card">
+      <h1 class="blog-title">
+        What is Consideration under Business Law?
+      </h1>
+
+      <p class="blog-excerpt">
+        Consideration is an essential element of a valid contract.
+        Without consideration, an agreement generally cannot be
+        enforced by law.
+      </p>
+
+      <div class="blog-footer">
+        <span class="blog-date">05/01/2026</span>
+        <a href="/blogs/consideration-law.html" class="read-more-btn">
+          Read More
+        </a>
+      </div>
+    </article>
+
+    <!-- BLOG 3 -->
+    <article class="blog-card">
+      <h1 class="blog-title">
+        Normative vs Positive Economics Explained
+      </h1>
+
+      <p class="blog-excerpt">
+        Economics is often divided into positive and normative
+        statements. Understanding the difference helps in better
+        policy analysis and exam preparation.
+      </p>
+
+      <div class="blog-footer">
+        <span class="blog-date">10/01/2026</span>
+        <a href="/blogs/normative-positive.html" class="read-more-btn">
+          Read More
+        </a>
+      </div>
+    </article>
+<!-- BLOG 4 -->
+<article class="blog-card">
+  <h1 class="blog-title">
+    Law of Demand: Meaning and Exceptions
+  </h1>
+
+  <p class="blog-excerpt">
+    The law of demand explains the inverse relationship between price
+    and quantity demanded. This article also covers important
+    exceptions relevant for exams.
+  </p>
+
+  <div class="blog-footer">
+    <span class="blog-date">12/01/2026</span>
+    <a href="/blogs/law-of-demand.html" class="read-more-btn">
+      Read More
+    </a>
+  </div>
+</article>
+
+<!-- BLOG 5 -->
+<article class="blog-card">
+  <h1 class="blog-title">
+    Elasticity of Demand Simplified
+  </h1>
+
+  <p class="blog-excerpt">
+    Elasticity measures responsiveness of demand to price changes.
+    Learn types of elasticity with simple explanations and examples.
+  </p>
+
+  <div class="blog-footer">
+    <span class="blog-date">15/01/2026</span>
+    <a href="/blogs/elasticity-of-demand.html" class="read-more-btn">
+      Read More
+    </a>
+  </div>
+</article>
+
+<!-- BLOG 6 -->
+<article class="blog-card">
+  <h1 class="blog-title">
+    What is Consideration in Contract Law?
+  </h1>
+
+  <p class="blog-excerpt">
+    Consideration is a core element of a valid contract. This article
+    explains its meaning, essentials, and legal exceptions.
+  </p>
+
+  <div class="blog-footer">
+    <span class="blog-date">18/01/2026</span>
+    <a href="/blogs/consideration-contract-law.html" class="read-more-btn">
+      Read More
+    </a>
+  </div>
+</article>
+
+<!-- BLOG 7 -->
+<article class="blog-card">
+  <h1 class="blog-title">
+    Difference Between Void and Voidable Contracts
+  </h1>
+
+  <p class="blog-excerpt">
+    Many students confuse void and voidable contracts. This article
+    clearly explains differences with practical examples.
+  </p>
+
+  <div class="blog-footer">
+    <span class="blog-date">20/01/2026</span>
+    <a href="/blogs/void-vs-voidable.html" class="read-more-btn">
+      Read More
+    </a>
+  </div>
+</article>
+
+<!-- BLOG 8 -->
+<article class="blog-card">
+  <h1 class="blog-title">
+    Consumer Behaviour Theory Explained
+  </h1>
+
+  <p class="blog-excerpt">
+    Consumer behaviour theory helps understand how consumers maximize
+    satisfaction. This article breaks it down for easy revision.
+  </p>
+
+  <div class="blog-footer">
+    <span class="blog-date">22/01/2026</span>
+    <a href="/blogs/consumer-behaviour.html" class="read-more-btn">
+      Read More
+    </a>
+  </div>
+</article>
+
+<!-- BLOG 9 -->
+<article class="blog-card">
+  <h1 class="blog-title">
+    Types of Markets in Economics
+  </h1>
+
+  <p class="blog-excerpt">
+    Markets are classified into perfect competition, monopoly,
+    monopolistic competition, and oligopoly. Learn key features here.
+  </p>
+
+  <div class="blog-footer">
+    <span class="blog-date">25/01/2026</span>
+    <a href="/blogs/types-of-markets.html" class="read-more-btn">
+      Read More
+    </a>
+  </div>
+</article>
+
+<!-- BLOG 10 -->
+<article class="blog-card">
+  <h1 class="blog-title">
+    Role of Government in an Economy
+  </h1>
+
+  <p class="blog-excerpt">
+    Government plays a vital role in correcting market failures,
+    ensuring equity, and stabilizing the economy.
+  </p>
+
+  <div class="blog-footer">
+    <span class="blog-date">28/01/2026</span>
+    <a href="/blogs/role-of-government.html" class="read-more-btn">
+      Read More
+    </a>
+  </div>
+</article>
+  </section>
+
+</main>
+<script>
+  const searchInput = document.getElementById("blogSearch");
+const blogCards = document.querySelectorAll(".blog-card");
+
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.toLowerCase();
+
+  blogCards.forEach(card => {
+    const title = card.querySelector(".blog-title")?.innerText.toLowerCase() || "";
+    const excerpt = card.querySelector(".blog-excerpt")?.innerText.toLowerCase() || "";
+
+    card.style.display =
+      title.includes(q) || excerpt.includes(q)
+        ? "block"
+        : "none";
+  });
+});
+
+let visibleCount = 6;
+const allCards = document.querySelectorAll(".blog-card");
+
+function showBlogs() {
+  allCards.forEach((card, i) => {
+    card.style.display = i < visibleCount ? "block" : "none";
+  });
+}
+
+showBlogs();
+
+window.addEventListener("scroll", () => {
+  if (
+    window.innerHeight + window.scrollY >=
+    document.body.offsetHeight - 200
+  ) {
+    visibleCount += 4;
+    showBlogs();
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const skeleton = document.getElementById("blogSkeleton");
+  const blogs = document.querySelector(".blogs-list:not(.skeleton-list)");
+
+  // Simulated network-aware delay
+  const connection = navigator.connection || {};
+  let delay = 300; // fast default
+
+  if (connection.effectiveType === "2g") delay = 1600;
+  else if (connection.effectiveType === "3g") delay = 900;
+
+  setTimeout(() => {
+    if (skeleton) skeleton.style.display = "none";
+    if (blogs) blogs.style.display = "flex";
+  }, delay);
+});
+</script>
+  <script src="assets/js/common-layout.js"></script>
+<script type="module" src="assets/js/firebase.js"></script>
+<script type="module" src="assets/js/user-metrics-init.js"></script>
+<script type="module" src="assets/js/common.js"></script></body>
+
+</body>
+</html>

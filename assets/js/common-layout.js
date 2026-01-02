@@ -3,8 +3,7 @@
   const layoutHTML = `
   <header class="top-header">
 <div class="logo"><a href="index.html">
-  <span class="logo-main">TIC</span><span class="logo-dot">.</span>
-  <span class="logo-sub">Kar</span></a>
+  <span class="logo-main">TIC</span><span class="logo-dot">.</span><span class="logo-sub">Kar</span></a>
 </div>
     <nav class="top-nav">
       <a href="/index.html" class="desk-nav-item">Home</a>
@@ -138,6 +137,7 @@
     <span>Chapters</span></a>
 </li>
     <li class="desktop-left"><a href="/mtp-rtp.html"><i class="fa-solid fa-file-lines"></i><span>RTP / MTP</span></a></li>
+    <li class="desktop-left"><a href="/business-laws.html"><i class="fa-solid fa-scale-balanced"></i></i><span>Business Laws</span></a></li>
   <li class="desktop-left"><a href="/articles.html"><i class="fa-solid fa-newspaper"></i><span>Articles</span></a></li>
   <li class="desktop-left"><a href="/About-us.html"><i class="fa-solid fa-circle-info"></i><span>About</span></a></li>
   <li class="desktop-left"><a href="javascript:void(0)" onclick="openSettings()"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
@@ -163,9 +163,7 @@
   <!-- ===== Right Sidebar ===== -->
   <aside id="rightSidebar" class="right-sidebar">
 <div class="sidebar-header">
-  <span class="menu-main">TIC</span>
-  <span class="menu-dot">.</span>
-  <span class="menu-sub">Menu</span>
+  <span class="menu-main">TIC</span><span class="menu-dot">.</span><span class="menu-sub">Menu</span>
 
 </div>
     <hr class="sidebar-hr" />
@@ -173,10 +171,11 @@
   <li><a href="/index.html">Home</a></li>
   <li><a href="/chapters.html">Chapters</a></li>
   <li><a href="/mtp-rtp.html">RTP / MTP</a></li>
+  <li><a href="/business-laws.html">Business Laws</a></li>
   <li><a href="/About-us.html">About Us</a></li>
+  <li><a href="/sponsor-us.html">Sponsor Us</a></li>
   <li><a href="javascript:void(0)" onclick="openSettings()">Settings</a></li>
   <li><a href="/contact.html">Suggestions / Contact</a></li>
-    <li><a href="/sponsor-us.html">Sponsor Us</a></li>
   <div class="thought-hint right-hint">
   <div class="thought-arrow right-arrow"></div>
   <p>
@@ -310,6 +309,12 @@
   />
   <p class="auth-error" id="otpError"></p>
 </div> ----->
+<div
+  class="cf-turnstile"
+  data-sitekey="0x4AAAAAACJINcs7IR4NRhGI"
+  data-theme="auto"
+  data-callback="onSignupTurnstile"
+></div>
   <p class="auth-error" id="signupError"></p>
 
   <button type="submit" class="primary-btn">Sign Up</button>
@@ -322,12 +327,84 @@
 
   </div>
 </div>
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="footer-inner">
 
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <span class="logo-main">TIC</span><span class="logo-dot">.</span><span class="logo-sub">Kar</span>
+      </div>
+      <p class="footer-tagline">
+        Built for focused practice, fair testing, and real improvement.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="/index.html">Home</a>
+        <a href="/chapters.html">Practice</a>
+        <a href="/temp-test.html">Live Tests</a>
+        <a href="/bookmarks.html">Bookmarks</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#">Help / FAQ</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/contact.html">Feedback</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/Legal/privacy-policy.html">Privacy Policy</a>
+        <a href="/Legal/terms.html">Terms & Conditions</a>
+        <a href="/Legal/disclaimer.html">Disclaimer</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>About</h4>
+        <a href="/About-us.html">About Us</a>
+        <a href="/Legal/our-mission.html">Our Mission</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2025 TIC.Kar · All rights reserved
+  </div>
+</footer>
   `;
 
-  document.body.insertAdjacentHTML("afterbegin", layoutHTML);
+  document.body.insertAdjacentHTML("beforeend", layoutHTML);
+})();
+/* =========================
+   PWA INSTALL BANNER HTML
+========================= */
+(function () {
+
+  const installHTML = `
+    <div id="installBanner" class="pwa-banner hidden">
+      <div class="pwa-content">
+        <div class="pwa-icon">⚡</div>
+
+        <div class="pwa-text">
+          <strong>Install TIC.Kar</strong>
+          <span>Faster access • Works offline</span>
+        </div>
+
+        <button id="installBtn" class="pwa-install-btn">Install</button>
+        <button id="installClose" class="pwa-close">✕</button>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", installHTML);
 
 })();
+
 const adminToggle = document.getElementById("adminToggle");
 const adminMenu = document.getElementById("adminMenu");
 
@@ -375,3 +452,34 @@ function injectTempTestItem(show) {
     }
   });
 }
+/* =========================
+   OFFLINE BANNER (GLOBAL)
+========================= */
+(function () {
+  const banner = document.createElement("div");
+  banner.id = "offlineBanner";
+  banner.textContent = "You are offline. Some features may not work.";
+banner.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #ff4d4d;
+  color: #fff;
+  text-align: center;
+  padding: 6px;
+  font-size: 7px;
+  z-index: 100000;
+  display: none;
+`;
+  document.body.appendChild(banner);
+
+  function update() {
+    banner.style.display = navigator.onLine ? "none" : "block";
+  }
+
+  window.addEventListener("online", update);
+  window.addEventListener("offline", update);
+
+  update(); // initial check
+})();

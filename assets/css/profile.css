@@ -148,148 +148,107 @@ body.dark .back-btn:hover {
   opacity: 0.9;
 }
 
-/* =========================
-   PROFILE CARD
-========================= */
+.profile-page {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
 
 .profile-card {
-  padding: 22px;
-  border-radius: 20px;
+  width: 100%;
+  max-width: 420px;
   background: var(--bg-light);
   border: 1px solid var(--border-light);
-  box-shadow: 0 14px 32px rgba(0,0,0,0.08);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  border-radius: 16px;
+  padding: 20px;
 }
 
-/* Avatar */
-.profile-avatar {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(108,99,255,0.25),
-      rgba(255,255,255,0.9)
-    );
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-bottom: 12px;
-}
-
-.profile-avatar svg {
-  width: 48px;
-  height: 48px;
-  stroke: var(--violet);
-  stroke-width: 1.5;
-}
-
-/* Username */
-.profile-name {
+.profile-title {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 18px;
 }
 
-/* Fields */
-/* FIELD */
-.profile-field {
+.field {
+  margin-bottom: 16px;
   position: relative;
-  width: 100%;
 }
 
-/* BUTTON */
-.gender-btn {
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.field input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: #eef2ff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
   font-size: 14px;
-  
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  
-  cursor: pointer;
 }
 
-/* DROPDOWN OVERLAY */
-.gender-dropdown {
+.hint {
+  font-size: 11px;
+  color: #777;
+}
+
+/* Custom select */
+.select-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-light);
+  background: var(--bg-light);
+  text-align: left;
+  font-size: 14px;
+}
+
+.select-popup {
   position: absolute;
-  top: calc(100% + 8px);
+  top: 100%;
   left: 0;
   right: 0;
-  
   background: var(--bg-light);
-  border-radius: 16px;
   border: 1px solid var(--border-light);
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.15);
-  
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height 0.3s ease;
-  z-index: 100;
+  border-radius: 14px;
+  margin-top: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.15);
+  display: none;
+  z-index: 20;
 }
 
-/* OPTIONS */
-.gender-dropdown button {
+.select-popup button {
   width: 100%;
-  padding: 12px 14px;
+  padding: 10px;
   background: none;
   border: none;
-  font-size: 14px;
   text-align: left;
-  cursor: pointer;
+  font-size: 14px;
 }
 
-.gender-dropdown button:hover {
-  background: rgba(108, 99, 255, 0.1);
+.select-popup button:hover {
+  background: rgba(108,99,255,.15);
 }
 
-/* DARK */
-body.dark .gender-btn {
-  background: rgba(15, 23, 42, 0.9);
-  color: #e5e7eb;
+.select-popup.show {
+  display: block;
 }
 
-body.dark .gender-dropdown {
-  background: #020617;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-}
-/* DOB BUTTON ROW */
-.dob-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
+.save-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
 }
 
-.dob-btn {
-  flex: 1;
-  height: 42px;              /* 🔒 fixed height */
-  padding: 0 12px;
-  border-radius: 14px;
-  background: #eef2ff;
-  border: 1px solid rgba(0,0,0,0.12);
+.msg {
+  margin-top: 12px;
   font-size: 13px;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;          /* 🔒 no scroll here */
-}
-
-body.dark .dob-btn {
-  background: rgba(15,23,42,0.9);
-  color: #e5e7eb;
-  border-color: rgba(255,255,255,0.18);
+  text-align: center;
 }
