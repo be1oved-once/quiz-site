@@ -31,15 +31,21 @@
 <main class="profile-content">
 
   <!-- HEADER -->
-  <div class="perform-header">
-    <h2>My Profile</h2>
+<div class="perform-header">
+  <h2>My Profile</h2>
 
-    
-      <button class="back-btn" onclick="history.back()">
-        <i class="fa-solid fa-arrow-left"></i>
-        Back
-      </button>
+  <div class="header-actions">
+    <button id="editProfile" class="edit-inline-btn"><svg class="icon-pencil" viewBox="0 0 24 24" fill="none"
+     stroke="currentColor" stroke-width="1.6"
+     stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 20h9"/>
+  <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+</svg>Edit
+    </button>
+
+    <button class="edit-inline-btn" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i>Back</button>
   </div>
+</div>
 
   <div class="profile-card">
 
@@ -52,7 +58,7 @@
     </div>
 
     <!-- DOB -->
-    <div class="field">
+    <div class="field dob-field">
       <label>Date of Birth</label>
       <input type="date" id="dob">
       <small class="hint">You must be at least 17 years old</small>

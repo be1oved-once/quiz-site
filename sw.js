@@ -1,25 +1,86 @@
 
 
-const CACHE_NAME = "tic-kar-v6";
+const CACHE_NAME = "tic-kar-v4";
 
 /* =========================
    PRECACHE (SAFE)
 ========================= */
 const PRECACHE = [
-"/",
-"/index.html",
-"/offline.html",
+  /* root */
+  "/",
+  "/index.html",
+  "/offline.html",
 
-// static pages (optional)
-"/about-us.html",
-"/contact.html",
+  /* main pages */
+  "/about-us.html",
+  "/blogs.html",
+  "/bookmarks.html",
+  "/business-laws.html",
+  "/chapters.html",
+  "/chatrooms.html",
+  "/confirmation.html",
+  "/contact.html",
+  "/correction-test.html",
+  "/mtp-rtp.html",
+  "/performance.html",
+  "/profile.html",
+  "/sponsor-us.html",
+  "/temp-test.html",
+  "/thoughts.html",
 
-// icons / images only
-"/assets/favicon/favicon.ico",
-"/assets/favicon/apple-touch-icon.png",
-"/assets/favicon/android-chrome-192x192.png",
-"/assets/favicon/android-chrome-512x512.png",
-"/assets/QR/qr.png"
+  /* blog pages */
+  "/Blog/Essential-Things-You-Should-Know.html",
+  "/Blog/how-to-speed-up-handwriting.html",
+  "/Blog/i-knew-everything-forgot.html",
+  "/Blog/my-teacher-was-wrong.html",
+
+  /* styles */
+  "/assets/css/common.css",
+  "/assets/css/common-review.css",
+  "/assets/css/landing.css",
+  "/assets/css/about.css",
+  "/assets/css/contact.css",
+  "/assets/css/chatroom.css",
+  "/assets/css/profile.css",
+  "/assets/css/perform.css",
+  "/assets/css/penalty.css",
+  "/assets/css/sponsor.css",
+  "/assets/css/style-law.css",
+  "/style.css",
+  "/style-rtp.css",
+
+  /* scripts */
+  "/js/common-layout.js",
+  "/js/common-logic.js",
+  "/js/common.js",
+  "/js/firebase.js",
+  "/js/profile.js",
+  "/js/performance-logic.js",
+  "/js/chatroom.js",
+  "/js/bookmark-logic.js",
+  "/js/law-logic.js",
+  "/js/law-pdf-logic.js",
+  "/js/insight-engine.js",
+  "/js/questions.js",
+  "/js/questions-law.js",
+  "/js/questions-logic.js",
+  "/js/questions-logic-rtp.js",
+  "/js/rtp-mtp.js",
+  "/js/settings.js",
+  "/js/student-test.js",
+  "/js/user-metrics-init.js",
+  "/js/user-metrics-update.js",
+
+  /* icons */
+  "/assets/favicon/favicon.ico",
+  "/assets/favicon/favicon-16x16.png",
+  "/assets/favicon/favicon-32x32.png",
+  "/assets/favicon/apple-touch-icon.png",
+  "/assets/favicon/android-chrome-192x192.png",
+  "/assets/favicon/android-chrome-512x512.png",
+
+  /* misc */
+  "/assets/QR/qr.png"
 ];
 
 /* =========================

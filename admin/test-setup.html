@@ -32,6 +32,48 @@
 </head>
 
 <body>
+<!-- ================= SKELETON LOADER ================= -->
+<div id="adminSkeleton" class="admin-skeleton">
+
+  <div class="sk-card">
+    <div class="sk-title"></div>
+    <div class="sk-line short"></div>
+  </div>
+
+  <div class="sk-card">
+    <div class="sk-label"></div>
+    <div class="sk-input"></div>
+  </div>
+
+  <div class="sk-card">
+    <div class="sk-label"></div>
+    <div class="sk-textarea"></div>
+  </div>
+
+  <div class="sk-card">
+    <div class="sk-section"></div>
+    <div class="sk-btn-row">
+      <div class="sk-pill"></div>
+      <div class="sk-pill"></div>
+    </div>
+    <div class="sk-outline"></div>
+  </div>
+
+  <div class="sk-card">
+    <div class="sk-section"></div>
+    <div class="sk-btn-row">
+      <div class="sk-pill wide"></div>
+      <div class="sk-pill wide"></div>
+    </div>
+    <div class="sk-input"></div>
+  </div>
+
+  <div class="sk-card">
+    <div class="sk-primary-btn"></div>
+    <div class="sk-clear-btn"></div>
+  </div>
+
+</div>
 
 <div class="admin-create">
 
@@ -154,6 +196,14 @@
     placeholder="Max 60 minutes"
   />
 </div>
+<div class="card">
+  <label class="label">Scheduled At</label>
+  <div id="scheduleInfo" class="admin-info">-</div>
+
+  <label class="label">Test Ends At</label>
+  <div id="expiresInfo" class="admin-info">-</div>
+</div>
+
     <!-- PUBLISH -->
     <button type="button" id="publishBtn" class="primary-btn pill">
       Publish Questions
@@ -201,7 +251,23 @@
 
   </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const skeleton = document.getElementById("adminSkeleton");
+  const realUI = document.querySelector(".admin-create");
 
+  const connection = navigator.connection || {};
+  let delay = 350;
+
+  if (connection.effectiveType === "2g") delay = 1800;
+  else if (connection.effectiveType === "3g") delay = 900;
+
+  setTimeout(() => {
+    if (skeleton) skeleton.style.display = "none";
+    if (realUI) realUI.style.display = "block";
+  }, delay);
+});
+</script>
 <!-- Global layout / auth -->
 <script src="/assets/js/common-layout.js"></script>
 <script type="module" src="/assets/js/firebase.js"></script>

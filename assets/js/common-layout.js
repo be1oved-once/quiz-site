@@ -42,6 +42,10 @@
         <hr>
         <a href="javascript:void(0)" class="auth-logout">Logout</a>
       </div>
+      <div class="profile-lock-popup" id="profileLockPopup">
+  <p>Login to unlock</p>
+  <button onclick="openAuth('login')">Login</button>
+</div>
     </div>
 
   </div>
@@ -89,6 +93,21 @@
   <hr class="sidebar-hr" />
 
 <ul class="sidebar-list">
+
+  <!-- 🔒 LOGIN LOCK OVERLAY -->
+  <div id="loginLockOverlay" class="login-lock-overlay">
+    <div class="login-lock-box">
+      <i class="fa-solid fa-lock"></i>
+      <h4>Login Required</h4>
+      <p>
+        Student functions LOCKED<br>
+      </p>
+      <button class="primary-btn pill"
+              onclick="openAuth('login')">
+        Login to Unlock
+      </button>
+    </div>
+  </div>
 <li class="admin-only admin-dropdown" style="display:none;">
   <button class="admin-toggle" id="adminToggle">
     <i class="fa-solid fa-shield-halved"></i>
@@ -153,8 +172,16 @@
   </p>
 </div>
 <div class="auth-actions">
-  <a href="javascript:void(0)" class="auth-btn login-btn auth-login" onclick="openAuth()">Login</a>
-  <a href="javascript:void(0)" class="auth-btn signup-btn auth-signup" onclick="openAuth()">Sign Up</a>
+<a href="javascript:void(0)"
+   class="auth-btn login-btn auth-login"
+   onclick="openAuth('login')">
+  Login
+</a>
+<a href="javascript:void(0)"
+   class="auth-btn signup-btn auth-signup"
+   onclick="openAuth('signup')">
+  Sign Up
+</a>
   <a href="javascript:void(0)" class="auth-btn login-btn auth-logout" style="display:none;">LogOut</a>
 </div>
 </ul>
@@ -191,8 +218,16 @@
   </div>
 </div>
 <div class="auth-actions auth-actions-right">
-  <a href="javascript:void(0)" class="auth-btn login-btn auth-login" onclick="openAuth()">Login</a>
-  <a href="javascript:void(0)" class="auth-btn signup-btn auth-signup" onclick="openAuth()">Sign Up</a>
+<a href="javascript:void(0)"
+   class="auth-btn login-btn auth-login"
+   onclick="openAuth('login')">
+  Login
+</a>
+<a href="javascript:void(0)"
+   class="auth-btn signup-btn auth-signup"
+   onclick="openAuth('signup')">
+  Sign Up
+</a>
   <a href="javascript:void(0)" class="auth-btn login-btn auth-logout" style="display:none;">LogOut</a>
 </div>
 
@@ -228,13 +263,30 @@
       <div class="toggle-switch active"></div>
     </div>
 
-    <div class="settings-item">
-      <span>
-        Question Timer<br>
-        <small>(Current: 45s)</small>
-      </span>
-      <div class="toggle-switch active"></div>
-    </div>
+    <div class="settings-item timer-setting" id="timerSetting">
+  <span>
+    Question Timer<br>
+    <small id="timerLabel">(Current: 45s)</small>
+  </span>
+  <div class="toggle-switch" id="timerToggle"></div>
+</div>
+
+<div class="timer-expand" id="timerExpand">
+  <div class="timer-input-wrap">
+    <input
+      type="number"
+      min="30"
+      max="400"
+      id="timerInput"
+      value="45"
+    />
+    <button id="timerSaveBtn">Save</button>
+  </div>
+
+  <small class="timer-hint">
+    Minimum 30 seconds. Applies to all quizzes.
+  </small>
+</div>
 
     <div class="settings-item">
       <span>RTP / MTP Exam Mode<br><small>100 Q = 120 mins</small></span>
@@ -277,6 +329,9 @@
   <p class="auth-error" id="loginError"></p>
 
   <button type="submit" class="primary-btn">Login</button>
+  <p class="forgot-pass">
+  <a href="/reset-password.html">Forgot password?</a>
+</p>
 </form>
 
     <!-- SIGNUP FORM -->
@@ -367,6 +422,7 @@
         <h4>About</h4>
         <a href="/About-us.html">About Us</a>
         <a href="/Legal/our-mission.html">Our Mission</a>
+        <a href="/blogs.html">Blogs</a>
       </div>
     </div>
 
@@ -380,6 +436,13 @@
 
   document.body.insertAdjacentHTML("beforeend", layoutHTML);
 })();
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.initSettings) {
+    window.initSettings();
+  }
+});
 /* =========================
    PWA INSTALL BANNER HTML
 ========================= */
@@ -425,32 +488,34 @@ if (adminToggle && adminMenu) {
     adminMenu.classList.remove("open");
   });
 }
-function injectTempTestItem(show) {
-  // already injected?
-  const existing = document.querySelectorAll(".temp-test-item");
 
-  // REMOVE if not live
+function injectTempTestItem(show) {
+  const leftSidebar = document.querySelector("#leftSidebar .sidebar-list");
+  if (!leftSidebar) return;
+
+  const existing = leftSidebar.querySelector(".temp-test-item");
+
+  // ❌ remove if not live
   if (!show) {
-    existing.forEach(el => el.remove());
+    existing?.remove();
     return;
   }
 
-  // CREATE item
-  const liHTML = `
+  // ✅ already exists
+  if (existing) return;
+
+  // ✅ inject ONLY in left sidebar
+  leftSidebar.insertAdjacentHTML(
+    "afterbegin",
+    `
     <li class="temp-test-item">
       <a href="/temp-test.html">
         <i class="fa-solid fa-bolt"></i>
         <span>Temp Test</span>
       </a>
     </li>
-  `;
-
-  // 👉 mobile-left
-  document.querySelectorAll(".sidebar-list").forEach(list => {
-    if (!list.querySelector(".temp-test-item")) {
-      list.insertAdjacentHTML("afterbegin", liHTML);
-    }
-  });
+    `
+  );
 }
 /* =========================
    OFFLINE BANNER (GLOBAL)

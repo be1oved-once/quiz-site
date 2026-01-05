@@ -1054,3 +1054,121 @@ body.dark .leaderboard-item {
   border: 1px solid #2a2a2a;
   color: #eee;
 }
+/* =========================
+   ADMIN SKELETON
+========================= */
+
+.admin-skeleton {
+  padding: 18px 14px;
+  max-width: 780px;
+  margin: auto;
+}
+
+.sk-card {
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+/* shimmer base */
+.admin-skeleton div[class^="sk-"] {
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.06) 25%,
+    rgba(0,0,0,0.12) 37%,
+    rgba(0,0,0,0.06) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 10px;
+}
+
+/* dark mode */
+body.dark .admin-skeleton div[class^="sk-"] {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.06) 25%,
+    rgba(255,255,255,0.12) 37%,
+    rgba(255,255,255,0.06) 63%
+  );
+}
+
+/* sizes */
+.sk-title {
+  height: 22px;
+  width: 65%;
+  margin-bottom: 8px;
+}
+
+.sk-line {
+  height: 14px;
+  width: 90%;
+}
+
+.sk-line.short {
+  width: 60%;
+}
+
+.sk-label {
+  height: 12px;
+  width: 40%;
+  margin-bottom: 6px;
+}
+
+.sk-input {
+  height: 40px;
+  width: 100%;
+}
+
+.sk-textarea {
+  height: 80px;
+  width: 100%;
+}
+
+.sk-section {
+  height: 16px;
+  width: 50%;
+  margin-bottom: 10px;
+}
+
+.sk-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sk-pill {
+  height: 34px;
+  width: 110px;
+  border-radius: 999px;
+}
+
+.sk-pill.wide {
+  width: 140px;
+}
+
+.sk-outline {
+  height: 38px;
+  width: 160px;
+  border-radius: 999px;
+}
+
+.sk-primary-btn {
+  height: 42px;
+  width: 180px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.sk-clear-btn {
+  height: 36px;
+  width: 120px;
+  border-radius: 999px;
+}
+
+/* hide real UI initially */
+.admin-create {
+  display: none;
+}

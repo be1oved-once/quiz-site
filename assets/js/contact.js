@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         turnstile.reset();
       }
       setTimeout(() => {
-  window.location.href = "/confirmation.html";
+  window.location.replace("/confirmation.html");
 }, 200);
 
     } catch (err) {

@@ -9,17 +9,20 @@ const genderBtn = document.getElementById("genderBtn");
 const genderText = document.getElementById("genderText");
 const genderPopup = document.getElementById("genderPopup");
 const saveBtn = document.getElementById("saveProfile");
+const editBtn = document.getElementById("editProfile");
 const msg = document.getElementById("profileMsg");
 
 let selectedGender = "";
+let editMode = false;
 
-/* DOB restriction (17 years) */
+/* DOB restriction */
 const today = new Date();
 const minYear = today.getFullYear() - 17;
 dobEl.max = `${minYear}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
 
 /* Gender popup */
 genderBtn.onclick = () => {
+  if (!editMode) return;
   genderPopup.classList.toggle("show");
 };
 
@@ -31,27 +34,93 @@ genderPopup.querySelectorAll("button").forEach(btn => {
   };
 });
 
-/* Close popup on outside click */
+/* Outside click */
 document.addEventListener("click", e => {
   if (!genderBtn.contains(e.target) && !genderPopup.contains(e.target)) {
     genderPopup.classList.remove("show");
   }
 });
 
-/* Load existing profile */
-auth.onAuthStateChanged(async user => {
-  if (!user) return;
+/* Load profile */
+function getProfileKey(uid) {
+  return `profile_${uid}`;
+}
 
-  const ref = doc(db, "users", user.uid);
+function loadProfileFromLocal(uid) {
+  const raw = localStorage.getItem(getProfileKey(uid));
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function saveProfileToLocal(uid, data) {
+  localStorage.setItem(
+    getProfileKey(uid),
+    JSON.stringify({
+      ...data,
+      updatedAt: Date.now()
+    })
+  );
+}
+
+auth.onAuthStateChanged(async user => {
+  if (!user) {
+    // Clear UI
+    usernameEl.value = "";
+    dobEl.value = "";
+    genderText.textContent = "Select Gender";
+    selectedGender = "";
+    return;
+  }
+
+  const uid = user.uid;
+
+  /* 1️⃣ FAST LOAD FROM LOCALSTORAGE */
+  const cached = loadProfileFromLocal(uid);
+  if (cached) {
+    usernameEl.value = cached.username || "";
+    dobEl.value = cached.dob || "";
+    selectedGender = cached.gender || "";
+    if (selectedGender) genderText.textContent = selectedGender;
+  }
+
+  /* 2️⃣ BACKGROUND SYNC FROM FIRESTORE */
+  const ref = doc(db, "users", uid);
   const snap = await getDoc(ref);
   if (!snap.exists()) return;
 
   const data = snap.data();
+
+  // Update UI (in case Firestore is newer)
   usernameEl.value = data.username || "";
   dobEl.value = data.dob || "";
   selectedGender = data.gender || "";
   if (selectedGender) genderText.textContent = selectedGender;
+
+  // Sync localStorage
+  saveProfileToLocal(uid, {
+    username: data.username || "",
+    dob: data.dob || "",
+    gender: data.gender || ""
+  });
 });
+
+/* Edit mode */
+function setEditMode(state) {
+  editMode = state;
+  usernameEl.readOnly = !state;
+  dobEl.readOnly = !state;
+genderBtn.classList.toggle("readonly", !state);
+  saveBtn.style.display = state ? "block" : "none";
+  editBtn.style.display = state ? "none" : "inline-flex";
+}
+
+setEditMode(false);
+
+editBtn.onclick = () => setEditMode(true);
 
 /* Save */
 saveBtn.onclick = async () => {
@@ -64,12 +133,18 @@ saveBtn.onclick = async () => {
     return;
   }
 
-  await updateDoc(doc(db, "users", user.uid), {
-    username: usernameEl.value.trim(),
-    dob: dobEl.value,
-    gender: selectedGender
-  });
+  const payload = {
+  username: usernameEl.value.trim(),
+  dob: dobEl.value,
+  gender: selectedGender
+};
+
+await updateDoc(doc(db, "users", user.uid), payload);
+
+/* 🔥 Sync localStorage instantly */
+saveProfileToLocal(user.uid, payload);
 
   msg.textContent = "Profile saved successfully";
   msg.style.color = "#22c55e";
+  setEditMode(false);
 };

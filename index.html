@@ -1,180 +1,330 @@
-<!DOCTYPE html,>
-<html lang="jp">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
+  <title>Tic.Kar</title>
 
-  <link rel="stylesheet" href="/style.css">
-  <link rel="preconnect" href="https://accounts.google.com">
-<link rel="preconnect" href="https://apis.google.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="/assets/css/landing.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/common.css">
-    <link rel="stylesheet" href="assets/css/common-review.css">
-    <!-- FAVICONS -->
+  <!-- FAVICONS -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
 <link rel="icon" href="assets/favicon/favicon.ico">
+
 <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+
 <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
+
 <link rel="manifest" href="assets/favicon/site.webmanifest">
 
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#6c63ff">
 </head>
+
 <body>
-
+<div class="auth-strip">
+  <div class="auth-strip-inner">
+<a href="javascript:void(0)"
+   class="auth-btn login-btn auth-login"
+   onclick="openAuth('login')">
+  Login
+</a>
+<a href="javascript:void(0)"
+   class="auth-btn signup-btn auth-signup"
+   onclick="openAuth('signup')">
+  Sign Up
+</a>
+  </div>
+</div>
   <!-- PAGE CONTENT ONLY -->
-<main class="practice-page">
-  <div class="head-box">
-    
-  <div class="header-text">
-    <h3>Chapter<span>'</span>Wise</h3>
+<main class="page-content landing">
+<section class="section-hero">
+<h1 class="landing-title">
+  PRACTICE THAT CORRECTS YOU, NOT PRESSURES YOU
+</h1>
+
+
+
+  <!-- Decorative divider -->
+  <div class="landing-divider">
+    <span></span>
   </div>
+<h2 class="section-label">CORE</h2>
+  <ul class="feature-list">
+    <li>
+      <span class="bullet"></span>
+      Time-based chapter-wise tests of your choice
+    </li>
+    <li>
+      <span class="bullet"></span>
+      Instant evaluation after submission
+    </li>
+    <li>
+      <span class="bullet"></span>
+      Detailed performance & score analysis
+    </li>
+    <li>
+      <span class="bullet"></span>
+      Error-correction focused practice for weak areas
+    </li>
+    <li>
+      <span class="bullet"></span>
+      Large question bank with clear explanations
+    </li>
+  </ul>
 
-  </div>
-<section class="quiz-setup">
-
-<!-- SUBJECT + XP ROW -->
-<div class="select-row subject-row">
-  <span class="label">Subject:</span>
-
-  <button id="subjectBtn" class="select-btn">
-    <span id="subjectText">None Selected</span>
-  </button>
-    <div class="xp-box">
-    XP: <span id="xpValue">00</span>
-  </div>
-</div>
-
-<!-- CHAPTER ROW (NO XP HERE) -->
-<div class="select-row">
-  <span class="label">Chapter:</span>
-  <button id="chapterBtn" class="select-btn disabled">
-    <span id="chapterText">None Selected</span>
-  </button>
-  <div id="subjectPopup" class="select-popup sub-select"></div>
-</div>
-  
-
-  <!-- dropdowns -->
-  <div id="chapterPopup" class="select-popup ch-select"></div>
-
-  <div class="quiz-actions">
-    <button id="startQuiz" class="primary-btn startt">Start</button>
-    <button id="resetQuiz" class="secondary-btn">Reset</button>
-    <div class="question-limit">
-  Questions:
-<input
-  id="questionLimit"
-  type="number"
-  min="1"
-  inputmode="numeric"
-  pattern="[0-9]*"
-  value="25" disabled
-/>
-</div>
+  <div class="cta-buttons">
+    <button class="btn primary"><a href="javascript:void(0)" onclick="openAuth('signup')">
+  Register Now</a></button>
+<button class="btn secondary" id="demoNowBtn">Demo Now</button>
   </div>
 </section>
-
-<section id="quizArea" class="quiz-area hidden">
-<div class="timer" id="timerWrap">
-  <span class="timer-icon">
-    <svg viewBox="0 0 24 24" class="clock-svg">
-      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" />
-      <path d="M12 7v5l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-    </svg>
-  </span>
-  <span id="timeLeft">45</span>s
-</div>
-<div class="progress-wrap">
-  <div id="progressBar"></div>
-</div>
-  <div id="questionText" class="question-text"></div>
-  <div id="optionsBox" class="options-box"></div>
-
-<div class="quiz-nav">
-  <button id="prevBtn" class="nav-btn">Previous</button>
-
-  <div class="nav-text">
-    <span id="roundLabel">Practic</span>
+<section class="section-achievement">
+  <div class="achievement-wrap">
+    <section class="truth-section">
+  <div class="truth-box">
+<h2 class="achievement-title">
+  Emotions <span class="blend-arrow"> > </span><span> Keywords</span>
+</h2>
   </div>
-
-  <button id="nextBtn" class="nav-btn primary">Next</button>
-</div>
-<hr class="quiz-divider">
-
-<div class="marks-box hidden" id="marksBox">
-  आपके मार्क्स: <span id="marksValue">0</span><br> Note: Calculated on the basis of Practice Round.
-</div>
-<!-- Review / PDF actions -->
-<div class="result-actions hidden">
-  <button class="result-btn review-btn">
-    Review Questions
-  </button>
-
-  <button class="result-btn pdf-btn">
-    Save as PDF
-  </button>
-</div>
-<!-- Voice Note Explanation -->
-<div id="voiceNoteBox" class="vn-box hidden">
-  <div class="vn-left">
-    <i class="fa-solid fa-volume-high vn-icon"></i>
-  </div>
-
-  <div class="vn-body">
-    <div class="vn-title">Voice Explanation</div>
-    <div class="vn-sub" id="vnStatus">
-       click ▶
-    </div>
-
-    <div class="vn-controls hidden" id="vnControls">
-      <button id="vnPlay" class="vn-play">
-        <i class="fa-solid fa-play"></i>
-      </button>
-      <span class="vn-time" id="vnTime">00:00</span>
-    </div>
-
-    <audio id="vnAudio" preload="metadata">
-      <!-- YOU WILL PUT MP3 HERE LATER -->
-      <source src="assets/audio/chapter1.mp3" type="audio/mpeg">
-    </audio>
-  </div>
-</div>
-<!-- Review Questions Panel -->
-<div id="reviewPanel" class="review-panel hidden">
-  <div id="reviewContent" class="review-content"></div>
-</div>
 </section>
-</main>
+    <div class="achievement-badge">
+     WE ARE BUILT DIFFERENT
+    </div>
 
-<div id="penaltyOverlay" class="penalty-overlay hidden" aria-live="assertive">
-  <div class="penalty-content">
-    <h1>Focus Lost</h1>
+    <h2 class="achievement-title">
+      Written Answer Evaluation<br>
+      <span>That Reads What You Write</span>
+    </h2>
 
-    <p>
-      This action is recorded.
+    <p class="achievement-desc">
+      We built a practice system that evaluates law answers the way
+      an examiner does - not by word count, but by relevance.
     </p>
 
-    <div class="penalty-time">
-      <span id="penaltyTime">45</span>
-      <small>seconds</small>
+    <div class="achievement-flow">
+      <div class="flow-item">Student writes answer</div>
+      <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-item">Keywords detected</div>
+      <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-item">Coverage & structure checked</div>
+      <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-item highlight">Marks + feedback</div>
     </div>
-  </div>
-</div>
 
+    <div class="achievement-note">
+      This kind of evaluation is usually available only in
+      offline coaching - we made it online.
+    </div>
+
+  </div>
+</section>
+  <section class="section-why">
+<section class="why-section">
+  <h2 class="why-title">WHY</h2>
+
+  <div class="why-content">
+    <p>
+      Tic.Kar was created to solve a simple problem -  
+      meaningful practice for CA students without unnecessary pressure.
+    </p>
+
+    <p>
+      Instead of overwhelming features or paywalls,
+      the focus is on clarity, consistency, and learning from mistakes.
+    </p>
+
+    <p>
+      This platform exists to support self-study,
+      help identify weak areas early,
+      and make preparation feel structured - not stressful.
+    </p>
+  </div>
+</section>
+  </section>
+  
+<section id="demoSection" class="section-demo">
+<section class="demo-quiz-section" id="demoQuizSection">
+
+  <h2 class="demo-title">Live Preview</h2>
+
+  <div class="demo-quiz-box" id="demoQuizBox">
+
+    <div class="demo-timer">
+      ⏱ <span id="demoTime">30</span>s
+    </div>
+
+    <div class="demo-question" id="demoQuestion"></div>
+
+    <div class="demo-options" id="demoOptions"></div>
+
+  </div>
+
+  <div class="demo-finish" id="demoFinish">
+    <h3>That’s the Experience</h3>
+    <p>
+      This is how questions, options, timer, and flow<br>
+      will look during real practice sessions.
+    </p>
+  </div>
+
+</section>
+</section>
+</main>
+<script>
+  /* =========================
+   DEMO QUIZ (LANDING PAGE)
+========================= */
+
+const demoQuestions = [
+  {
+    q: "Which of the following is not a merit of Capitalist economy?",
+    options: [
+      "High degree of operative efficiency",
+      "Collective ownership",
+      "Faster economic growth",
+      "Incentives for innovation"
+    ],
+    correct: 1
+  },
+  {
+    q: "Which curve shows consumer satisfaction?",
+    options: [
+      "Demand Curve",
+      "Supply Curve",
+      "Marginal Utility Curve",
+      "Cost Curve"
+    ],
+    correct: 2
+  },
+  {
+    q: "In perfect competition, price is determined by?",
+    options: [
+      "Single firm",
+      "Government",
+      "Market forces",
+      "Buyers only"
+    ],
+    correct: 2
+  }
+];
+
+let demoIndex = 0;
+let demoTimer = null;
+let demoTimeLeft = 30;
+
+const qEl = document.getElementById("demoQuestion");
+const optEl = document.getElementById("demoOptions");
+const timeEl = document.getElementById("demoTime");
+const quizBox = document.getElementById("demoQuizBox");
+const finishBox = document.getElementById("demoFinish");
+
+function startDemoTimer() {
+  clearInterval(demoTimer);
+  demoTimeLeft = 30;
+  timeEl.textContent = demoTimeLeft;
+
+  demoTimer = setInterval(() => {
+    demoTimeLeft--;
+    timeEl.textContent = demoTimeLeft;
+
+    if (demoTimeLeft <= 0) {
+      clearInterval(demoTimer);
+      nextDemo();
+    }
+  }, 1000);
+}
+
+function renderDemoQuestion() {
+  const q = demoQuestions[demoIndex];
+  qEl.textContent = `${demoIndex + 1}. ${q.q}`;
+  optEl.innerHTML = "";
+startDemoTimer();
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+
+    btn.onclick = () => {
+      clearInterval(demoTimer);
+
+      [...optEl.children].forEach(b => (b.disabled = true));
+
+      if (i === q.correct) {
+        btn.classList.add("correct");
+      } else {
+        btn.classList.add("wrong");
+        optEl.children[q.correct].classList.add("correct");
+      }
+
+      setTimeout(nextDemo, 900);
+    };
+
+    optEl.appendChild(btn);
+  });
+}
+
+function nextDemo() {
+  demoIndex++;
+
+  if (demoIndex < demoQuestions.length) {
+    renderDemoQuestion();
+  } else {
+    quizBox.classList.add("fade-out");
+
+setTimeout(() => {
+  quizBox.style.display = "none";
+  finishBox.classList.add("show");
+}, 350);
+  }
+}
+
+/* INIT */
+let demoInitialized = false;
+
+function initDemo() {
+  if (demoInitialized) return;
+  demoInitialized = true;
+
+  demoIndex = 0;
+  renderDemoQuestion();
+}
+
+const demoBtn = document.getElementById("demoNowBtn");
+const demoSection = document.getElementById("demoSection");
+
+/* Scroll on button click */
+demoBtn.addEventListener("click", () => {
+  demoSection.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+  // delay init slightly so scroll finishes
+  setTimeout(initDemo, 500);
+});
+
+/* Auto-start if user scrolls manually */
+const observer = new IntersectionObserver(
+  ([entry]) => {
+    if (entry.isIntersecting) {
+      initDemo();
+    }
+  },
+  { threshold: 0.5 }
+);
+
+observer.observe(demoSection);
+</script>
   <script src="assets/js/common-layout.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
-<script type="module" src="assets/js/xp.js"></script>
-<script type="module" src="assets/js/questions-logic.js"></script>
-<script type="module" src="assets/js/questions.js"></script>
 <script type="module" src="assets/js/common.js"></script>
-<script src="assets/js/common-logic.js"></script>
 </body>
 </html>

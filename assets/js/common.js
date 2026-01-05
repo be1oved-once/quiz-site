@@ -26,29 +26,30 @@ function initGoogleOneTap() {
   if (!window.google || !auth) return;
 
   google.accounts.id.initialize({
-    client_id:
-      "54581941326-9bsoei7p9gem6bff3pjsl5tju1ckst8l.apps.googleusercontent.com",
-    callback: async response => {
+    client_id: "54581941326-9bsoei7p9gem6bff3pjsl5tju1ckst8l.apps.googleusercontent.com", // SAME AS FIREBASE
+    callback: async (response) => {
       try {
         const credential = GoogleAuthProvider.credential(
           response.credential
         );
+
         await signInWithCredential(auth, credential);
+
         console.log("✅ One Tap login success");
-      } catch (e) {
-        console.error("❌ One Tap failed", e);
+      } catch (err) {
+        console.error("❌ One Tap sign-in failed:", err);
       }
     },
+use_fedcm_for_prompt: true,   // 🔥 REQUIRED
     auto_select: false,
-    cancel_on_tap_outside: true
+    cancel_on_tap_outside: true,
+    context: "signin"
   });
 
-  google.accounts.id.prompt();
+google.accounts.id.prompt();
 }
+document.addEventListener("DOMContentLoaded", initGoogleOneTap);
 
-document.addEventListener("DOMContentLoaded", () => {
-  initGoogleOneTap();
-});
 
 const sidebar = document.getElementById("rightSidebar");
 const menuBtn = document.getElementById("menuBtn");
@@ -208,9 +209,29 @@ const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 const switchText = document.getElementById("switchText");
 
-function openAuth() {
+function openAuth(mode = "login") {
   authModal.classList.add("show");
   document.body.style.overflow = "hidden";
+
+  // reset errors
+  document.getElementById("loginError").textContent = "";
+  document.getElementById("signupError").textContent = "";
+
+  if (mode === "signup") {
+    loginForm.classList.add("hidden");
+    signupForm.classList.remove("hidden");
+
+    authTitle.textContent = "Sign Up";
+    switchText.textContent = "Already have an account?";
+    switchAuth.textContent = "Login";
+  } else {
+    signupForm.classList.add("hidden");
+    loginForm.classList.remove("hidden");
+
+    authTitle.textContent = "Login";
+    switchText.textContent = "Not have an account?";
+    switchAuth.textContent = "Sign Up";
+  }
 }
 
 function closeAuth() {
@@ -379,6 +400,12 @@ googleBtn.addEventListener("click", async () => {
 
 onAuthStateChanged(auth, async user => {
 
+const lock = document.getElementById("loginLockOverlay");
+
+if (lock) {
+  lock.style.display = user ? "none" : "flex";
+}
+
   const loginBtns = document.querySelectorAll(".auth-login");
   const signupBtns = document.querySelectorAll(".auth-signup");
   const logoutBtns = document.querySelectorAll(".auth-logout");
@@ -460,14 +487,16 @@ function closeSettings() {
 settingsClose?.addEventListener("click", closeSettings);
 
 settingsModal?.addEventListener("click", e => {
-  if (e.target === settingsModal) closeSettings();
+  if (e.target.classList.contains("settings-modal")) {
+    closeSettings();
+  }
 });
+document
+  .querySelector(".settings-box")
+  ?.addEventListener("click", e => e.stopPropagation());
 
 /* Toggle UI only */
-document.addEventListener("click", e => {
-  if (!e.target.classList.contains("toggle-switch")) return;
-  e.target.classList.toggle("active");
-});
+
 
 /* expose globally */
 window.openSettings = openSettings;
@@ -502,6 +531,53 @@ function closeProfilePopup() {
 
 document.addEventListener("click", () => {
   closeProfilePopup();
+});
+/* =========================
+   DESKTOP PROFILE LOCK
+========================= */
+/* =========================
+   DESKTOP PROFILE HARD LOCK
+========================= */
+onAuthStateChanged(auth, user => {
+  const profileBtn = document.getElementById("profileBtn");
+  const profilePopup = document.getElementById("profilePopup");
+  const lockPopup = document.getElementById("profileLockPopup");
+  const profileWrap = document.querySelector(".profile-wrap");
+
+  if (!profileBtn || !profileWrap) return;
+
+  // Desktop only
+  if (window.innerWidth < 768) return;
+
+  // Mark locked state
+  profileWrap.classList.toggle("locked", !user);
+
+  // REMOVE previous click handlers safely
+  profileBtn.replaceWith(profileBtn.cloneNode(true));
+  const newProfileBtn = document.getElementById("profileBtn");
+
+  newProfileBtn.addEventListener("click", e => {
+    e.stopPropagation();
+
+    // 🚫 USER NOT LOGGED IN
+    if (!user) {
+      profilePopup.style.maxHeight = null; // FORCE CLOSE
+      lockPopup.style.display = "block";
+      return;
+    }
+
+    // ✅ USER LOGGED IN → normal behavior
+    lockPopup.style.display = "none";
+    profilePopup.style.maxHeight
+      ? (profilePopup.style.maxHeight = null)
+      : (profilePopup.style.maxHeight =
+          profilePopup.scrollHeight + "px");
+  });
+
+  // Click outside closes lock popup
+  document.addEventListener("click", () => {
+    lockPopup.style.display = "none";
+  });
 });
 /* =========================
    NOTIFICATIONS (GLOBAL)
@@ -647,7 +723,6 @@ onAuthStateChanged(auth, user => {
 });
 
 const TEMP_TEST_REF = doc(db, "tempTests", "current");
-
 onSnapshot(TEMP_TEST_REF, snap => {
   if (!snap.exists()) {
     injectTempTestItem(false);
@@ -655,6 +730,21 @@ onSnapshot(TEMP_TEST_REF, snap => {
   }
   
   const data = snap.data();
+  
+  // 🔥 ADMIN HEARTBEAT CHECK
+  const lastSeen = data.adminLastSeen?.toDate?.();
+  if (!lastSeen) {
+    injectTempTestItem(false);
+    return;
+  }
+  
+  const diff = Date.now() - lastSeen.getTime();
+  
+  // ⛔ Admin offline → hide test
+  if (diff > 15000) {
+    injectTempTestItem(false);
+    return;
+  }
   
   if (data.status === "live") {
     injectTempTestItem(true);

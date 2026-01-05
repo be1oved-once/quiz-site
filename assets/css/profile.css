@@ -1,254 +1,495 @@
 /* =========================
-   PROFILE PAGE
+   PROFILE PAGE LAYOUT
 ========================= */
-
-.profile-content {
-  padding: 16px;
-  margin-top: 56px;
-  margin-left: 3vw;
+:root {
+  --accent: #4f46e5;
+  --violet: #6c63ff;
+  --violet-soft: rgba(108, 99, 255, 0.15);
+  --border-light: #e6e6ee;
+  --bg-light: #ffffff;
+  --text-light: #1c1c1c;
 }
-@media (min-width: 768px){
-  .profile-content{
-    margin-left: 0;
+
+body.dark {
+  --accent: #818cf8;
+  --bg-light: #0f172a;
+  --text-light: #e5e7eb;
+  --border-light: rgba(255,255,255,0.08);
+  --violet-soft: rgba(108, 99, 255, 0.25);
+}
+.profile-content {
+  margin-left: 4vw;
+  margin-top: 64px;
+  padding: 20px 16px 32px;
+  max-width: 520px;
+}
+
+/* Desktop refinement */
+@media (min-width: 768px) {
+  .profile-content {
+    margin-top: 72px;
+    padding: 28px 20px 40px;
   }
 }
+
 /* =========================
-   HEADER (same style as performance)
+   HEADER
 ========================= */
 
 .perform-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 10px;
 
-  padding: 14px 18px;
-  margin-bottom: 18px;
+  padding: 10px 14px;
+  margin-bottom: 22px;
 
-  border-radius: 18px;
-  border: 2px solid rgba(108,99,255,0.45);
+  border-radius: 14px;
+  border: 1px solid rgba(108,99,255,0.35);
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(108,99,255,0.10),
-      rgba(255,255,255,0.85)
-    );
-
-  backdrop-filter: blur(6px);
-  box-shadow:
-    0 10px 25px rgba(108,99,255,0.15),
-    inset 0 0 0 1px rgba(255,255,255,0.6);
+  background: rgba(108,99,255,0.08);
 }
 
-/* Title */
 .perform-header h2 {
-  margin-right: auto;
+  flex: 1;
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-light);
 }
 
 /* =========================
    BACK BUTTON
 ========================= */
-.back-btn,
-.save-btn {
-  padding: 6px 12px;
-  font-size: 12px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
 
 .back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-margin-right: 3px;
-  padding: 6px 12px;
-  border-radius: 999px;
-
-  background: rgba(255,255,255,0.85);
-  border: 1.5px solid rgba(108,99,255,0.45);
-
-  font-size: 13px;
+  padding: 5px 12px;
+  font-size: 12.5px;
   font-weight: 500;
+
+  border-radius: 999px;
+  border: 1px solid rgba(108,99,255,0.45);
+  background: transparent;
   color: var(--violet);
 
   cursor: pointer;
-  transition: all 0.25s ease;
 }
 
-.back-btn i {
-  font-size: 13px;
-}
-
-/* Hover */
-.back-btn:hover {
-  background: rgba(108,99,255,0.12);
-  box-shadow: 0 6px 16px rgba(108,99,255,0.25);
-}
-
-/* Active (tap) */
 .back-btn:active {
   transform: scale(0.96);
 }
-.back-btn:hover {
-  background: rgba(108,99,255,0.12);
-}
 
-body.dark .perform-header {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(108,99,255,0.20),
-      rgba(15,23,42,0.95)
-    );
-
-  border-color: rgba(108,99,255,0.6);
-
-  box-shadow:
-    0 14px 32px rgba(0,0,0,0.55),
-    inset 0 0 0 1px rgba(255,255,255,0.05);
-}
-
-body.dark .perform-header h2 {
-  color: #e5e7eb;
-}
-
-body.dark .back-btn {
-  background: rgba(15,23,42,0.85);
-  border-color: rgba(108,99,255,0.6);
-  color: #c7bfff;
-}
-
-body.dark .back-btn:hover {
-  background: rgba(108,99,255,0.18);
-}
-
-/* Back + Save buttons */
-
-
-.back-btn {
-  background: rgba(255,255,255,0.85);
-  border: 1px solid rgba(108,99,255,0.45);
-  color: var(--violet);
-}
-
-/* Save */
-.save-btn {
-  background: linear-gradient(135deg, #6c63ff, #8b5cf6);
-  border: none;
-  color: #fff;
-}
-.save-btn:hover {
-  opacity: 0.9;
-}
-
-.profile-page {
-  display: flex;
-  justify-content: center;
-  padding: 24px;
-}
+/* =========================
+   REMOVE CARD FEEL
+========================= */
 
 .profile-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--bg-light);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 20px;
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 
 .profile-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   margin-bottom: 18px;
 }
 
+/* =========================
+   FORM FIELDS
+========================= */
+
 .field {
-  margin-bottom: 16px;
-  position: relative;
+  margin-bottom: 18px;
 }
 
 .field label {
   display: block;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   margin-bottom: 6px;
+}
+/* ===== Header right actions ===== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ===== Inline Edit button ===== */
+.edit-inline-btn {
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+
+  border-radius: 999px;
+  border: 1px solid rgba(108,99,255,0.45);
+  background: transparent;
+  color: var(--violet);
+
+  cursor: pointer;
+  transition: 
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* Hover – light mode */
+.edit-inline-btn:hover {
+  background: rgba(108,99,255,0.12);
+  border-color: rgba(108,99,255,0.8);
+}
+
+/* Active */
+.edit-inline-btn:active {
+  transform: scale(0.95);
+} /*  */
+.edit-inline-btn i{
+  font-size: 12px;
+  margin-right: 4px;
+}
+.icon-pencil {
+  width: 14px;
+  height: 14px;
+  color: #6366f1;
+  margin-right: 4px;
+  margin-top: 3px;
+}
+body.dark .icon-pencil {
+  color: #a5b4fc;
+}
+/* ===== Dark mode: Edit inline button ===== */
+body.dark .edit-inline-btn {
+  color: #c7d2fe;
+  border-color: rgba(129,140,248,0.5);
+}
+
+body.dark .edit-inline-btn:hover {
+  background: rgba(129,140,248,0.18);
+  border-color: rgba(129,140,248,0.9);
 }
 
 .field input {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1.5px solid var(--border-light);
+  padding: 11px 12px;
+
   font-size: 14px;
+  border-radius: 10px;
+  border: 1.4px solid rgba(0,0,0,0.18);
+
+  background: #fff;
+  transition: border-color .2s ease, box-shadow .2s ease;
 }
 
+/* Custom focus */
+.field input:focus {
+  outline: none;
+  border: 2px solid #6c63ff;
+}
+
+/* DOB arrow alignment */
+input[type="date"] {
+  padding-right: 36px;
+}
+
+/* Hint */
 .hint {
   font-size: 11px;
-  color: #777;
+  margin-top: 4px;
+  opacity: 0.65;
 }
 
-/* Custom select */
+/* =========================
+   GENDER SELECT (COMPACT)
+========================= */
+
 .select-btn {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: 1.5px solid var(--border-light);
-  background: var(--bg-light);
-  text-align: left;
+  padding: 11px 12px;
+
   font-size: 14px;
+  text-align: left;
+
+  border-radius: 10px;
+  border: 1.4px solid rgba(0,0,0,0.18);
+  background: #fff;
+
+  cursor: pointer;
+  position: relative;
 }
 
+/* Dropdown arrow */
+.select-btn::after {
+  content: "▾";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .6;
+}
+
+/* Dropdown */
 .select-popup {
   position: absolute;
-  top: 100%;
   left: 0;
   right: 0;
-  background: var(--bg-light);
-  border: 1px solid var(--border-light);
-  border-radius: 14px;
   margin-top: 6px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.15);
+
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.18);
+
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  overflow: hidden;
+
   display: none;
-  z-index: 20;
-}
+  z-index: 50;
 
-.select-popup button {
-  width: 100%;
-  padding: 10px;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: 14px;
-}
-
-.select-popup button:hover {
-  background: rgba(108,99,255,.15);
+  animation: dropdownFade .18s ease;
 }
 
 .select-popup.show {
   display: block;
 }
 
+.select-popup button {
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.select-popup button:hover {
+  background: rgba(108,99,255,.12);
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+   SAVE BUTTON (LIGHTER)
+========================= */
+
 .save-btn {
-  width: 100%;
-  padding: 12px;
+  width: 120px;
+  margin: 18px auto 0;
+  padding: 7px;
+  font-size: 15px;
+  font-weight: 500;
   border-radius: 999px;
   border: none;
   background: linear-gradient(135deg, #6c63ff, #8b5cf6);
   color: #fff;
-  font-size: 15px;
-  font-weight: 600;
+  cursor: pointer;
 }
+
+.save-btn:active {
+  transform: scale(.97);
+}
+
+/* =========================
+   MESSAGE
+========================= */
 
 .msg {
   margin-top: 12px;
-  font-size: 13px;
+  font-size: 12.5px;
   text-align: center;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+body.dark .field input,
+body.dark .select-btn {
+  background: #020617;
+  color: #e5e7eb;
+  border-color: rgba(255,255,255,0.2);
+}
+
+body.dark .select-popup {
+  background: #020617;
+}
+
+body.dark .hint {
+  color: #9ca3af;
+}
+
+body.dark .perform-header {
+  background: rgba(108,99,255,0.18);
+}
+/* =========================
+   GENDER DROPDOWN — FIXED
+========================= */
+
+.field {
+  position: relative;
+}
+
+.select-btn {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 14px;
+
+  border-radius: 10px;
+  border: 1.4px solid rgba(0,0,0,.18);
+  background: #fff;
+
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Arrow */
+.select-btn::after {
+  content: "▾";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: .55;
+}
+
+/* Popup container */
+.select-popup {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.18);
+
+  box-shadow: 0 14px 30px rgba(0,0,0,.22);
+  padding: 8px;
+
+  display: none;
+  z-index: 999;
+}
+
+/* Show state */
+.select-popup.show {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+/* Options */
+.select-popup button {
+  padding: 10px 8px;
+  font-size: 13.5px;
+
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.15);
+  background: #f9fafb;
+
+  cursor: pointer;
+}
+
+/* Hover / tap */
+.select-popup button:hover,
+.select-popup button:active {
+  background: rgba(108,99,255,.15);
+  border-color: rgba(108,99,255,.45);
+}
+
+/* Dark mode */
+body.dark .select-btn {
+  background: #020617;
+  color: #e5e7eb;
+  border-color: rgba(255,255,255,.2);
+}
+
+body.dark .select-popup {
+  background: #020617;
+  border-color: rgba(255,255,255,.2);
+}
+
+body.dark .select-popup button {
+  background: rgba(255,255,255,.05);
+  color: #e5e7eb;
+}
+/* =========================
+   DATE INPUT — FIXED LOOK
+========================= */
+
+.field input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+
+  padding-right: 44px; /* space for custom icon */
+  position: relative;
+}
+
+/* Hide native calendar icon (Chrome / Android visual fix) */
+.field input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  width: 44px;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Custom calendar icon */
+
+
+/* Focus state — MATCH YOUR THEME */
+.field input[type="date"]:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.18);
+}
+
+/* Dark mode */
+body.dark .field input[type="date"] {
+  background: #020617;
+  color: #e5e7eb;
+}
+/* Calendar icon ONLY for DOB */
+.dob-field::after {
+  content: "📅";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  opacity: 0.55;
+  pointer-events: none;
+}
+body.dark .dob-field::after {
+  opacity: 0.7;
+}
+.edit-btn {
+  margin-bottom: 16px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  border-radius: 999px;
+  border: 1px solid rgba(108,99,255,.45);
+  background: transparent;
+  color: var(--violet);
+  cursor: pointer;
+}
+/* ===== Readonly visual fix ===== */
+.field input[readonly] {
+  opacity: 1;              /* ❗ stop gray look */
+  color: inherit;
+  background: var(--bg-light);
+  cursor: default;
+}
+
+/* Gender readonly button */
+.select-btn.readonly {
+  opacity: 1;              /* ❗ stop disabled look */
+  color: inherit;
+  background: var(--bg-light);
+  cursor: default;
+  pointer-events: none;    /* ❗ no interaction */
+}
+body.dark .field input[readonly],
+body.dark .select-btn.readonly {
+  background: #020617;
+  color: #e5e7eb;
 }

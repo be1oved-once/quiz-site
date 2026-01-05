@@ -71,6 +71,8 @@ let round1Completed = false;
 let timer = null;
 let autoNextTimeout = null;
 let timeLeft = 45;
+let examTimer = null;
+let examTimeLeft = 0;
 let answered = false;
 let round1Snapshot = [];
 window.round1Snapshot = round1Snapshot;
@@ -270,7 +272,13 @@ let limit = parseInt(limitInput.value || max);
 limit = Math.max(1, Math.min(limit, max));
 limitInput.value = limit;
 
-baseQuestions = selectedAttempt.questions
+let questionsPool = [...selectedAttempt.questions];
+
+if (window.TIC_SETTINGS?.randomizeQuestions) {
+  questionsPool.sort(() => Math.random() - 0.5);
+}
+
+baseQuestions = questionsPool
   .slice(0, limit)
   .map(q => ({
     ...q,
@@ -291,6 +299,7 @@ startRound(baseQuestions);
    RESET
 ========================= */
 resetBtn.onclick = () => {
+  clearExamTimer();
   resetReviewState();
   marks = 0;
 round1Completed = false;
@@ -336,10 +345,25 @@ function setLocalXP(uid, xp) {
 ========================= */
 let activeQuestions = [];
 function startRound(list) {
+  // 🔥 ABSOLUTE RESET (CRITICAL)
+  clearTimer();
+  clearExamTimer();
+
   activeQuestions = list;
   qIndex = 0;
   quizArea.classList.remove("hidden");
-  renderQuestion();
+
+  // 🔥 MTP EXAM MODE (120 mins)
+
+  if (
+  window.TIC_SETTINGS?.rtpExamMode &&
+  selectedAttempt?.type === "MTP"
+) {
+  clearTimer();
+  startExamTimer(120); // 🔥 120 minutes
+}
+
+renderQuestion();
 }
 
 /* =========================
@@ -347,7 +371,16 @@ function startRound(list) {
 ========================= */
 function startTimer() {
   clearInterval(timer);
-  timeLeft = 45;
+
+  // ⛔ DO NOT RUN IN MTP EXAM MODE
+  if (
+    window.TIC_SETTINGS?.rtpExamMode &&
+    selectedAttempt?.type === "MTP"
+  ) {
+    return;
+  }
+
+  timeLeft = Number(window.TIC_SETTINGS?.questionTime || 45);
   updateTimer();
 
   timer = setInterval(() => {
@@ -356,9 +389,9 @@ function startTimer() {
 
     if (timeLeft <= 0) {
       clearInterval(timer);
-      autoNext(); // ⬅ NO correct shown
+      autoNext();
     }
-  }, 700);
+  }, 1000); // ⬅ FIXED from 700ms
 }
 
 function updateTimer() {
@@ -370,6 +403,44 @@ function clearTimer() {
   clearInterval(timer);
 }
 
+/* =========================
+   EXAM TIMER (MTP MODE)
+========================= */
+
+/* =========================
+   MTP EXAM TIMER (120 MIN)
+========================= */
+
+function startExamTimer(minutes) {
+  clearExamTimer();
+  
+  examTimeLeft = minutes * 60;
+  updateExamTimer();
+  
+  examTimer = setInterval(() => {
+    examTimeLeft--;
+    updateExamTimer();
+    
+    if (examTimeLeft <= 0) {
+      clearExamTimer();
+      finishRound(); // auto submit
+    }
+  }, 1000);
+}
+
+function updateExamTimer() {
+  const m = Math.floor(examTimeLeft / 60);
+  const s = examTimeLeft % 60;
+  timeEl.textContent =
+    String(m).padStart(2, "0") +
+    ":" +
+    String(s).padStart(2, "0");
+}
+
+function clearExamTimer() {
+  clearInterval(examTimer);
+  examTimer = null;
+}
 /* =========================
    RENDER
 ========================= */
@@ -409,23 +480,44 @@ autoNextTimeout = null;
 
   optionsBox.innerHTML = "";
 
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.disabled = q.attempted;
+  let options = q.options.map((opt, i) => ({
+  text: opt,
+  index: i
+}));
 
-    if (q.attempted && i === q.correctIndex) {
-      btn.classList.add("correct");
-    }
+if (window.TIC_SETTINGS?.randomizeOptions) {
+  options.sort(() => Math.random() - 0.5);
+}
 
-    btn.onclick = () => handleAnswer(btn, i);
-    optionsBox.appendChild(btn);
-  });
+options.forEach(({ text, index }, i) => {
+  const btn = document.createElement("button");
+  btn.textContent = window.TIC_SETTINGS?.showABCD
+    ? String.fromCharCode(65 + i) + ". " + text
+    : text;
+
+  btn.disabled = q.attempted;
+
+  if (q.attempted && index === q.correctIndex) {
+    btn.classList.add("correct");
+  }
+
+  btn.onclick = () => handleAnswer(btn, index);
+  optionsBox.appendChild(btn);
+});
 
   prevBtn.disabled = qIndex === 0;
   nextBtn.disabled = !q.attempted;
 
-  if (!q.attempted) startTimer();
+  if (
+  window.TIC_SETTINGS?.questionTimer &&
+  !q.attempted &&
+  !(
+    window.TIC_SETTINGS?.rtpExamMode &&
+    selectedAttempt?.type === "MTP"
+  )
+) {
+  startTimer();
+}
 }
 
 /* =========================
@@ -460,7 +552,11 @@ if (currentUser) {
   await updateBestXpIfNeeded();
 }
 
+  if (window.TIC_SETTINGS?.autoSkip) {
   setTimeout(next, 1000);
+} else {
+  nextBtn.disabled = false;
+}
 } else {
   btn.classList.add("wrong");
   all[q.correctIndex].classList.add("correct");
@@ -475,9 +571,11 @@ if (round === 1) {
   nextBtn.disabled = false;
 
   // ⏳ Auto move after 3s (if user doesn't click)
-  autoNextTimeout = setTimeout(() => {
-    next();
-  }, 3000);
+  if (window.TIC_SETTINGS?.autoSkip) {
+  autoNextTimeout = setTimeout(next, 3000);
+} else {
+  nextBtn.disabled = false;
+}
     q.selectedIndex = idx;
 }
 }
@@ -527,6 +625,7 @@ nextBtn.onclick = () => {
    FINISH ROUND
 ========================= */
 function finishRound() {
+  clearExamTimer();
   if (round === 1 && !round1Completed) {
     round1Completed = true;
 

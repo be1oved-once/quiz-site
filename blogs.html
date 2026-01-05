@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Offline</title>
+  <title>Blogs|Tickar</title>
   <link rel="stylesheet" href="assets/css/common.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  
@@ -109,58 +110,67 @@ body.dark .skeleton .sk-btn {
   0% { background-position: 100% 0; }
   100% { background-position: 0 0; }
 }
+/* =========================
+   BLOG LIST – COMPACT MODE
+========================= */
+
 .blogs-page {
-  padding: 20px 16px;
-  max-width: 900px;
-  margin-top: 35px;
-  margin-left: 12px;
+  padding: 16px 14px;
+  max-width: 760px;
+  margin-top: 30px;
 }
 
+/* Search */
+.blog-search input {
+  padding: 9px 14px;
+  font-size: 13px;
+}
+
+/* List */
 .blogs-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;                 /* 🔽 reduced gap */
-  margin: 28px 8px;         /* 🔽 tighter margins */
+  gap: 10px;
+  margin: 18px 4px;
 }
 
-/* Blog Card */
+/* Card */
 .blog-card {
   background: var(--bg-light);
-  border: 1.5px solid var(--border-light);
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 12px 14px;
+  transition: transform .15s ease, box-shadow .15s ease;
 }
-.blog-card {
-  padding: 12px 14px;       /* 🔽 reduced padding */
-  border-radius: 14px;      /* 🔽 slightly smaller radius */
-}
+
 .blog-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.06);
 }
 
 /* Title */
 .blog-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-light);
-}
-
-/* Excerpt */
-.blog-excerpt {
-  color: rgba(0,0,0,0.75);
-}
-.blog-title {
-  font-size: 16px;          /* 🔽 smaller heading */
-  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 600;
   line-height: 1.25;
+  margin-bottom: 4px;
+  overflow: hidden;
 }
 
-/* Excerpt */
+/* Excerpt (tight) */
 .blog-excerpt {
-  font-size: 13px;          /* 🔽 smaller text */
-  line-height: 1.45;
-  margin-bottom: 10px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  opacity: .75;
+  margin-bottom: 8px;
+
+  /* limit to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+
 /* Footer */
 .blog-footer {
   display: flex;
@@ -168,27 +178,24 @@ body.dark .skeleton .sk-btn {
   justify-content: space-between;
 }
 
-/* Date pill */
+/* Date */
 .blog-date {
-  font-size: 11px;
-  padding: 3px 8px;
+  font-size: 10.5px;
+  padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(108,99,255,0.12);
+  background: var(--violet-soft);
   color: var(--violet);
   font-weight: 600;
 }
 
-/* Read More button */
+/* Button – subtle */
 .read-more-btn {
-  font-size: 12px;
-  padding: 5px 12px;
+  font-size: 11px;
+  padding: 4px 10px;
   border-radius: 999px;
-  border: 1.5px solid var(--violet);
+  border: 1px solid var(--violet);
   color: var(--violet);
-  background: transparent;
-  font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
 }
 
 .read-more-btn:hover {
@@ -196,6 +203,10 @@ body.dark .skeleton .sk-btn {
   color: #fff;
 }
 
+/* Dark */
+body.dark .blog-card {
+  background: #0f172a;
+}
 /* --------------------
    DARK MODE
 -------------------- */
@@ -308,18 +319,19 @@ body.dark .blog-search input {
     <!-- BLOG 1 -->
     <article class="blog-card">
       <h1 class="blog-title">
-        Understanding Demand in Economics
+        CA Foundation Exam in One Month...
       </h1>
 
       <p class="blog-excerpt">
-        Demand is one of the most fundamental concepts in economics.
-        It explains how consumers react to changes in price, income,
-        and preferences in a market.
+        Agar aap CA Foundation student ho aur exam sirf <strong>1 month door</strong> hai,
+    toh yeh phase sabse critical hota hai.
+    Is stage par naya padhna nahi,
+    balki jo padha hai usko <strong>exam-ready banana
       </p>
 
       <div class="blog-footer">
         <span class="blog-date">01/01/2026</span>
-        <a href="/blogs/demand-theory.html" class="read-more-btn">
+        <a href="/Blog/Essential-Things-You-Must-Keep-in-Mind.html" class="read-more-btn">
           Read More
         </a>
       </div>

@@ -15,6 +15,8 @@ import { db } from "./firebase.js";
 import { auth } from "./firebase.js";
 
 const TEMP_TEST_REF = doc(db, "tempTests", "current");
+const skeleton = document.getElementById("studentSkeleton");
+const quizSetup = document.querySelector(".quiz-setup");
 
 let testStarted = false;
 let serverTimerInterval = null;
@@ -28,12 +30,24 @@ onSnapshot(TEMP_TEST_REF, (snap) => {
   }
 
   const data = snap.data();
+  // 🔥 ADMIN HEARTBEAT CHECK
+const lastSeen = data.adminLastSeen?.toDate?.();
+if (!lastSeen) {
+  console.log("❌ Admin offline");
+  return;
+}
+
+const diff = Date.now() - lastSeen.getTime();
+if (diff > 15000) {
+  console.log("⛔ Admin inactive → test invalid");
+  return;
+}
   window.currentTestId = data.testId;
   // ✅ Only react when test is LIVE
   if (data.status !== "live") {
-    console.log("⌛ Test not live yet");
-    return;
-  }
+  console.log("⌛ Waiting for live test");
+  return; // skeleton stays
+}
 
   // ⛔ Prevent double start
   if (testStarted) return;
@@ -92,6 +106,14 @@ onSnapshot(TEMP_TEST_REF, (snap) => {
      START QUIZ
   ========================= */
   quizArea.classList.remove("hidden");
+  // ✅ HIDE SKELETON – TEST ARRIVED
+// ✅ remove skeleton
+if (skeleton) skeleton.style.display = "none";
+
+// ✅ reveal UI safely
+document
+  .querySelectorAll(".hidden-by-skeleton")
+  .forEach(el => el.classList.remove("hidden-by-skeleton"));
   startStudentQuiz(); // 👈 tumhara existing function
 });
 

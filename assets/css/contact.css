@@ -44,7 +44,7 @@
   padding: 12px 14px;
   font-size: 13.5px;
   border-radius: 10px;
-  border: 1.4px solid #d6d6e7;
+  border: 2px solid #d6d6e7;
   background: #fff;
   color: #111;
   outline: none;
@@ -163,4 +163,54 @@ body.dark .contact-form textarea:focus {
 .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+/* =========================
+   CONTACT – THANK YOU SVG
+========================= */
+
+.thankyou-illustration {
+  margin-top: 36px;
+  text-align: center;
+}
+
+/* SVG itself */
+.contact-illustration {
+  width: 90%;
+  max-width: 260px;     /* desktop size */
+  height: auto;
+  margin: 0 auto 7px;
+  display: block;
+}
+
+/* Text below SVG */
+.thankyou-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* =========================
+   DARK MODE SUPPORT
+========================= */
+
+body.dark .thankyou-text {
+  color: #cbd5f5;
+}
+
+/* =========================
+   MOBILE TUNING
+========================= */
+
+@media (max-width: 768px) {
+  .thankyou-illustration {
+    margin-top: 28px;
+  }
+
+  .contact-illustration {
+    max-width: 200px;   /* smaller on phone */
+  }
+
+  .thankyou-text {
+    font-size: 13px;
+  }
 }

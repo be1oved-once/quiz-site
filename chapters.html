@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html,>
+<html lang="jp">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
 
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/assets/css/penalty.css">
   <link rel="preconnect" href="https://accounts.google.com">
 <link rel="preconnect" href="https://apis.google.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-   
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -24,222 +24,20 @@
 <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
 <link rel="manifest" href="assets/favicon/site.webmanifest">
 
-<meta name="theme-color" content="#6c63ff">
-<style>
-  /* =========================
-   STUDENT TEST SKELETON
-========================= */
-
-.student-skeleton {
-  padding: 16px;
-  max-width: 720px;
-  margin: auto;
-}
-
-.student-skeleton > div {
-  margin-bottom: 14px;
-}
-
-/* shimmer base */
-.student-skeleton div[class^="sk-"] {
-  background: linear-gradient(
-    90deg,
-    rgba(0,0,0,0.06) 25%,
-    rgba(0,0,0,0.12) 37%,
-    rgba(0,0,0,0.06) 63%
-  );
-  background-size: 400% 100%;
-  animation: shimmer 1.4s infinite;
-  border-radius: 12px;
-}
-
-body.dark .student-skeleton div[class^="sk-"] {
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.06) 25%,
-    rgba(255,255,255,0.12) 37%,
-    rgba(255,255,255,0.06) 63%
-  );
-}
-
-.sk-head {
-  height: 34px;
-  width: 140px;
-  margin-bottom: 10px;
-}
-
-.sk-card {
-  padding: 12px;
-  border-radius: 14px;
-  border: 1px solid var(--border-light);
-}
-
-.sk-line {
-  height: 14px;
-  width: 60%;
-  margin-bottom: 8px;
-}
-
-.sk-line.short {
-  width: 40%;
-}
-
-.sk-pill {
-  height: 30px;
-  width: 120px;
-  border-radius: 999px;
-}
-
-.sk-textarea {
-  height: 70px;
-  width: 100%;
-}
-
-.sk-qcount {
-  height: 24px;
-  width: 90px;
-  margin-left: auto;
-}
-
-.sk-question {
-  height: 22px;
-  width: 90%;
-  margin-bottom: 12px;
-}
-
-.sk-option {
-  height: 36px;
-  width: 100%;
-  margin-bottom: 8px;
-  border-radius: 10px;
-}
-
-/* hide real UI initially */
-/* Skeleton only hides via class, not CSS hard-hide */
-.hidden-by-skeleton {
-  display: none !important;
-}
-/* =========================
-   ACTIVE / LIVING SKELETON
-========================= */
-
-/* Wrapper shimmer sweep */
-.student-skeleton {
-  position: relative;
-  overflow: hidden;
-}
-
-/* Moving light sweep */
-.student-skeleton::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 60%;
-  height: 100%;
-
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,0.25) 50%,
-    transparent 100%
-  );
-
-  animation: skeleton-sweep 1.8s infinite;
-}
-
-/* Dark mode sweep */
-body.dark .student-skeleton::after {
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,0.18) 50%,
-    transparent 100%
-  );
-}
-
-/* Gentle breathing effect */
-.student-skeleton {
-  animation: skeleton-breathe 2.4s ease-in-out infinite;
-}
-
-/* Animations */
-@keyframes skeleton-sweep {
-  0% {
-    left: -60%;
-  }
-  100% {
-    left: 120%;
-  }
-}
-
-@keyframes skeleton-breathe {
-  0%,
-  100% {
-    opacity: 0.96;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-.student-skeleton div[class^="sk-"] {
-  animation:
-    shimmer 1.4s infinite,
-    line-pulse 2.8s ease-in-out infinite;
-}
-
-@keyframes line-pulse {
-  0%, 100% {
-    transform: scaleX(1);
-  }
-  50% {
-    transform: scaleX(0.98);
-  }
-}
-
-</style>
+<meta name="theme-color" content="#000000">
 </head>
-
 <body>
 
   <!-- PAGE CONTENT ONLY -->
 <main class="practice-page">
-  <!-- ================= STUDENT TEST SKELETON ================= -->
-<div id="studentSkeleton" class="student-skeleton">
-
-  <div class="sk-head"></div>
-
-  <div class="sk-card">
-    <div class="sk-line short"></div>
-    <div class="sk-pill"></div>
-  </div>
-
-  <div class="sk-card">
-    <div class="sk-textarea"></div>
-  </div>
-
-  <div class="sk-card">
-    <div class="sk-qcount"></div>
-  </div>
-
-  <div class="sk-card">
-    <div class="sk-question"></div>
-    <div class="sk-option"></div>
-    <div class="sk-option"></div>
-    <div class="sk-option"></div>
-    <div class="sk-option"></div>
-  </div>
-
-</div>
-
   <div class="head-box">
     
   <div class="header-text">
-    <h3>Temp<span>'</span>Wise</h3>
+    <h3>Chapter<span>'</span>Wise</h3>
   </div>
 
   </div>
-<section class="quiz-setup hidden-by-skeleton">
+<section class="quiz-setup">
 
 <!-- SUBJECT + XP ROW -->
 <div class="select-row subject-row">
@@ -248,24 +46,27 @@ body.dark .student-skeleton::after {
   <button id="subjectBtn" class="select-btn">
     <span id="subjectText">None Selected</span>
   </button>
+    <div class="xp-box">
+    XP: <span id="xpValue">00</span>
+  </div>
 </div>
 
 <!-- CHAPTER ROW (NO XP HERE) -->
 <div class="select-row">
-<div class="page-textbox">
-  <textarea
-    id="pageTextBox"
-    class="option-textarea readonly"
-    rows="2"
-    readonly
-    placeholder="Test instructions will appear here…"
-  ></textarea>
-</div>
+  <span class="label">Chapter:</span>
+  <button id="chapterBtn" class="select-btn disabled">
+    <span id="chapterText">None Selected</span>
+  </button>
+  <div id="subjectPopup" class="select-popup sub-select"></div>
 </div>
   
 
   <!-- dropdowns -->
+  <div id="chapterPopup" class="select-popup ch-select"></div>
+
   <div class="quiz-actions">
+    <button id="startQuiz" class="primary-btn startt">Start</button>
+    <button id="resetQuiz" class="secondary-btn">Reset</button>
     <div class="question-limit">
   Questions:
 <input
@@ -274,13 +75,13 @@ body.dark .student-skeleton::after {
   min="1"
   inputmode="numeric"
   pattern="[0-9]*"
-  value="5" disabled
+  value="25" disabled
 />
 </div>
   </div>
 </section>
 
-<section id="quizArea" class="quiz-area hidden-by-skeleton hidden">
+<section id="quizArea" class="quiz-area hidden">
 <div class="timer" id="timerWrap">
   <span class="timer-icon">
     <svg viewBox="0 0 24 24" class="clock-svg">
@@ -300,7 +101,7 @@ body.dark .student-skeleton::after {
   <button id="prevBtn" class="nav-btn">Previous</button>
 
   <div class="nav-text">
-    <span id="roundLabel">Practice</span>
+    <span id="roundLabel">Practic</span>
   </div>
 
   <button id="nextBtn" class="nav-btn primary">Next</button>
@@ -341,7 +142,7 @@ body.dark .student-skeleton::after {
 
     <audio id="vnAudio" preload="metadata">
       <!-- YOU WILL PUT MP3 HERE LATER -->
-      <!-- <source src="assets/audio/chapter1.mp3" type="audio/mpeg"> -->
+      <source src="assets/audio/chapter1.mp3" type="audio/mpeg">
     </audio>
   </div>
 </div>
@@ -352,18 +153,25 @@ body.dark .student-skeleton::after {
 </section>
 </main>
 
-<!----<div id="penaltyOverlay" class="penalty-overlay hidden">
-  <div class="penalty-box">
-    <h2>⚠️ Warning</h2>
-    <p>You left exam mode</p>
-    <p class="penalty-time">
-      Resume in <span id="penaltyTime">45</span>s
-    </p>
+<div id="penaltyOverlay" class="penalty-overlay hidden" aria-live="assertive">
+  <div class="penalty-content">
+<h1>FOCUS LOST</h1>
+<p>Unusual activity detected.<br>This attempt is monitored.</p>
+
+    <div class="penalty-time">
+      <span id="penaltyTime">45</span>
+      <small>seconds</small>
+    </div>
   </div>
-</div>-->
+</div>
+
   <script src="assets/js/common-layout.js"></script>
+  <script src="assets/js/settings.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
-<script type="module" src="assets/js/student-test.js"></script>
+<script type="module" src="assets/js/user-metrics-init.js"></script>
+<script type="module" src="assets/js/xp.js"></script>
+<script type="module" src="assets/js/questions-logic.js"></script>
+<script type="module" src="assets/js/questions.js"></script>
 <script type="module" src="assets/js/common.js"></script>
 <script src="assets/js/common-logic.js"></script>
 </body>
