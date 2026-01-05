@@ -2,7 +2,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-  signInWithPopup
+  signInWithPopup,
+  sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 import {
@@ -301,45 +302,37 @@ signupForm.addEventListener("submit", async e => {
   const email = signupEmail.value.trim();
   const password = signupPassword.value;
 
-  if (!signupTurnstileToken) {
-    errorBox.textContent = "Please verify you are human";
-    return;
-  }
+try {
+  const userCred = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
-  try {
-    const verify = await fetch("/api/verify-signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        token: signupTurnstileToken
-      })
-    });
+  const user = userCred.user;
 
-    const data = await verify.json();
+  // 📩 Send verification email
+  await sendEmailVerification(user, {
+    url: "http://localhost:7700/signup-verified.html"
+  });
 
-    if (!verify.ok) {
-      errorBox.textContent = data.error || "Signup failed";
-      return;
-    }
+  console.log("📩 Verification email sent");
 
-    // reset token so replay is impossible
-    signupTurnstileToken = null;
+  // 🔒 Logout until verified
+  await auth.signOut();
 
-    closeAuth();
+  closeAuth();
 
-  } catch (err) {
-    errorBox.textContent = "Signup failed. Try again.";
-  }
+  // ➜ Verification info page
+  window.location.href = "/signup-verified.html";
+
+} catch (err) {
+  console.error("❌ Signup failed:", err);
+  errorBox.textContent = err.message.replace("Firebase:", "");
+}
 });
 }
-let signupTurnstileToken = null;
 
-window.onSignupTurnstile = function (token) {
-  signupTurnstileToken = token;
-};
 async function ensureUserProfile(user) {
   if (!user) return;
 

@@ -364,12 +364,7 @@
   />
   <p class="auth-error" id="otpError"></p>
 </div> ----->
-<div
-  class="cf-turnstile"
-  data-sitekey="0x4AAAAAACJINcs7IR4NRhGI"
-  data-theme="auto"
-  data-callback="onSignupTurnstile"
-></div>
+
   <p class="auth-error" id="signupError"></p>
 
   <button type="submit" class="primary-btn">Sign Up</button>

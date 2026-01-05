@@ -1,6 +1,6 @@
 
 
-const CACHE_NAME = "tic-kar-v4";
+const CACHE_NAME = "tic-kar-v5";
 
 /* =========================
    PRECACHE (SAFE)
@@ -29,10 +29,6 @@ const PRECACHE = [
   "/thoughts.html",
 
   /* blog pages */
-  "/Blog/Essential-Things-You-Should-Know.html",
-  "/Blog/how-to-speed-up-handwriting.html",
-  "/Blog/i-knew-everything-forgot.html",
-  "/Blog/my-teacher-was-wrong.html",
 
   /* styles */
   "/assets/css/common.css",
@@ -53,10 +49,8 @@ const PRECACHE = [
   "/js/common-layout.js",
   "/js/common-logic.js",
   "/js/common.js",
-  "/js/firebase.js",
   "/js/profile.js",
   "/js/performance-logic.js",
-  "/js/chatroom.js",
   "/js/bookmark-logic.js",
   "/js/law-logic.js",
   "/js/law-pdf-logic.js",
@@ -67,9 +61,6 @@ const PRECACHE = [
   "/js/questions-logic-rtp.js",
   "/js/rtp-mtp.js",
   "/js/settings.js",
-  "/js/student-test.js",
-  "/js/user-metrics-init.js",
-  "/js/user-metrics-update.js",
 
   /* icons */
   "/assets/favicon/favicon.ico",
@@ -80,7 +71,7 @@ const PRECACHE = [
   "/assets/favicon/android-chrome-512x512.png",
 
   /* misc */
-  "/assets/QR/qr.png"
+  "/assets/QR/qr.webp"
 ];
 
 /* =========================

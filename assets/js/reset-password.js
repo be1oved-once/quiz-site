@@ -41,7 +41,7 @@ document.getElementById("sendResetBtn")?.addEventListener("click", async () => {
 
   try {
 await sendPasswordResetEmail(auth, email, {
-  url: "https://tickar.vercel.app/reset-password.html",
+  url: "https://beforexam.vercel.app/reset-password.html",
   handleCodeInApp: true
 });
 
