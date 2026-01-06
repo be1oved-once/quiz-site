@@ -332,7 +332,13 @@ try {
 }
 });
 }
-
+if (window.location.hash === "#login") {
+    setTimeout(() => {
+      if (typeof openAuth === "function") {
+        openAuth("login");
+      }
+    }, 300);
+  }
 async function ensureUserProfile(user) {
   if (!user) return;
 
@@ -583,7 +589,7 @@ const notifyBtn = document.getElementById("notifyBtn");
 const notifyPanel = document.getElementById("notifyPanel");
 const notifyList = document.getElementById("notifyList");
 const notifyClose = document.getElementById("notifyClose");
-const notifyDot = document.querySelector(".notify-dot");
+const notifyDots = document.querySelectorAll(".notify-dot");
 
 if (notifyBtn && notifyPanel && notifyList) {
   
@@ -596,7 +602,7 @@ if (notifyBtn && notifyPanel && notifyList) {
 
   notifyPanel.classList.toggle("show");
   setLastSeenNotify(Date.now());
-  notifyDot && (notifyDot.style.display = "none");
+  notifyDots.forEach(dot => (dot.style.display = "none"));
 });
   
   /* Close button */
@@ -619,7 +625,12 @@ const notifyBtnMobile = document.getElementById("notifyBtnMobile");
 
 notifyBtnMobile?.addEventListener("click", e => {
   e.stopPropagation();
+
   notifyPanel.classList.toggle("show");
+
+  // 🔥 SAME behavior as desktop
+  setLastSeenNotify(Date.now());
+  notifyDots.forEach(dot => (dot.style.display = "none"));
 });
 
   /* 🔥 REAL-TIME FETCH */
@@ -663,7 +674,7 @@ item.innerHTML = `
 
   // 🔔 SHOW DOT ONLY IF NEW NOTIFICATION ARRIVED
   if (newestTime > lastSeen) {
-    notifyDot && (notifyDot.style.display = "inline-block");
+    notifyDots.forEach(dot => (dot.style.display = "inline-block"));
   }
 });
 }

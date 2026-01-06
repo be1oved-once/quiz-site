@@ -1,6 +1,36 @@
 :root {
   --accent: #4f46e5;          /* indigo */
   --accent-soft: #eef2ff;
+  /* BRAND */
+  --brand-primary: #4338ca;   /* Beforexam Indigo */
+  --brand-accent: #3b82f6;    /* Support blue */
+
+  /* TEXT */
+  --text-main: #0f172a;
+  --text-muted: #475569;
+
+  /* BACKGROUND */
+  --bg-main: #f8fafc;
+  --bg-soft: #f1f5f9;
+
+  /* BORDERS */
+  --border-light: #e2e8f0;
+
+  /* STATES */
+  --success: #16a34a;
+  --error: #dc2626;
+}
+body.dark {
+  --brand-primary: #6366f1;   /* softer indigo */
+  --brand-accent: #60a5fa;
+
+  --text-main: #e5e7eb;
+  --text-muted: #94a3b8;
+
+  --bg-main: #020617;
+  --bg-soft: #020617;
+
+  --border-light: rgba(255,255,255,0.08);
 }
 * {
   margin: 0;
@@ -66,7 +96,7 @@ border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 .logo-dot {
   font-size: 20px;
   margin: 0 2px;
-  color: transparent;
+  color: var(--brand-primary);
   -webkit-text-stroke: 1.5px var(--accent);
   stroke: 1.5px var(--accent);
 }
@@ -79,6 +109,121 @@ border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 body.dark .logo-dot {
   -webkit-text-stroke-color: #c7d2fe;
+}
+.logo-dot {
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+.logo-main {
+  letter-spacing: 0.5px;
+}
+
+.logo-sub {
+  opacity: 0.85;
+  font-weight: 500;
+}
+/* =========================
+   BRAND LINK
+========================= */
+.brand-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* =========================
+   BRAND LOGO WRAP
+========================= */
+.brand-logo {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: "Poppins", system-ui, sans-serif;
+  letter-spacing: -0.3px;
+  cursor: pointer;
+}
+
+/* =========================
+   BEFORE (TEXT + UNDERLINE)
+========================= */
+.footer-before {
+  position: relative;
+  display: inline-block;
+}
+
+.before-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+  position: relative;
+  z-index: 1;
+}
+
+/* underline */
+.before-underline {
+  position: absolute;
+  left: 50%;
+  bottom: -.1px;
+  width: 0;
+  height: 2.5px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+
+  background: linear-gradient(
+    90deg,
+    #6c63ff,
+    #8b5cf6,
+    #22d3ee
+  );
+
+  transition:
+    width 0.35s cubic-bezier(.4,0,.2,1);
+}
+
+/* hover → expand from center */
+.brand-logo:hover .before-underline {
+  width: 100%;
+}
+
+/* =========================
+   X SYMBOL
+========================= */
+.brand-x {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   am
+========================= */
+.brand-am {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* =========================
+   DARK MODE POLISH
+========================= */
+body.dark .before-text {
+  color: #e5e7eb;
+}
+
+body.dark .brand-am {
+  color: #9ca3af;
+}
+
+body.dark .before-underline {
+  background: linear-gradient(
+    90deg,
+    #8b5cf6,
+    #a78bfa,
+    #22d3ee
+  );
 }
 /* ===== Menu Button ===== */
 .menu-btn {
@@ -1513,6 +1658,20 @@ body.dark .notify-dot {
 /* Ensure icon button is positioning context */
 .icon-btn {
   position: relative;
+}
+.notify-panel::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Firefox */
+.notify-panel{
+  scrollbar-width: none;
+}
+
+/* IE / old Edge */
+.notify-panel{
+  -ms-overflow-style: none;
 }
 .notify-panel {
   position: fixed;

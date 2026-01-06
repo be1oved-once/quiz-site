@@ -792,6 +792,7 @@ body.dark .option-textarea:not(.readonly):focus {
   align-items: center;
   gap: 5px;
   padding: 6px 5px;
+  
 }
 .timer-icon {
   display: inline-flex;
@@ -876,9 +877,29 @@ body.dark span:has(#liveTimerText)::before {
   font-size: 13px;
   color: #ffd24d;
 }
+/* =========================
+   LEADERBOARD BUTTON – DARK MODE
+========================= */
+
 body.dark #leaderboardBtn {
-  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
-  color: #eee;
+  background: linear-gradient(
+    135deg,
+    #5b5ef7,
+    #4338ca
+  );
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(67,56,202,0.45);
+}
+
+/* icon color stays premium */
+body.dark #leaderboardBtn::before {
+  color: #facc15;
+}
+
+/* hover polish */
+body.dark #leaderboardBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(67,56,202,0.55);
 }
 /* ===============================
    LEADERBOARD OVERLAY
@@ -936,29 +957,62 @@ body.dark #leaderboardBtn {
   align-items: center;
 }
 
-/* ===============================
-   CLOSE BUTTON
-================================ */
+/* =========================
+   LEADERBOARD CLOSE BUTTON
+========================= */
+
 .lb-close-btn {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1px solid var(--border, #ddd);
-  background: rgba(0,0,0,0.06);
-  transition: 0.2s;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.04);
   display: grid;
   place-items: center;
   cursor: pointer;
-}
-
-.lb-close-btn:hover {
-  background: rgba(0,0,0,0.05);
+  transition: 
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .lb-close-btn i {
   font-size: 14px;
+  color: #444;
 }
 
+/* hover (light) */
+.lb-close-btn:hover {
+  background: rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0,0.2);
+  transform: scale(1.05);
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+body.dark .lb-close-btn {
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+}
+
+body.dark .lb-close-btn i {
+  color: #e5e7eb;
+}
+
+body.dark .lb-close-btn:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.28);
+  transform: scale(1.05);
+}
+.lb-close-btn i {
+  transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+.lb-close-btn:hover i {
+  transform: rotate(90deg);
+}
 /* ===============================
    LIST
 ================================ */
@@ -970,19 +1024,23 @@ body.dark #leaderboardBtn {
 /* ===============================
    ITEM
 ================================ */
+/* =========================
+   LEADERBOARD MAIN CARD
+========================= */
+
 .leaderboard-item {
-  background: var(--item-bg, #fafafa);
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  border: 1px solid var(--border, #eee);
-  transition: 0.25s ease;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 8px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.05);
 }
 
-.leaderboard-item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+body.dark .leaderboard-item {
+  background: #020617;
+  border-color: #1e293b;
+  box-shadow: none;
 }
 
 /* ===============================
@@ -1012,7 +1070,6 @@ body.dark .lb-stat i {
   line-height: 1.6;
   display: none;
   border-top: 1px dashed #ddd;
-  padding-top: 10px;
 }
 
 body.dark .lb-expand {
@@ -1022,24 +1079,45 @@ body.dark .lb-expand {
   display: block;
 }
 
-/* ===============================
-   TOP RANK HIGHLIGHT
-================================ */
+/* =========================
+   LEADERBOARD RANK BORDERS
+========================= */
+
+/* 🥇 Rank 1 – Gold */
 .leaderboard-item:nth-child(1) {
   border: 2px solid #f4c430;
-  background: linear-gradient(180deg, #fff7da, #fff);
-  box-shadow: 0 10px 22px rgba(244, 196, 48, 0.4);
+  background: transparent;
+  box-shadow: none;
 }
 
+/* 🥈 Rank 2 – Silver */
 .leaderboard-item:nth-child(2) {
   border: 2px solid #cfd3da;
-  background: linear-gradient(180deg, #f4f5f7, #fff);
-  box-shadow: 0 8px 18px rgba(180,180,180,0.35);
+  background: transparent;
+  box-shadow: none;
 }
+
+/* 🥉 Rank 3 – Bronze */
 .leaderboard-item:nth-child(3) {
   border: 2px solid #cd7f32;
-  background: linear-gradient(180deg, #ffe9dc, #fff);
-  box-shadow: 0 8px 18px rgba(205,127,50,0.35);
+  background: transparent;
+  box-shadow: none;
+}
+
+/* =========================
+   DARK MODE ADJUSTMENTS
+========================= */
+
+body.dark .leaderboard-item:nth-child(1) {
+  border-color: #facc15; /* softer gold for dark */
+}
+
+body.dark .leaderboard-item:nth-child(2) {
+  border-color: #9ca3af;
+}
+
+body.dark .leaderboard-item:nth-child(3) {
+  border-color: #d97706;
 }
 
 /* ===============================
@@ -1047,12 +1125,6 @@ body.dark .lb-expand {
 ================================ */
 body.dark .leaderboard-card {
   background: #151515;
-}
-
-body.dark .leaderboard-item {
-  background: #1f1f1f;
-  border: 1px solid #2a2a2a;
-  color: #eee;
 }
 /* =========================
    ADMIN SKELETON
@@ -1069,7 +1141,7 @@ body.dark .leaderboard-item {
   border: 1px solid var(--border-light);
   border-radius: 14px;
   padding: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 7px;
 }
 
 /* shimmer base */
@@ -1171,4 +1243,94 @@ body.dark .admin-skeleton div[class^="sk-"] {
 /* hide real UI initially */
 .admin-create {
   display: none;
+}
+/* =========================
+   LEADERBOARD ANSWER DESIGN
+========================= */
+
+.lb-answer-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 5px 5px;
+  margin-bottom: 12px;
+}
+
+body.dark .lb-answer-card {
+  background: #020617;
+  border-color: #1e293b;
+}
+
+/* Question row */
+.lb-q {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.lb-q-no {
+  font-weight: 600;
+  color: #6366f1;
+}
+
+.lb-q-text {
+  font-size: 13px;
+  line-height: 1.4;
+}
+.lb-name{
+  font-weight: 500;
+}
+/* MCQ meta */
+.lb-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+/* Status badge */
+.lb-badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.lb-badge.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.lb-badge.bad {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+body.dark .lb-badge.ok {
+  background: rgba(22,101,52,.25);
+  color: #86efac;
+}
+
+body.dark .lb-badge.bad {
+  background: rgba(127,29,29,.3);
+  color: #fca5a5;
+}
+
+.lb-opt {
+  opacity: .75;
+}
+
+/* Direct answer */
+.lb-direct-answer {
+  background: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  padding: 6px;
+  font-size: 13px;
+}
+
+body.dark .lb-direct-answer {
+  background: #020617;
+  border-color: #1e293b;
 }

@@ -27,7 +27,7 @@ async function verifyEmailWithCode(code) {
     console.log("✅ Email verified via link");
 
     // 🔥 UPDATE PAGE CONTENT TO "VERIFIED" STATE
-document.querySelector("h1").textContent = "Email verified 🎉";
+document.querySelector("h1").textContent = "Email verified!🤗";
 
 document.querySelector(".verify-desc").textContent =
   "Your email address has been successfully verified.";
@@ -40,8 +40,8 @@ msg.textContent = "Redirecting…";
 resendBtn.style.display = "none";
 
     setTimeout(() => {
-      window.location.href = "/index.html";
-    }, 2000);
+  window.location.href = "/index.html#login";
+}, 10000);
 
   } catch (error) {
     console.error("❌ Verification failed", error.code, error.message);

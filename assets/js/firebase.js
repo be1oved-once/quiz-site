@@ -7,13 +7,13 @@ import {
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD8NvfaQRw9-zsPRY4ky4Jp79yMwIEuJ_E",
-  authDomain: "tickar.firebaseapp.com",
-  projectId: "tickar",
-  storageBucket: "tickar.firebasestorage.app",
-  messagingSenderId: "54581941326",
-  appId: "1:54581941326:web:08b856ae1392d951c51f1f"
-};
+    apiKey: "AIzaSyBsAlOnk7Q79GPDRCpfU0bzFez01Y1ENnE",
+    authDomain: "beforexam-app.firebaseapp.com",
+    projectId: "beforexam-app",
+    storageBucket: "beforexam-app.firebasestorage.app",
+    messagingSenderId: "17479597538",
+    appId: "1:17479597538:web:c81818cc9eff2d6ed60dbb"
+  };
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);

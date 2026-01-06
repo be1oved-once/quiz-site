@@ -784,21 +784,36 @@ function renderLeaderboard(list) {
           const status = a.isCorrect ? "✅ Correct" : "❌ Wrong";
 
           return `
-            <div class="lb-answer">
-              <b>Q${idx + 1}:</b> ${a.question}<br>
-              ${status}<br>
-              Selected: Option ${a.selectedIndex + 1},
-              Correct: Option ${a.correctIndex + 1}
-            </div>
+            <div class="lb-answer-card ${a.isCorrect ? "correct" : "wrong"}">
+  <div class="lb-q">
+    <span class="lb-q-no">Q${idx + 1}</span>
+    <span class="lb-q-text">${a.question}</span>
+  </div>
+
+  <div class="lb-meta">
+    <span class="lb-badge ${a.isCorrect ? "ok" : "bad"}">
+      ${a.isCorrect ? "Correct" : "Wrong"}
+    </span>
+    <span class="lb-opt">
+      Your: ${a.selectedIndex + 1} • Correct: ${a.correctIndex + 1}
+    </span>
+  </div>
+</div>
           `;
         }
 
         // ✅ DIRECT → ONLY ANSWER TEXT (NO WRONG/RIGHT)
         return `
-          <div class="lb-answer">
-            <b>Q${idx + 1}:</b> ${a.question}<br>
-            📝 <i>${a.answerText || "—"}</i>
-          </div>
+          <div class="lb-answer-card direct">
+  <div class="lb-q">
+    <span class="lb-q-no">Q${idx + 1}</span>
+    <span class="lb-q-text">${a.question}</span>
+  </div>
+
+  <div class="lb-direct-answer">
+    ${a.answerText || "No answer submitted"}
+  </div>
+</div>
         `;
       })
       .join("");
@@ -813,8 +828,7 @@ function renderLeaderboard(list) {
       </div>
 
       <div class="lb-expand">
-        <div class="lb-stat">📊 Attempts: <b>${u.total}</b></div>
-        <hr>
+        <div class="lb-stat">Attempts: <b><span class="lb-stat-value">${u.total}</span></b></div>
         ${answersHTML}
       </div>
     `;

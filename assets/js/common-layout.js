@@ -2,9 +2,11 @@
 
   const layoutHTML = `
   <header class="top-header">
-<div class="logo"><a href="index.html">
-  <span class="logo-main">TIC</span><span class="logo-dot">.</span><span class="logo-sub">Kar</span></a>
+<a href="/index.html" class="brand-link">
+<div class="brand-logo">
+  <span class="footer-before"><span class="before-text">Before</span><span class="before-underline"></span></span><span class="brand-x">X</span><span class="brand-am">am</span>
 </div>
+</a>
     <nav class="top-nav">
       <a href="/index.html" class="desk-nav-item">Home</a>
       <a href="/mtp-rtp.html">RTP/MTP</a>
@@ -52,6 +54,7 @@
 <div class="mobile-header-actions">
   <button class="icon-btn" id="notifyBtnMobile" title="Notifications">
     <i class="fa-regular fa-bell"></i>
+<span class="notify-dot"></span>
   </button>
 
   <button id="menuBtn" class="menu-btn" aria-label="Menu">
@@ -190,7 +193,9 @@
   <!-- ===== Right Sidebar ===== -->
   <aside id="rightSidebar" class="right-sidebar">
 <div class="sidebar-header">
-  <span class="menu-main">TIC</span><span class="menu-dot">.</span><span class="menu-sub">Menu</span>
+<span class="menu-main">Explore</span>
+<span class="menu-dot">•</span>
+<span class="menu-sub">Menu</span>
 
 </div>
     <hr class="sidebar-hr" />
@@ -325,13 +330,12 @@
     <input type="password" id="loginPassword" placeholder="Password" required>
     <i class="fa-solid fa-eye toggle-pass"></i>
   </div>
-
-  <p class="auth-error" id="loginError"></p>
-
-  <button type="submit" class="primary-btn">Login</button>
   <p class="forgot-pass">
   <a href="/reset-password.html">Forgot password?</a>
 </p>
+  <p class="auth-error" id="loginError"></p>
+
+  <button type="submit" class="primary-btn">Login</button>
 </form>
 
     <!-- SIGNUP FORM -->
@@ -382,11 +386,14 @@
   <div class="footer-inner">
 
     <div class="footer-brand">
-      <div class="footer-logo">
-        <span class="logo-main">TIC</span><span class="logo-dot">.</span><span class="logo-sub">Kar</span>
-      </div>
+<a href="/index.html" class="brand-link">
+<div class="brand-logo">
+  <span class="footer-before"><span class="before-text">Before</span><span class="before-underline"></span></span><span class="brand-x">X</span>
+  <span class="brand-am">am</span>
+</div>
+</a>
       <p class="footer-tagline">
-        Built for focused practice, fair testing, and real improvement.
+Built for serious exam practice, smart evaluation, and real results.
       </p>
     </div>
 
@@ -424,7 +431,7 @@
   </div>
 
   <div class="footer-bottom">
-    © 2025 TIC.Kar · All rights reserved
+    © 2025 Beforexam · All rights reserved
   </div>
 </footer>
   `;
@@ -449,7 +456,7 @@ window.addEventListener("DOMContentLoaded", () => {
         <div class="pwa-icon">⚡</div>
 
         <div class="pwa-text">
-          <strong>Install TIC.Kar</strong>
+          <strong>Install Beforexam</strong>
           <span>Faster access • Works offline</span>
         </div>
 

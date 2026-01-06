@@ -224,9 +224,20 @@ body.dark .why-title::after {
 
 .demo-quiz-section {
   max-width: 620px;
-  padding: 0 0;
+  padding: 50px 10px;
+  background: linear-gradient(
+    180deg,
+    #eef2ff 0%,   /* indigo-50 */
+    #f8fafc 100%  /* slate-50 */
+  );
 }
-
+body.dark .demo-quiz-section {
+  background: linear-gradient(
+    180deg,
+    #020617 0%,   /* slate-950 */
+    #020617 100%
+  );
+}
 .demo-title {
   font-size: 14px;
   letter-spacing: 0.25em;
