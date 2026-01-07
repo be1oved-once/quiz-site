@@ -4,7 +4,7 @@
   <header class="top-header">
 <a href="/index.html" class="brand-link">
 <div class="brand-logo">
-  <span class="footer-before"><span class="before-text">Before</span><span class="before-underline"></span></span><span class="brand-x">X</span><span class="brand-am">am</span>
+  <span class="footer-before"><span class="before-text">Before</span><span class="before-underline"></span></span><span class="brand-x">x</span><span class="brand-am">am</span>
 </div>
 </a>
     <nav class="top-nav">
@@ -120,6 +120,7 @@
   <div class="admin-menu" id="adminMenu">
     <a href="/admin/push-noti.html">Push Notifications</a>
     <a href="/admin/test-setup.html">Temp Test</a>
+    <a href="/admin/manage-users.html">Manage Users</a>
   </div>
 </li>
   <li class="mobile-left">

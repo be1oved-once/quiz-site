@@ -505,7 +505,11 @@ if (window.TIC_SETTINGS.randomizeOptions) {
 }
 
 options.forEach((opt, i) => {
-    const btn = document.createElement("button");
+  const btn = document.createElement("button");
+
+  // 🔥 map displayed option back to original index
+  const originalIndex = q.options.indexOf(opt);
+  btn.dataset.correct = originalIndex === q.correctIndex;
     const prefix = window.TIC_SETTINGS.showABCD === true
   ? String.fromCharCode(65 + i) + ". "
   : "";
@@ -535,7 +539,7 @@ btn.textContent = prefix + opt;
 /* =========================
    ANSWER
 ========================= */
-function handleAnswer(btn, idx) {
+function handleAnswer(btn) {
   if (answered) return;
   answered = true;
   clearTimer();
@@ -546,51 +550,65 @@ function handleAnswer(btn, idx) {
   const all = optionsBox.children;
   [...all].forEach(b => (b.disabled = true));
 
-if (idx === q.correctIndex) {
-  btn.classList.add("correct");
-  q.correct = true;
-  if (round === 1) {
-    marks += 1;
-  }
+  // 🔥 CORRECTNESS BASED ON DATASET (RANDOMIZATION SAFE)
+  const isCorrect = btn.dataset.correct === "true";
 
-  if (currentUser) {
+  if (isCorrect) {
+    btn.classList.add("correct");
+    q.correct = true;
 
-    // 🔥 Firebase XP
-    updateDoc(doc(db, "users", currentUser.uid), {
-      xp: increment(5)
+    if (round === 1) {
+      marks += 1;
+    }
+
+    if (currentUser) {
+      // 🔥 Firebase XP
+      updateDoc(doc(db, "users", currentUser.uid), {
+        xp: increment(5)
+      });
+
+      // 🔥 Performance metrics
+      recordQuestionAttempt(5);
+      updateBestXpIfNeeded();
+    }
+
+    if (window.TIC_SETTINGS.autoSkip) {
+      autoNextTimeout = setTimeout(next, 1000);
+    } else {
+      nextBtn.disabled = false;
+    }
+
+  } else {
+    btn.classList.add("wrong");
+
+    // ✅ SHOW CORRECT OPTION (DATASET BASED)
+    [...all].forEach(b => {
+      if (b.dataset.correct === "true") {
+        b.classList.add("correct");
+      }
     });
 
-    // 🔥🔥 PERFORMANCE METRICS (THIS WAS MISSING)
-    recordQuestionAttempt(5);     // +1 attempt, +5 daily XP, streak
-updateBestXpIfNeeded();       // update best XP if today beats record
+    q.correct = false;
+
+    if (round === 1) {
+      marks -= 0.25;
+    }
+
+    if (currentUser) {
+      recordQuestionAttempt(0); // attempt counted, no XP
+    }
+
+    nextBtn.disabled = false;
+
+    if (window.TIC_SETTINGS.autoSkip) {
+      autoNextTimeout = setTimeout(() => {
+        next();
+      }, 3000);
+    }
   }
 
-  if (window.TIC_SETTINGS.autoSkip) {
-  autoNextTimeout = setTimeout(next, 1000);
-} else {
-  nextBtn.disabled = false;
-}
-} else {
-  btn.classList.add("wrong");
-  all[q.correctIndex].classList.add("correct");
-  q.correct = false;
-if (round === 1) {
-    marks -= 0.25;
-  }
-  if (currentUser) {
-  recordQuestionAttempt(0); // attempt counted, no XP
-}
-  // ✅ Enable next immediately
-  nextBtn.disabled = false;
-
-  // ⏳ Auto move after 3s (if user doesn't click)
-  if (window.TIC_SETTINGS.autoSkip) {
-  autoNextTimeout = setTimeout(() => {
-    next();
-  }, 3000);
-}
-    q.selectedIndex = idx;
-}
+  // 🔹 store selected option text (SAFE for review / retry)
+  q.selectedOption = btn.textContent;
 }
 
 /* =========================

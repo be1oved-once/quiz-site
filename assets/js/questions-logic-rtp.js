@@ -491,17 +491,21 @@ if (window.TIC_SETTINGS?.randomizeOptions) {
 
 options.forEach(({ text, index }, i) => {
   const btn = document.createElement("button");
+
   btn.textContent = window.TIC_SETTINGS?.showABCD
     ? String.fromCharCode(65 + i) + ". " + text
     : text;
 
+  // 🔥 ATTACH CORRECTNESS TO BUTTON
+  btn.dataset.correct = index === q.correctIndex ? "true" : "false";
+
   btn.disabled = q.attempted;
 
-  if (q.attempted && index === q.correctIndex) {
+  if (q.attempted && btn.dataset.correct === "true") {
     btn.classList.add("correct");
   }
 
-  btn.onclick = () => handleAnswer(btn, index);
+  btn.onclick = () => handleAnswer(btn);
   optionsBox.appendChild(btn);
 });
 
@@ -523,7 +527,7 @@ options.forEach(({ text, index }, i) => {
 /* =========================
    ANSWER
 ========================= */
-async function handleAnswer(btn, idx) {
+async function handleAnswer(btn) {
   if (answered) return;
   answered = true;
   clearTimer();
@@ -534,50 +538,60 @@ async function handleAnswer(btn, idx) {
   const all = optionsBox.children;
   [...all].forEach(b => (b.disabled = true));
 
-  if (idx === q.correctIndex) {
-  btn.classList.add("correct");
-  q.correct = true;
-  if (round === 1) {
-    marks += 1;
+  const isCorrect = btn.dataset.correct === "true";
+
+  if (isCorrect) {
+    btn.classList.add("correct");
+    q.correct = true;
+
+    if (round === 1) {
+      marks += 1;
+    }
+
+    if (currentUser) {
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        xp: increment(5)
+      });
+
+      await recordQuestionAttempt(5);
+      await updateBestXpIfNeeded();
+    }
+
+    if (window.TIC_SETTINGS?.autoSkip) {
+      autoNextTimeout = setTimeout(next, 1000);
+    } else {
+      nextBtn.disabled = false;
+    }
+
+  } else {
+    btn.classList.add("wrong");
+
+    // 🔥 SHOW ACTUAL CORRECT OPTION
+    [...all].forEach(b => {
+      if (b.dataset.correct === "true") {
+        b.classList.add("correct");
+      }
+    });
+
+    q.correct = false;
+
+    if (round === 1) {
+      marks -= 0.25;
+    }
+
+    if (currentUser) {
+      await recordQuestionAttempt(0);
+    }
+
+    nextBtn.disabled = false;
+
+    if (window.TIC_SETTINGS?.autoSkip) {
+      autoNextTimeout = setTimeout(next, 3000);
+    }
   }
 
-if (currentUser) {
-  // 🔥 ONE XP WRITE (Firestore is boss)
-  await updateDoc(doc(db, "users", currentUser.uid), {
-    xp: increment(5)
-  });
-
-  // 🔥 Metrics
-  await recordQuestionAttempt(5);
-  await updateBestXpIfNeeded();
-}
-
-  if (window.TIC_SETTINGS?.autoSkip) {
-  setTimeout(next, 1000);
-} else {
-  nextBtn.disabled = false;
-}
-} else {
-  btn.classList.add("wrong");
-  all[q.correctIndex].classList.add("correct");
-  q.correct = false;
-if (round === 1) {
-    marks -= 0.25;
-  }
-  if (currentUser) {
-  recordQuestionAttempt(0); // attempt counted, no XP
-}
-  // ✅ Enable next immediately
-  nextBtn.disabled = false;
-
-  // ⏳ Auto move after 3s (if user doesn't click)
-  if (window.TIC_SETTINGS?.autoSkip) {
-  autoNextTimeout = setTimeout(next, 3000);
-} else {
-  nextBtn.disabled = false;
-}
-    q.selectedIndex = idx;
-}
+  // for review / retry
+  q.selectedOption = btn.textContent;
 }
 
 /* =========================

@@ -19,12 +19,109 @@ import { Timestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-fi
 /* =========================
    FIREBASE TEMP TEST REF
 ========================= */
+const logsContainer = document.getElementById("logsContainer");
+const clearLogsBtn  = document.getElementById("clearLogs");
 
+function adminLog(message, type = "info") {
+  if (!logsContainer) return;
+  
+  const time = new Date().toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+  
+  const log = document.createElement("div");
+  log.className = `log-item ${type}`;
+  
+  const timeSpan = document.createElement("span");
+  timeSpan.textContent = `[${time}] `;
+  
+  const textSpan = document.createElement("span");
+  const cursor = document.createElement("span");
+  
+  cursor.className = "log-cursor";
+  cursor.textContent = "█";
+  
+  log.appendChild(timeSpan);
+  log.appendChild(textSpan);
+  log.appendChild(cursor);
+  logsContainer.prepend(log);
+  
+  let i = 0;
+  const speed = 40; // typing speed (ms)
+  
+  const typer = setInterval(() => {
+    textSpan.textContent += message[i];
+    i++;
+    
+    if (i >= message.length) {
+      clearInterval(typer);
+      cursor.remove(); // ✅ STOP BLINKING FOREVER
+    }
+  }, speed);
+}
+/* =========================
+   CONSOLE → ADMIN LOG BRIDGE
+========================= */
+
+(function hookConsole() {
+  const original = {
+    log: console.log,
+    warn: console.warn,
+    error: console.error,
+    info: console.info
+  };
+
+  function stringify(args) {
+    return args.map(a => {
+      if (typeof a === "object") {
+        try {
+          return JSON.stringify(a, null, 2);
+        } catch {
+          return String(a);
+        }
+      }
+      return String(a);
+    }).join(" ");
+  }
+
+  console.log = (...args) => {
+    original.log(...args);
+    adminLog(stringify(args), "info");
+  };
+
+  console.info = (...args) => {
+    original.info(...args);
+    adminLog(stringify(args), "info");
+  };
+
+  console.warn = (...args) => {
+    original.warn(...args);
+    adminLog(stringify(args), "warn");
+  };
+
+  console.error = (...args) => {
+    original.error(...args);
+    adminLog(stringify(args), "danger");
+  };
+})();
+
+// Clear logs
+clearLogsBtn?.addEventListener("click", () => {
+  logsContainer.innerHTML = "";
+});
+let timerInterval = null;
+let adminPresenceInterval = null;
+let snapshotAttached = false;
+let tempTestUnsubscribe = null;
 let scheduleInterval = null;
 let scheduledTimeCache = null;
+let remainingSeconds = 0;
 
 const TEMP_TEST_REF = doc(db, "tempTests", "current");
-console.log("🟢 temp-test.js loaded");
+adminLog("temp-test.js loaded");
+
 document.addEventListener("DOMContentLoaded", () => {
 
 /* =========================
@@ -34,7 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
 /* =========================
    ADMIN-ONLINE SCHEDULER (FIXED)
 ========================= */
-console.log("🟢 Attaching onSnapshot to TEMP_TEST_REF");
+console.log("Attaching onSnapshot to TEMP_TEST_REF");
+adminLog("Firestore snapshot received!");
+
+if (!snapshotAttached) {
+  snapshotAttached = true;
 onSnapshot(TEMP_TEST_REF, (snap) => {
   if (!snap.exists()) return;
 
@@ -64,24 +165,24 @@ if (expiresEl) {
 
   scheduledTimeCache = scheduledAt.toDate();
 
-  console.log("📅 Scheduled at:", formatDateTime(data.schedule?.at));
+  console.log("Scheduled at:", formatDateTime(data.schedule?.at));
 
   // ⛔ already running checker
   if (scheduleInterval) return;
 
-  console.log("⏱ Starting admin-side scheduler loop");
+  console.log("Starting admin-side scheduler loop");
 
   scheduleInterval = setInterval(async () => {
     const now = new Date();
     console.log("Now:", now.toISOString());
 
     if (now < scheduledTimeCache) {
-      console.log("⌛ Waiting for scheduled time...");
+      console.log("Waiting for scheduled time...");
       return;
     }
 
-    console.log("🚀 TIME REACHED → GOING LIVE");
-
+    console.log("TIME REACHED → GOING LIVE");
+adminLog("TIME REACHED -> GOING LIVE");
     clearInterval(scheduleInterval);
     scheduleInterval = null;
 
@@ -92,24 +193,14 @@ if (expiresEl) {
   adminLastSeen: serverTimestamp()
 });
 
-startAdminHeartbeat();
 openTimerPage();
 
-    console.log("✅ Scheduled test is now LIVE");
+   adminLog("Scheduled test is now LIVE", "success");
 
   }, 1000);
 });
-let heartbeatInterval = null;
-
-function startAdminHeartbeat() {
-  if (heartbeatInterval) return;
-
-  heartbeatInterval = setInterval(() => {
-    updateDoc(TEMP_TEST_REF, {
-      adminLastSeen: serverTimestamp()
-    }).catch(() => {});
-  }, 5000);
 }
+
 /* =========================
    SUBJECT DROPDOWN
 ========================= */
@@ -155,7 +246,7 @@ let questionMode = "mcq";      // "mcq" | "direct"
 let modeLocked = false;  // 🔒 once first question added
 let testDuration = null; // in minutes
 let timerSeconds = 0;
-let timerInterval = null;
+
 
 addQuestionBtn?.addEventListener("click", () => {
   addQuestionBlock();
@@ -205,6 +296,11 @@ if (!modeLocked) {
 
   // ✅ APPLY GLOBAL MODE SAFELY
   toggleOptions(block, questionMode);
+  
+  const questionInput = block.querySelector(".question-text");
+if (questionInput) {
+  questionInput.focus();
+}
 }
 
 function toggleOptions(block, mode) {
@@ -315,33 +411,32 @@ scheduleBtn.addEventListener("click", () => {
 /* =========================
    PUBLISH (DATA READY)
 ========================= */
-async function clearAllOldSubmissions() {
+async function cleanupAllTestSubmissions() {
   try {
-    console.log("🧹 Clearing old test submissions...");
-
     const usersSnap = await getDocs(collection(db, "users"));
-
-    for (const userDoc of usersSnap.docs) {
+    
+    for (const user of usersSnap.docs) {
       const subsSnap = await getDocs(
-        collection(db, "users", userDoc.id, "testSubmissions")
+        collection(db, "users", user.id, "testSubmissions")
       );
-
+      
       for (const sub of subsSnap.docs) {
         await deleteDoc(sub.ref);
       }
     }
-
-    console.log("✅ Old submissions cleared");
-
-  } catch (err) {
-    console.error("❌ Cleanup failed:", err);
+    
+    adminLog("Firebase test submissions cleaned");
+    
+  } catch (e) {
+    console.error("Cleanup error:", e);
+    adminLog("Submission cleanup failed! 💔", "danger");
   }
 }
 
 const publishBtn = document.getElementById("publishBtn");
 
 publishBtn.addEventListener("click", async () => {
-  await clearAllOldSubmissions();
+  await cleanupAllTestSubmissions();
   if (!validateQuestions()) return;
   const payload = collectData();
   const mins = parseInt(timerInput.value);
@@ -424,7 +519,6 @@ await setDoc(TEMP_TEST_REF, firebasePayload, { merge: true });
     adminLastSeen: serverTimestamp()
   });
 
-  startAdminHeartbeat();
   openTimerPage();
 }
 else {
@@ -594,9 +688,6 @@ const closeTimer = document.getElementById("closeTimer");
 const liveTimerBar = document.getElementById("liveTimerBar");
 const liveTimerText = document.getElementById("liveTimerText");
 
-
-let remainingSeconds = 0;
-
 function lockQuestionEditing() {
   // Remove add button
   addQuestionBtn?.remove();
@@ -612,6 +703,7 @@ function freezePublishButton() {
 }
 
 function openTimerPage() {
+  startAdminPresenceCheck();
   const mins = parseInt(timerInput.value);
 
   if (!mins || mins < 1 || mins > 60) {
@@ -633,6 +725,7 @@ clearTestBtn.disabled = false;
 
   timerPage.classList.remove("hidden");
   startTimer();
+  
 }
 
 async function startTimer() {
@@ -645,16 +738,16 @@ timerInterval = setInterval(async () => {
   updateTimerDisplay();
 
   if (remainingSeconds <= 0) {
-    clearInterval(timerInterval);
-    timerDisplay.textContent = "TIME UP";
-
-    try {
-      await deleteDoc(TEMP_TEST_REF);
-      console.log("🔥 Test auto-ended (TIME UP)");
-    } catch (e) {
-      console.error(e);
-    }
+  clearInterval(timerInterval);
+  timerDisplay.textContent = "TIME UP";
+  
+  try {
+    await deleteDoc(TEMP_TEST_REF);
+   adminLog("Test auto-ended (TIME UP)", "warn");
+  } catch (e) {
+    console.error(e);
   }
+}
 }, 1000);
 }
 
@@ -676,34 +769,71 @@ closeTimer.addEventListener("click", () => {
   liveTimerBar.classList.remove("hidden");
 });
 
+async function forceClearTest(reason = "Admin offline") {
+  clearInterval(adminPresenceInterval);
+adminPresenceInterval = null;
+  console.warn("🔥 Force clearing test:", reason);
 
-clearTestBtn?.addEventListener("click", () => {
-  showConfirmToast(
-    "Clear entire test setup?",
-    async () => {
-      // ⛔ Stop timer
-      clearInterval(timerInterval);
+  // Stop timers
+  clearInterval(timerInterval);
+  timerInterval = null;
+  remainingSeconds = 0;
 
-      // 🔄 Reset state
-      questionCount = 0;
-      questionMode = "mcq";
-      modeLocked = false;
-      testDuration = null;
-      remainingSeconds = 0;
+  // Reset timer UI
+  if (timerDisplay) timerDisplay.textContent = "00:00";
+  if (liveTimerText) liveTimerText.textContent = "00:00";
 
-      // 🧹 Clear UI
-      questionsContainer.innerHTML = "";
-      subjectValue.textContent = "Select Subject";
-      document.getElementById("pageText").value = "";
-      timerInput.value = "";
+  // Hide overlays
+  timerPage?.classList.add("hidden");
+  liveTimerBar?.classList.add("hidden");
+  document.body.style.overflow = "";
 
-      // 🔓 Restore scrolling
-      document.body.style.overflow = "";
+  // Disable clear button
+  clearTestBtn.disabled = true;
 
-      // ♻️ Full reset (safe)
-      location.reload();
-    }
-  );
+  // Delete Firebase test
+  try {
+    await deleteDoc(TEMP_TEST_REF);
+    console.log("Test deleted from Firebase");
+    adminLog("Test deleted from Firebase");
+  } catch (e) {
+    console.error("Failed to delete test", e);
+  }
+
+  // Stop presence checker
+  clearInterval(adminPresenceInterval);
+  adminPresenceInterval = null;
+}
+
+clearTestBtn.addEventListener("click", e => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  showConfirmToast("Clear entire test setup?", async () => {
+
+    // 1️⃣ Stop timers
+    clearInterval(timerInterval);
+    timerInterval = null;
+
+    // 2️⃣ Reset timer UI
+    remainingSeconds = 0;
+    timerDisplay.textContent = "00:00";
+    liveTimerText.textContent = "00:00";
+
+    // 3️⃣ Hide timer pages
+    timerPage.classList.add("hidden");
+    liveTimerBar.classList.add("hidden");
+    document.body.style.overflow = "";
+
+    // 4️⃣ DELETE FIREBASE TEST (THIS WAS MISSING)
+    await deleteDoc(TEMP_TEST_REF);
+
+    console.log("Temp test fully deleted");
+    adminLog("Temp test fully deleted");
+
+    // 5️⃣ Disable clear button
+    clearTestBtn.disabled = true;
+  });
 });
 
 const confirmToast = document.getElementById("confirmToast");
@@ -740,12 +870,17 @@ confirmYes.onclick = () => {
 
 const leaderboardBtn = document.getElementById("leaderboardBtn");
 
+if (!snapshotAttached) {
+  snapshotAttached = true;
 onSnapshot(TEMP_TEST_REF, snap => {
   if (!snap.exists()) {
     // 🏁 Test finished
     leaderboardBtn.classList.remove("hidden");
+    clearTestBtn.disabled = true;
+    return;
   }
-});
+  clearTestBtn.disabled = false;
+}); }
 
 const leaderboardOverlay = document.getElementById("leaderboardOverlay");
 const leaderboardList = document.getElementById("leaderboardList");
@@ -873,9 +1008,52 @@ function formatDateTime(ts) {
     hour12: true
   });
 }
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "hidden") {
-    clearInterval(heartbeatInterval);
-    heartbeatInterval = null;
+async function clearTestCore(reason = "manual") {
+  console.warn("🧹 Clearing test:", reason);
+
+  // stop timers
+  clearInterval(timerInterval);
+  remainingSeconds = 0;
+
+  // reset timer UI
+  if (timerDisplay) timerDisplay.textContent = "00:00";
+  if (liveTimerText) liveTimerText.textContent = "00:00";
+
+  timerPage?.classList.add("hidden");
+  liveTimerBar?.classList.add("hidden");
+  document.body.style.overflow = "";
+
+  // disable clear button
+  clearTestBtn.disabled = true;
+
+  // stop admin presence checker
+  clearInterval(adminPresenceInterval);
+  adminPresenceInterval = null;
+
+  // 🔥 delete firebase test
+  try {
+    await deleteDoc(TEMP_TEST_REF);
+    console.log("Test removed from Firebase");
+    adminLog("Test removed from Firebase");
+  } catch (e) {
+    console.error("❌ Firebase delete failed", e);
   }
-});
+}
+
+function forceClearTest(reason = "admin inactive") {
+  clearTestCore(reason);
+}
+
+function startAdminPresenceCheck() {
+  if (adminPresenceInterval) return;
+
+  adminPresenceInterval = setInterval(() => {
+    const pageVisible = document.visibilityState === "visible";
+    const pageFocused = document.hasFocus();
+    const online = navigator.onLine;
+
+    if (!pageVisible || !pageFocused || !online) {
+      forceClearTest("Admin not active / offline");
+    }
+  }, 15000); // ✅ 15 seconds
+}

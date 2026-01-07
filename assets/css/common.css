@@ -4,7 +4,7 @@
   /* BRAND */
   --brand-primary: #4338ca;   /* Beforexam Indigo */
   --brand-accent: #3b82f6;    /* Support blue */
-
+  --violet: #6c63ff;
   /* TEXT */
   --text-main: #0f172a;
   --text-muted: #475569;
@@ -155,7 +155,7 @@ body.dark .logo-dot {
 .before-text {
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-main);
+  color: var(--violet);
   position: relative;
   z-index: 1;
 }
@@ -190,18 +190,17 @@ body.dark .logo-dot {
    X SYMBOL
 ========================= */
 .brand-x {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 0;
-  color: var(--accent);
-  transform: translateY(-1px);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 -3px;
+  color: #008FFF;
 }
 
 /* =========================
    am
 ========================= */
 .brand-am {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
   color: var(--text-muted);
 }

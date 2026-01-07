@@ -106,96 +106,213 @@ function renderReviewForPDF() {
   if (!window.round1Snapshot || window.round1Snapshot.length === 0) return;
 
   const attempted = window.round1Snapshot.filter(q => q.attempted);
-const pdfTitle = getPdfTitle();
-console.log("PDF TITLE:", pdfTitle);
+  const pdfTitle = getPdfTitle();
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+  const dateStr = now.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
   const html = `
 <!DOCTYPE html>
 <html>
 <head>
 <title>${pdfTitle}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body * {
+  position: relative;
+  z-index: 1;
+}
+  body {
+    font-family: "Poppins", Arial, sans-serif;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+  }
+.page {
+  position: relative;
+}
 
-  <style>
-    body {
-      font-family: Poppins, Arial, sans-serif;
-      background: #fff;
-      padding: 8px;
-      margin: 0;
-    }
+.page::after {
+  content: "Beforexam";
+  position: absolute;
+  bottom: 18%;
+  left: -5%;
 
-    h2 {
-      text-align: center;
-      margin: 4px 0 8px;
-      font-size: 14px;
-    }
+  font-size: 110px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.035);
 
-    /* 🔥 TIGHT GRID */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
-    }
+  transform: rotate(-35deg);
+  pointer-events: none;
+}
+/* =========================
+   PAGE 1 – COVER (FIXED)
+========================= */
+.cover {
+  min-height: 100%;
+  padding: 48px 40px;
+  box-sizing: border-box;
 
-    /* 🔥 COMPACT QUESTION BOX */
-    .question {
-      border-radius: 8px;
-      padding: 5px 6px;
-      font-size: 10.5px;
-      line-height: 1.25;
-      break-inside: avoid;
-    }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
-    .question.correct {
-      border: 1.5px solid #16a34a;
-      background: rgba(22,163,74,0.07);
-    }
+  /* 🔥 optical centering */
+  transform: translateY(25%);
+}
 
-    .question.wrong {
-      border: 1.5px solid #dc2626;
-      background: rgba(220,38,38,0.07);
-    }
+.cover-time {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 18px;
+}
 
-    /* QUESTION TITLE */
-    .title {
-      font-weight: 600;
-      margin-bottom: 4px;
-      font-size: 10.8px;
-    }
+.cover-title {
+  font-size: 26px;        /* 🔥 BIG TITLE */
+  font-weight: 600;
+  margin-bottom: 18px;
+}
 
-    /* OPTIONS */
-    .option {
-      padding: 3px 6px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-bottom: 3px;
-      font-size: 10px;
-    }
+.cover-msg {
+  font-size: 14px;
+  color: #222;
 
-    .option.correct {
-      border-color: #16a34a;
-      background: rgba(22,163,74,0.18);
-      color: #065f46;
-      font-weight: 600;
-    }
+  text-align: justify;        /* 🔥 full width text */
+  text-justify: inter-word;  /* better word spacing */
+}
 
-    .option.wrong {
-      border-color: #dc2626;
-      background: rgba(220,38,38,0.18);
-      color: #7f1d1d;
-      font-weight: 600;
-    }
+/* EXACT page break */
+.page-break {
+  page-break-after: always;
+}
+.cover-summary {
+width: 600px;
+  position: absolute;
+  bottom: -32px;
+  left: 40px;
+  right: 40px;
 
-    /* PRINT TUNING */
-    @media print {
-      body {
-        padding: 6px;
-      }
-    }
-  </style>
+  padding-top: 14px;
+  font-size: 14px;
+  color: #222;
+
+  text-align: justify;        /* 🔥 full width text */
+  text-justify: inter-word;  /* better word spacing */
+}
+
+.cover-summary strong {
+  font-weight: 600;
+}
+  /* =========================
+     PAGE 2+ – QUESTIONS
+  ========================= */
+  .content {
+    padding: 8px;
+  }
+
+  h2 {
+    text-align: center;
+    margin: 6px 0 10px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .question {
+    border-radius: 8px;
+    padding: 5px 6px;
+    font-size: 10.5px;
+    line-height: 1.25;
+    break-inside: avoid;
+  }
+
+  .question.correct {
+    border: 1.5px solid #16a34a;
+    background: rgba(22,163,74,0.07);
+  }
+
+  .question.wrong {
+    border: 1.5px solid #dc2626;
+    background: rgba(220,38,38,0.07);
+  }
+
+  .title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 10.8px;
+  }
+
+  .option {
+    padding: 3px 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 3px;
+    font-size: 10px;
+  }
+
+  .option.correct {
+    border-color: #16a34a;
+    background: rgba(22,163,74,0.18);
+    color: #065f46;
+    font-weight: 600;
+  }
+
+  .option.wrong {
+    border-color: #dc2626;
+    background: rgba(220,38,38,0.18);
+    color: #7f1d1d;
+    font-weight: 600;
+  }
+</style>
 </head>
 
 <body>
-<h2>${pdfTitle}</h2>
+
+<!-- =========================
+     PAGE 1 – THANK YOU
+========================= -->
+<div class="cover page-break">
+  <div class="cover-time">
+    Time: ${timeStr}<br>
+    Date: ${dateStr}
+  </div>
+
+  <div class="cover-title">
+    ${pdfTitle}
+  </div>
+
+  <div class="cover-msg">
+    Ye Questions Review PDF un sab questions ka summary hai jo tumne abhi attempt kiye hain — har answer, har doubt aur har learning moment ka record.
+Upar diya gaya Time aur Date ye show karta hai ki kis moment par tumne practice choose ki, skip nahi. Aur honestly, wahi moment growth decide karta hai.<br><br>
+Beforexam Team ki taraf se thank you for using our platform for practice. Marks sirf numbers hote hain, lekin real improvement tab hota hai jab tum apni mistakes ko samajhne ka time nikaalte ho — aur tum wahi kar rahe ho.
+Neeche tumhara Marks Summary diya gaya hai, jisse tum easily samajh sakte ho ki is attempt mein tum kaha stand karte ho aur next time kaha better kar sakte ho. Is report ko sirf result ki tarah mat dekho — ise apna improvement tool samjho.<br><br>
+Hume genuinely hope hai ki ye PDF tumhari preparation aur goals mein help karega. Aur jab bhi lage ki “ek aur attempt maarte hain”, ya “ab thoda aur strong banna hai” — Beforexam hamesha yahin milega. Keep practicing. Keep improving. 💙
+  </div>
+  <div class="cover-summary">
+  You attempted <strong>${attempted.length}</strong> questions and
+  Correct answers were <strong>${attempted.filter(q => q.correct).length}</strong> . Nevertheless it was definitely Impressive, Accuracy improves with review 🤗, Keep learning and keep Supporting.
+</div>
+</div>
+
+<!-- =========================
+     PAGE 2 – QUESTIONS
+========================= -->
+<div class="content">
+  <h2>${pdfTitle}</h2>
 
   <div class="grid">
     ${attempted.map((q, idx) => `
@@ -210,27 +327,18 @@ console.log("PDF TITLE:", pdfTitle);
       </div>
     `).join("")}
   </div>
+</div>
 
-  <script>
-    window.onload = () => {
-      setTimeout(() => {
-        window.print();
-      }, 600);
-    };
+<script>
+  window.onload = () => {
+    setTimeout(() => window.print(), 600);
+  };
 
-    let closed = false;
-    function safeClose() {
-      if (closed) return;
-      closed = true;
-      window.close();
-    }
+  window.onafterprint = () => {
+    setTimeout(() => window.close(), 8000);
+  };
+</script>
 
-    window.onafterprint = () => {
-      setTimeout(safeClose, 7000);
-    };
-
-    setTimeout(safeClose, 15000);
-  </script>
 </body>
 </html>
 `;
@@ -240,6 +348,7 @@ console.log("PDF TITLE:", pdfTitle);
   win.document.write(html);
   win.document.close();
 }
+
 const pdfOverlayLoader = `
 <svg width="18" height="18" viewBox="0 0 50 50">
   <circle cx="25" cy="25" r="20"
@@ -264,7 +373,7 @@ function getPdfTitle() {
   const chapter = window.currentChapterName?.trim();
   return chapter
     ? `${chapter} – Review`
-    : "Chapter-wise Review";
+    : "Beforexam Review PDF";
 }
 
 const resultActions = document.querySelector(".result-actions");
