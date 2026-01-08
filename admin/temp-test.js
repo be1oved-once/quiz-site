@@ -113,14 +113,13 @@ clearLogsBtn?.addEventListener("click", () => {
 });
 let timerInterval = null;
 let adminPresenceInterval = null;
-let snapshotAttached = false;
-let tempTestUnsubscribe = null;
+
 let scheduleInterval = null;
 let scheduledTimeCache = null;
 let remainingSeconds = 0;
 
 const TEMP_TEST_REF = doc(db, "tempTests", "current");
-adminLog("temp-test.js loaded");
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -132,74 +131,78 @@ document.addEventListener("DOMContentLoaded", () => {
    ADMIN-ONLINE SCHEDULER (FIXED)
 ========================= */
 console.log("Attaching onSnapshot to TEMP_TEST_REF");
-adminLog("Firestore snapshot received!");
 
-if (!snapshotAttached) {
-  snapshotAttached = true;
-onSnapshot(TEMP_TEST_REF, (snap) => {
-  if (!snap.exists()) return;
+let schedulerInterval = null;
+
+onSnapshot(TEMP_TEST_REF, snap => {
+
+  if (!snap.exists()) {
+    console.log("No active test");
+
+    clearTestBtn.disabled = true;
+    leaderboardBtn?.classList.remove("hidden");
+
+    // stop scheduler safely
+    if (schedulerInterval) {
+      clearInterval(schedulerInterval);
+      schedulerInterval = null;
+    }
+    return;
+  }
 
   const data = snap.data();
+  console.log(
+  "Test:",
+  data.status,
+  "| Q:", data.questions?.length || 0
+);
 
-// 🔥 SHOW DATE + TIME (ADMIN)
-const scheduleEl = document.getElementById("scheduleInfo");
-const expiresEl  = document.getElementById("expiresInfo");
+  /* ======================
+     UI INFO
+  ====================== */
+  scheduleInfo && (scheduleInfo.textContent =
+    formatDateTime(data.schedule?.at));
 
-if (scheduleEl) {
-  scheduleEl.textContent =
-    formatDateTime(data.schedule?.at);
-}
+  expiresInfo && (expiresInfo.textContent =
+    formatDateTime(data.expiresAt));
 
-if (expiresEl) {
-  expiresEl.textContent =
-    formatDateTime(data.expiresAt);
-}
+  clearTestBtn.disabled = false;
 
-  console.log("Firestore data:", data);
+  /* ======================
+     SCHEDULER LOGIC
+  ====================== */
+  if (
+    data.publishMode === "schedule" &&
+    data.status !== "live" &&
+    data.schedule?.at
+  ) {
+    const scheduledTime = data.schedule.at.toDate();
 
-  if (data.publishMode !== "schedule") return;
-  if (data.status === "live") return;
+    if (!schedulerInterval) {
+      console.log("Scheduler armed");
 
-  const scheduledAt = data.schedule?.at;
-  if (!scheduledAt) return;
+      schedulerInterval = setInterval(async () => {
+        const now = new Date();
 
-  scheduledTimeCache = scheduledAt.toDate();
+        if (now < scheduledTime) return;
 
-  console.log("Scheduled at:", formatDateTime(data.schedule?.at));
+        console.log("TIME REACHED -> GOING LIVE");
 
-  // ⛔ already running checker
-  if (scheduleInterval) return;
+        clearInterval(schedulerInterval);
+        schedulerInterval = null;
 
-  console.log("Starting admin-side scheduler loop");
+        await updateDoc(TEMP_TEST_REF, {
+          status: "live",
+          publishMode: "live",
+          "timer.startedAt": serverTimestamp(),
+          adminLastSeen: serverTimestamp()
+        });
 
-  scheduleInterval = setInterval(async () => {
-    const now = new Date();
-    console.log("Now:", now.toISOString());
-
-    if (now < scheduledTimeCache) {
-      console.log("Waiting for scheduled time...");
-      return;
+        openTimerPage();
+      }, 1000);
     }
-
-    console.log("TIME REACHED → GOING LIVE");
-adminLog("TIME REACHED -> GOING LIVE");
-    clearInterval(scheduleInterval);
-    scheduleInterval = null;
-
-    await updateDoc(TEMP_TEST_REF, {
-  status: "live",
-  publishMode: "live",
-  "timer.startedAt": serverTimestamp(),
-  adminLastSeen: serverTimestamp()
+  }
 });
-
-openTimerPage();
-
-   adminLog("Scheduled test is now LIVE", "success");
-
-  }, 1000);
-});
-}
 
 /* =========================
    SUBJECT DROPDOWN
@@ -217,23 +220,35 @@ if (clearTestBtn) {
   clearTestBtn.disabled = true;
 }
 
+const subjectArrow = document.getElementById("subjectArrow");
 
-subjectBtn.addEventListener("click", () => {
-  subjectPopup.classList.toggle("hidden");
-});
+subjectBtn.addEventListener("click", e => {
+    e.stopPropagation();
 
-subjectPopup.querySelectorAll(".subject-item").forEach(item => {
-  item.addEventListener("click", () => {
-    subjectValue.textContent = item.dataset.subject;
-    subjectPopup.classList.add("hidden");
+    const isOpen = subjectPopup.classList.toggle("show");
+    subjectArrow.classList.toggle("open", isOpen);
   });
-});
 
-document.addEventListener("click", e => {
-  if (!subjectBtn.contains(e.target) && !subjectPopup.contains(e.target)) {
-    subjectPopup.classList.add("hidden");
-  }
-});
+  /* ITEM CLICK */
+  subjectPopup.querySelectorAll(".subject-item").forEach(item => {
+    item.addEventListener("click", () => {
+      subjectValue.textContent = item.dataset.subject;
+
+      subjectPopup.classList.remove("show");
+      subjectArrow.classList.remove("open");
+    });
+  });
+
+  /* OUTSIDE CLICK */
+  document.addEventListener("click", e => {
+    if (
+      !subjectBtn.contains(e.target) &&
+      !subjectPopup.contains(e.target)
+    ) {
+      subjectPopup.classList.remove("show");
+      subjectArrow.classList.remove("open");
+    }
+  });
 
 /* =========================
    QUESTIONS
@@ -429,7 +444,6 @@ async function cleanupAllTestSubmissions() {
     
   } catch (e) {
     console.error("Cleanup error:", e);
-    adminLog("Submission cleanup failed! 💔", "danger");
   }
 }
 
@@ -795,7 +809,6 @@ adminPresenceInterval = null;
   try {
     await deleteDoc(TEMP_TEST_REF);
     console.log("Test deleted from Firebase");
-    adminLog("Test deleted from Firebase");
   } catch (e) {
     console.error("Failed to delete test", e);
   }
@@ -829,7 +842,6 @@ clearTestBtn.addEventListener("click", e => {
     await deleteDoc(TEMP_TEST_REF);
 
     console.log("Temp test fully deleted");
-    adminLog("Temp test fully deleted");
 
     // 5️⃣ Disable clear button
     clearTestBtn.disabled = true;
@@ -870,17 +882,6 @@ confirmYes.onclick = () => {
 
 const leaderboardBtn = document.getElementById("leaderboardBtn");
 
-if (!snapshotAttached) {
-  snapshotAttached = true;
-onSnapshot(TEMP_TEST_REF, snap => {
-  if (!snap.exists()) {
-    // 🏁 Test finished
-    leaderboardBtn.classList.remove("hidden");
-    clearTestBtn.disabled = true;
-    return;
-  }
-  clearTestBtn.disabled = false;
-}); }
 
 const leaderboardOverlay = document.getElementById("leaderboardOverlay");
 const leaderboardList = document.getElementById("leaderboardList");
@@ -1009,7 +1010,7 @@ function formatDateTime(ts) {
   });
 }
 async function clearTestCore(reason = "manual") {
-  console.warn("🧹 Clearing test:", reason);
+  console.warn("Clearing test -", reason);
 
   // stop timers
   clearInterval(timerInterval);
@@ -1034,7 +1035,6 @@ async function clearTestCore(reason = "manual") {
   try {
     await deleteDoc(TEMP_TEST_REF);
     console.log("Test removed from Firebase");
-    adminLog("Test removed from Firebase");
   } catch (e) {
     console.error("❌ Firebase delete failed", e);
   }

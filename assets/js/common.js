@@ -1,61 +1,60 @@
 import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithPopup,
-  sendEmailVerification
+signInWithEmailAndPassword,
+createUserWithEmailAndPassword,
+onAuthStateChanged,
+signInWithPopup,
+sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 import {
-  doc,
-  setDoc,
-  getDoc,
-  serverTimestamp,
-  collection,
-  query,
-  orderBy,
-  onSnapshot
+doc,
+setDoc,
+getDoc,
+serverTimestamp,
+collection,
+query,
+orderBy,
+onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import { auth, db, googleProvider } from "./firebase.js";
 import {
-  signInWithCredential,
-  GoogleAuthProvider
+signInWithCredential,
+GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 function initGoogleOneTap() {
-  if (!window.google || !auth) return;
+if (!window.google || !auth) return;
 
-  google.accounts.id.initialize({
-    client_id: "54581941326-9bsoei7p9gem6bff3pjsl5tju1ckst8l.apps.googleusercontent.com", // SAME AS FIREBASE
-    callback: async (response) => {
-      try {
-        const credential = GoogleAuthProvider.credential(
-          response.credential
-        );
+google.accounts.id.initialize({
+client_id: "54581941326-9bsoei7p9gem6bff3pjsl5tju1ckst8l.apps.googleusercontent.com", // SAME AS FIREBASE
+callback: async (response) => {
+try {
+const credential = GoogleAuthProvider.credential(
+response.credential
+);
 
-        await signInWithCredential(auth, credential);
+await signInWithCredential(auth, credential);    
 
-        console.log("✅ One Tap login success");
-      } catch (err) {
-        console.error("❌ One Tap sign-in failed:", err);
-      }
-    },
+    console.log("✅ One Tap login success");    
+  } catch (err) {    
+    console.error("❌ One Tap sign-in failed:", err);    
+  }    
+},
+
 use_fedcm_for_prompt: true,   // 🔥 REQUIRED
-    auto_select: false,
-    cancel_on_tap_outside: true,
-    context: "signin"
-  });
+auto_select: false,
+cancel_on_tap_outside: true,
+context: "signin"
+});
 
 google.accounts.id.prompt();
 }
 document.addEventListener("DOMContentLoaded", initGoogleOneTap);
 
-
 const sidebar = document.getElementById("rightSidebar");
 const menuBtn = document.getElementById("menuBtn");
 const overlay = document.getElementById("overlay");
-
 
 let startX = 0;
 let currentX = 0;
@@ -63,85 +62,80 @@ let dragging = false;
 
 /* Lock scroll */
 function lockScroll(lock) {
-  document.body.style.overflow = lock ? "hidden" : "";
+document.body.style.overflow = lock ? "hidden" : "";
 }
-
-
 
 /* Toggle Sidebar */
 function toggleSidebar(open) {
-  sidebar.classList.toggle("open", open);
-  menuBtn.classList.toggle("active", open);
-  overlay.classList.toggle("show", open);
-  lockScroll(open);
+sidebar.classList.toggle("open", open);
+menuBtn.classList.toggle("active", open);
+overlay.classList.toggle("show", open);
+lockScroll(open);
 }
 
 /* Menu click */
 if (menuBtn && sidebar && overlay) {
-  menuBtn.addEventListener("click", () => {
-    toggleSidebar(!sidebar.classList.contains("open"));
-  });
+menuBtn.addEventListener("click", () => {
+toggleSidebar(!sidebar.classList.contains("open"));
+});
 
-  overlay.addEventListener("click", () => toggleSidebar(false));
+overlay.addEventListener("click", () => toggleSidebar(false));
 }
 
 /* Overlay click */
 
-
 /* Smooth swipe physics */
 document.addEventListener("touchstart", e => {
-  startX = e.touches[0].clientX;
-  dragging = startX > window.innerWidth * 0.9; // 👈 only right edge
+startX = e.touches[0].clientX;
+dragging = startX > window.innerWidth * 0.9; // 👈 only right edge
 });
 
-
 document.addEventListener("touchend", e => {
-  if (!dragging) return;
+if (!dragging) return;
 
-  const endX = e.changedTouches[0].clientX;
-  const diff = startX - endX;
-  dragging = false;
+const endX = e.changedTouches[0].clientX;
+const diff = startX - endX;
+dragging = false;
 
-  if (diff > 50) toggleSidebar(true);
+if (diff > 50) toggleSidebar(true);
 });
 
 function applyTheme(mode) {
-  const isDark = mode === "dark";
-  
-  document.body.classList.toggle("dark", isDark);
-  localStorage.setItem("quizta-theme", mode);
-  
-  // Header icon
-  document.querySelectorAll("#themeBtn i").forEach(icon => {
-    icon.classList.toggle("fa-moon", isDark);
-    icon.classList.toggle("fa-sun", !isDark);
-  });
-  
-  // Sidebar switch
-  document.querySelectorAll("#themeToggle").forEach(sw => {
-    sw.classList.toggle("active", isDark);
-  });
+const isDark = mode === "dark";
+
+document.body.classList.toggle("dark", isDark);
+localStorage.setItem("quizta-theme", mode);
+
+// Header icon
+document.querySelectorAll("#themeBtn i").forEach(icon => {
+icon.classList.toggle("fa-moon", isDark);
+icon.classList.toggle("fa-sun", !isDark);
+});
+
+// Sidebar switch
+document.querySelectorAll("#themeToggle").forEach(sw => {
+sw.classList.toggle("active", isDark);
+});
 }
 
 // Load theme on start
 document.addEventListener("click", e => {
-  // Header icon click
-  if (e.target.closest("#themeBtn")) {
-    const isDark = document.body.classList.contains("dark");
-    applyTheme(isDark ? "light" : "dark");
-  }
+// Header icon click
+if (e.target.closest("#themeBtn")) {
+const isDark = document.body.classList.contains("dark");
+applyTheme(isDark ? "light" : "dark");
+}
 
-  // Sidebar switch click
-  if (e.target.closest("#themeToggle")) {
-    const isDark = document.body.classList.contains("dark");
-    applyTheme(isDark ? "light" : "dark");
-  }
+// Sidebar switch click
+if (e.target.closest("#themeToggle")) {
+const isDark = document.body.classList.contains("dark");
+applyTheme(isDark ? "light" : "dark");
+}
 });
 applyTheme(localStorage.getItem("quizta-theme") || "light");
 
-
 /* =========================
-   NOTIFICATIONS TOGGLE (SAFE)
+NOTIFICATIONS TOGGLE (SAFE)
 ========================= */
 const leftSidebar = document.getElementById("leftSidebar");
 const leftStrip = document.getElementById("leftStrip");
@@ -153,52 +147,52 @@ let leftOpen = false;
 
 /* Toggle left sidebar */
 function toggleLeft(force) {
-  leftOpen = typeof force === "boolean" ? force : !leftOpen;
-  leftSidebar.classList.toggle("open", leftOpen);
-  leftOverlay.classList.toggle("show", leftOpen);
-  lockScroll(leftOpen);
+leftOpen = typeof force === "boolean" ? force : !leftOpen;
+leftSidebar.classList.toggle("open", leftOpen);
+leftOverlay.classList.toggle("show", leftOpen);
+lockScroll(leftOpen);
 }
 
 /* Click strip */
 if (leftStrip) {
-  leftStrip.addEventListener("click", () => {
-    toggleLeft();
-  });
+leftStrip.addEventListener("click", () => {
+toggleLeft();
+});
 }
 
 if (leftOverlay) {
-  leftOverlay.addEventListener("click", () => {
-    toggleLeft(false);
-  });
+leftOverlay.addEventListener("click", () => {
+toggleLeft(false);
+});
 }
 
 /* Global swipe handler */
 document.addEventListener("touchstart", e => {
-  touchStartX = e.touches[0].clientX;
+touchStartX = e.touches[0].clientX;
 });
 
 document.addEventListener("touchend", e => {
-  if (sidebar?.classList.contains("open")) return;
-  touchEndX = e.changedTouches[0].clientX;
-  const diff = touchEndX - touchStartX;
+if (sidebar?.classList.contains("open")) return;
+touchEndX = e.changedTouches[0].clientX;
+const diff = touchEndX - touchStartX;
 
-  /* ---- OPEN: swipe left → right from left edge ---- */
-  if (
-    !leftOpen &&
-    touchStartX <= window.innerWidth * 0.1 &&
-    diff > 60
-  ) {
-    toggleLeft(true);
-    return;
-  }
+/* ---- OPEN: swipe left → right from left edge ---- */
+if (
+!leftOpen &&
+touchStartX <= window.innerWidth * 0.1 &&
+diff > 60
+) {
+toggleLeft(true);
+return;
+}
 
-  /* ---- CLOSE: swipe right → left anywhere ---- */
-  if (
-    leftOpen &&
-    diff < -60
-  ) {
-    toggleLeft(false);
-  }
+/* ---- CLOSE: swipe right → left anywhere ---- */
+if (
+leftOpen &&
+diff < -60
+) {
+toggleLeft(false);
+}
 });
 
 const authModal = document.getElementById("authModal");
@@ -211,189 +205,190 @@ const signupForm = document.getElementById("signupForm");
 const switchText = document.getElementById("switchText");
 
 function openAuth(mode = "login") {
-  authModal.classList.add("show");
-  document.body.style.overflow = "hidden";
+authModal.classList.add("show");
+document.body.style.overflow = "hidden";
 
-  // reset errors
-  document.getElementById("loginError").textContent = "";
-  document.getElementById("signupError").textContent = "";
+// reset errors
+document.getElementById("loginError").textContent = "";
+document.getElementById("signupError").textContent = "";
 
-  if (mode === "signup") {
-    loginForm.classList.add("hidden");
-    signupForm.classList.remove("hidden");
+if (mode === "signup") {
+loginForm.classList.add("hidden");
+signupForm.classList.remove("hidden");
 
-    authTitle.textContent = "Sign Up";
-    switchText.textContent = "Already have an account?";
-    switchAuth.textContent = "Login";
-  } else {
-    signupForm.classList.add("hidden");
-    loginForm.classList.remove("hidden");
+authTitle.textContent = "Sign Up";    
+switchText.textContent = "Already have an account?";    
+switchAuth.textContent = "Login";
 
-    authTitle.textContent = "Login";
-    switchText.textContent = "Not have an account?";
-    switchAuth.textContent = "Sign Up";
-  }
+} else {
+signupForm.classList.add("hidden");
+loginForm.classList.remove("hidden");
+
+authTitle.textContent = "Login";    
+switchText.textContent = "Not have an account?";    
+switchAuth.textContent = "Sign Up";
+
+}
 }
 
 function closeAuth() {
-  authModal.classList.remove("show");
-  document.body.style.overflow = "auto";
+authModal.classList.remove("show");
+document.body.style.overflow = "auto";
 }
 
 authClose?.addEventListener("click", closeAuth);
 authModal.onclick = e => {
-  if (e.target === authModal) closeAuth();
+if (e.target === authModal) closeAuth();
 };
 
 switchAuth?.addEventListener("click", () => {
-  const isLogin = !loginForm.classList.contains("hidden");
+const isLogin = !loginForm.classList.contains("hidden");
 document.getElementById("loginError").textContent = "";
 document.getElementById("signupError").textContent = "";
-  loginForm.classList.toggle("hidden");
-  signupForm.classList.toggle("hidden");
+loginForm.classList.toggle("hidden");
+signupForm.classList.toggle("hidden");
 
-  authTitle.textContent = isLogin ? "Sign Up" : "Login";
-  switchAuth.textContent = isLogin ? "Login" : "Sign Up";
-  switchText.textContent = isLogin
-    ? "Already have an account?"
-    : "Not have an account?";
+authTitle.textContent = isLogin ? "Sign Up" : "Login";
+switchAuth.textContent = isLogin ? "Login" : "Sign Up";
+switchText.textContent = isLogin
+? "Already have an account?"
+: "Not have an account?";
 });
 
 const authError = document.getElementById("authError");
 
 /* ---------- Password rules ---------- */
 function validatePassword(pass) {
-  return (
-    pass.length >= 8 &&
-    /[A-Z]/.test(pass) &&
-    /[a-z]/.test(pass) &&
-    /[0-9]/.test(pass) &&
-    /[^A-Za-z0-9]/.test(pass)
-  );
+return (
+pass.length >= 8 &&
+/[A-Z]/.test(pass) &&
+/[a-z]/.test(pass) &&
+/[0-9]/.test(pass) &&
+/[^A-Za-z0-9]/.test(pass)
+);
 }
 
 /* ---------- LOGIN ---------- */
 if (loginForm) {
-  loginForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    // (keep your existing code inside)
-  
+loginForm.addEventListener("submit", async e => {
+e.preventDefault();
+// (keep your existing code inside)
 
-  const errorBox = document.getElementById("loginError");
-  const emailOrUser = document.getElementById("loginUsername").value.trim();
-  const password = document.getElementById("loginPassword").value;
+const errorBox = document.getElementById("loginError");
+const emailOrUser = document.getElementById("loginUsername").value.trim();
+const password = document.getElementById("loginPassword").value;
 
-  try {
-    const userCred = await signInWithEmailAndPassword(auth, emailOrUser, password);
-    closeAuth();
-  } catch (err) {
-    errorBox.textContent = err.message.replace("Firebase:", "");
-  }
+try {
+const userCred = await signInWithEmailAndPassword(auth, emailOrUser, password);
+closeAuth();
+} catch (err) {
+errorBox.textContent = err.message.replace("Firebase:", "");
+}
 });
 }
 /* ---------- SIGNUP ---------- */
 if (signupForm) {
 signupForm.addEventListener("submit", async e => {
-  e.preventDefault();
+e.preventDefault();
 
-  const errorBox = document.getElementById("signupError");
+const errorBox = document.getElementById("signupError");
 
-  const username = signupUsername.value.trim();
-  const email = signupEmail.value.trim();
-  const password = signupPassword.value;
+const username = signupUsername.value.trim();
+const email = signupEmail.value.trim();
+const password = signupPassword.value;
 
 try {
-  const userCred = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+const userCred = await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
 
-  const user = userCred.user;
+const user = userCred.user;
 
-  // 📩 Send verification email
-  await sendEmailVerification(user, {
-    url: "http://localhost:7700/signup-verified.html"
-  });
+// 📩 Send verification email
+await sendEmailVerification(user, {
+url: "http://localhost:7700/signup-verified.html"
+});
 
-  console.log("📩 Verification email sent");
+console.log("📩 Verification email sent");
 
-  // 🔒 Logout until verified
-  await auth.signOut();
+// 🔒 Logout until verified
+await auth.signOut();
 
-  closeAuth();
+closeAuth();
 
-  // ➜ Verification info page
-  window.location.href = "/signup-verified.html";
+// ➜ Verification info page
+window.location.href = "/signup-verified.html";
 
 } catch (err) {
-  console.error("❌ Signup failed:", err);
-  errorBox.textContent = err.message.replace("Firebase:", "");
+console.error("❌ Signup failed:", err);
+errorBox.textContent = err.message.replace("Firebase:", "");
 }
 });
 }
 if (window.location.hash === "#login") {
-    setTimeout(() => {
-      if (typeof openAuth === "function") {
-        openAuth("login");
-      }
-    }, 300);
-  }
+setTimeout(() => {
+if (typeof openAuth === "function") {
+openAuth("login");
+}
+}, 300);
+}
 async function ensureUserProfile(user) {
-  if (!user) return;
+if (!user) return;
 
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
+const userRef = doc(db, "users", user.uid);
+const snap = await getDoc(userRef);
 
-  const username =
-    user.displayName ||
-    user.email?.split("@")[0] ||
-    "Student";
+const username =
+user.displayName ||
+user.email?.split("@")[0] ||
+"Student";
 
-  if (!snap.exists()) {
-    await setDoc(
-      userRef,
-      {
-        uid: user.uid,
-        username,
-        email: user.email || "",
-        provider: user.providerData[0]?.providerId || "password",
-        createdAt: serverTimestamp(),
-        xp: 0,
-        bookmarks: [],
-        settings: {
-          theme: localStorage.getItem("quizta-theme") || "light"
-        }
-      },
-      { merge: true }
-    );
-  }
+if (!snap.exists()) {
+await setDoc(
+userRef,
+{
+uid: user.uid,
+username,
+email: user.email || "",
+provider: user.providerData[0]?.providerId || "password",
+createdAt: serverTimestamp(),
+xp: 0,
+bookmarks: [],
+settings: {
+theme: localStorage.getItem("quizta-theme") || "light"
+}
+},
+{ merge: true }
+);
+}
 }
 
 document.addEventListener("click", e => {
-  if (!e.target.classList.contains("toggle-pass")) return;
+if (!e.target.classList.contains("toggle-pass")) return;
 
-  const input = e.target.previousElementSibling;
-  if (!input) return;
+const input = e.target.previousElementSibling;
+if (!input) return;
 
-  if (input.type === "password") {
-    input.type = "text";
-    e.target.classList.replace("fa-eye", "fa-eye-slash");
-  } else {
-    input.type = "password";
-    e.target.classList.replace("fa-eye-slash", "fa-eye");
-  }
+if (input.type === "password") {
+input.type = "text";
+e.target.classList.replace("fa-eye", "fa-eye-slash");
+} else {
+input.type = "password";
+e.target.classList.replace("fa-eye-slash", "fa-eye");
+}
 });
 const googleBtn = document.querySelector(".google-btn");
 
 if (googleBtn) {
 googleBtn.addEventListener("click", async () => {
-  try {
-    await signInWithPopup(auth, googleProvider);
-    closeAuth();
-  } catch (err) {
-    alert(err.message);
-  }
+try {
+await signInWithPopup(auth, googleProvider);
+closeAuth();
+} catch (err) {
+alert(err.message);
+}
 });
 }
 
@@ -402,71 +397,79 @@ onAuthStateChanged(auth, async user => {
 const lock = document.getElementById("loginLockOverlay");
 
 if (lock) {
-  lock.style.display = user ? "none" : "flex";
+lock.style.display = user ? "none" : "flex";
 }
 
-  const loginBtns = document.querySelectorAll(".auth-login");
-  const signupBtns = document.querySelectorAll(".auth-signup");
-  const logoutBtns = document.querySelectorAll(".auth-logout");
+const loginBtns = document.querySelectorAll(".auth-login");
+const signupBtns = document.querySelectorAll(".auth-signup");
+const logoutBtns = document.querySelectorAll(".auth-logout");
 
-  if (user) {
-    // 🔥 INSTANT UI REFLECT
-    loginBtns.forEach(btn => btn.style.display = "none");
-    signupBtns.forEach(btn => btn.style.display = "none");
-    logoutBtns.forEach(btn => btn.style.display = "inline-flex");
+if (user) {
+// 🔥 INSTANT UI REFLECT
+loginBtns.forEach(btn => btn.style.display = "none");
+signupBtns.forEach(btn => btn.style.display = "none");
+logoutBtns.forEach(btn => btn.style.display = "inline-flex");
 
-    console.log("User logged in:", user.uid);
-
-    await ensureUserProfile(user);
-    // ⏳ Load Firestore data separately
-    loadUserProfile(user.uid);
-
-  } else {
-    // 🔥 INSTANT UI REFLECT
-    loginBtns.forEach(btn => btn.style.display = "inline-flex");
-    signupBtns.forEach(btn => btn.style.display = "inline-flex");
-    logoutBtns.forEach(btn => btn.style.display = "none");
-
-    console.log("User logged out");
+console.log(
+  "User logged in:",
+  {
+    uid: user.uid,
+    username: user.displayName || user.email?.split("@")[0],
+    email: user.email
   }
+);    
+
+await ensureUserProfile(user);    
+// ⏳ Load Firestore data separately    
+loadUserProfile(user.uid);
+
+} else {
+// 🔥 INSTANT UI REFLECT
+loginBtns.forEach(btn => btn.style.display = "inline-flex");
+signupBtns.forEach(btn => btn.style.display = "inline-flex");
+logoutBtns.forEach(btn => btn.style.display = "none");
+
+console.log("User logged out");
+
+}
 });
 
 window.openAuth = openAuth;
 window.closeAuth = closeAuth;
 document.addEventListener("click", async e => {
-  if (!e.target.classList.contains("auth-logout")) return;
+if (!e.target.classList.contains("auth-logout")) return;
 
-  try {
-    await auth.signOut();
+try {
+await auth.signOut();
 
-    // open existing auth popup again
-    if (typeof openAuth === "function") {
-      openAuth();
-    }
+// open existing auth popup again    
+if (typeof openAuth === "function") {    
+  openAuth();    
+}
 
-  } catch (err) {
-    console.error("Logout failed:", err);
-  }
+} catch (err) {
+console.error("Logout failed:", err);
+}
 });
 
 async function loadUserProfile(uid) {
-  try {
-    const userRef = doc(db, "users", uid);
-    const snap = await getDoc(userRef);
+try {
+const userRef = doc(db, "users", uid);
+const snap = await getDoc(userRef);
 
-    if (!snap.exists()) return;
+if (!snap.exists()) return;    
 
-    const data = snap.data();
+const data = snap.data();    
 
-    // Example future use:
-    // window.userXP = data.xp;
-    // window.userSettings = data.settings;
+// Example future use:    
+// window.userXP = data.xp;    
+// window.userSettings = data.settings;    
 
-    console.log("User profile synced");
+console.log("User profile synced");
 
-  } catch (err) {
-    console.error("Profile sync failed:", err);
-  }
+} catch (err) {
+console.error("Profile sync failed:", err);
+}
 }
 
 const settingsModal = document.getElementById("settingsModal");
@@ -474,28 +477,27 @@ const settingsClose = document.getElementById("settingsClose");
 
 /* Open settings (Settings page OR icon later) */
 function openSettings() {
-  settingsModal.classList.add("show");
-  document.body.style.overflow = "hidden";
+settingsModal.classList.add("show");
+document.body.style.overflow = "hidden";
 }
 
 function closeSettings() {
-  settingsModal.classList.remove("show");
-  document.body.style.overflow = "auto";
+settingsModal.classList.remove("show");
+document.body.style.overflow = "auto";
 }
 
 settingsClose?.addEventListener("click", closeSettings);
 
 settingsModal?.addEventListener("click", e => {
-  if (e.target.classList.contains("settings-modal")) {
-    closeSettings();
-  }
+if (e.target.classList.contains("settings-modal")) {
+closeSettings();
+}
 });
 document
-  .querySelector(".settings-box")
-  ?.addEventListener("click", e => e.stopPropagation());
+.querySelector(".settings-box")
+?.addEventListener("click", e => e.stopPropagation());
 
 /* Toggle UI only */
-
 
 /* expose globally */
 window.openSettings = openSettings;
@@ -504,86 +506,87 @@ const profileBtn = document.getElementById("profileBtn");
 const profilePopup = document.getElementById("profilePopup");
 
 profileBtn?.addEventListener("click", e => {
-  e.stopPropagation();
+e.stopPropagation();
 
-  // 🔥 CLOSE notification panel if open
-  if (notifyPanel?.classList.contains("show")) {
-    notifyPanel.classList.remove("show");
-  }
+// 🔥 CLOSE notification panel if open
+if (notifyPanel?.classList.contains("show")) {
+notifyPanel.classList.remove("show");
+}
 
-  if (profilePopup.style.maxHeight) {
-    closeProfilePopup();
-  } else {
-    openProfilePopup();
-  }
+if (profilePopup.style.maxHeight) {
+closeProfilePopup();
+} else {
+openProfilePopup();
+}
 });
 
 function openProfilePopup() {
-  if (!profilePopup) return;
-  profilePopup.style.maxHeight = profilePopup.scrollHeight + "px";
+if (!profilePopup) return;
+profilePopup.style.maxHeight = profilePopup.scrollHeight + "px";
 }
 
 function closeProfilePopup() {
-  if (!profilePopup) return;
-  profilePopup.style.maxHeight = null;
+if (!profilePopup) return;
+profilePopup.style.maxHeight = null;
 }
 
 document.addEventListener("click", () => {
-  closeProfilePopup();
+closeProfilePopup();
 });
 /* =========================
-   DESKTOP PROFILE LOCK
-========================= */
-/* =========================
-   DESKTOP PROFILE HARD LOCK
+DESKTOP PROFILE LOCK
+========================= /
+/ =========================
+DESKTOP PROFILE HARD LOCK
 ========================= */
 onAuthStateChanged(auth, user => {
-  const profileBtn = document.getElementById("profileBtn");
-  const profilePopup = document.getElementById("profilePopup");
-  const lockPopup = document.getElementById("profileLockPopup");
-  const profileWrap = document.querySelector(".profile-wrap");
+const profileBtn = document.getElementById("profileBtn");
+const profilePopup = document.getElementById("profilePopup");
+const lockPopup = document.getElementById("profileLockPopup");
+const profileWrap = document.querySelector(".profile-wrap");
 
-  if (!profileBtn || !profileWrap) return;
+if (!profileBtn || !profileWrap) return;
 
-  // Desktop only
-  if (window.innerWidth < 768) return;
+// Desktop only
+if (window.innerWidth < 768) return;
 
-  // Mark locked state
-  profileWrap.classList.toggle("locked", !user);
+// Mark locked state
+profileWrap.classList.toggle("locked", !user);
 
-  // REMOVE previous click handlers safely
-  profileBtn.replaceWith(profileBtn.cloneNode(true));
-  const newProfileBtn = document.getElementById("profileBtn");
+// REMOVE previous click handlers safely
+profileBtn.replaceWith(profileBtn.cloneNode(true));
+const newProfileBtn = document.getElementById("profileBtn");
 
-  newProfileBtn.addEventListener("click", e => {
-    e.stopPropagation();
+newProfileBtn.addEventListener("click", e => {
+e.stopPropagation();
 
-    // 🚫 USER NOT LOGGED IN
-    if (!user) {
-      profilePopup.style.maxHeight = null; // FORCE CLOSE
-      lockPopup.style.display = "block";
-      return;
-    }
+// 🚫 USER NOT LOGGED IN    
+if (!user) {    
+  profilePopup.style.maxHeight = null; // FORCE CLOSE    
+  lockPopup.style.display = "block";    
+  return;    
+}    
 
-    // ✅ USER LOGGED IN → normal behavior
-    lockPopup.style.display = "none";
-    profilePopup.style.maxHeight
-      ? (profilePopup.style.maxHeight = null)
-      : (profilePopup.style.maxHeight =
-          profilePopup.scrollHeight + "px");
-  });
+// ✅ USER LOGGED IN → normal behavior    
+lockPopup.style.display = "none";    
+profilePopup.style.maxHeight    
+  ? (profilePopup.style.maxHeight = null)    
+  : (profilePopup.style.maxHeight =    
+      profilePopup.scrollHeight + "px");
 
-  // Click outside closes lock popup
-  document.addEventListener("click", () => {
-    lockPopup.style.display = "none";
-  });
+});
+
+// Click outside closes lock popup
+document.addEventListener("click", () => {
+lockPopup.style.display = "none";
+});
 });
 /* =========================
-   NOTIFICATIONS (GLOBAL)
+NOTIFICATIONS (GLOBAL)
 ========================= */
 
 /* =========================
-   NOTIFICATIONS (GLOBAL)
+NOTIFICATIONS (GLOBAL)
 ========================= */
 const notifyBtn = document.getElementById("notifyBtn");
 const notifyPanel = document.getElementById("notifyPanel");
@@ -592,209 +595,208 @@ const notifyClose = document.getElementById("notifyClose");
 const notifyDots = document.querySelectorAll(".notify-dot");
 
 if (notifyBtn && notifyPanel && notifyList) {
-  
-  /* Toggle panel */
-  notifyBtn?.addEventListener("click", e => {
-  e.stopPropagation();
 
-  // 🔥 CLOSE profile popup if open
-  closeProfilePopup();
+/* Toggle panel */
+notifyBtn?.addEventListener("click", e => {
+e.stopPropagation();
 
-  notifyPanel.classList.toggle("show");
-  setLastSeenNotify(Date.now());
-  notifyDots.forEach(dot => (dot.style.display = "none"));
+// 🔥 CLOSE profile popup if open
+closeProfilePopup();
+
+notifyPanel.classList.toggle("show");
+setLastSeenNotify(Date.now());
+notifyDots.forEach(dot => (dot.style.display = "none"));
 });
-  
-  /* Close button */
-  notifyClose?.addEventListener("click", () => {
-    notifyPanel.classList.remove("show");
-  });
-  
-  /* Click outside closes */
-  document.addEventListener("click", e => {
-    if (
-      notifyPanel.classList.contains("show") &&
-      !notifyPanel.contains(e.target) &&
-      !notifyBtn.contains(e.target)
-    ) {
-      notifyPanel.classList.remove("show");
-    }
-  });
-  
+
+/* Close button */
+notifyClose?.addEventListener("click", () => {
+notifyPanel.classList.remove("show");
+});
+
+/* Click outside closes */
+document.addEventListener("click", e => {
+if (
+notifyPanel.classList.contains("show") &&
+!notifyPanel.contains(e.target) &&
+!notifyBtn.contains(e.target)
+) {
+notifyPanel.classList.remove("show");
+}
+});
+
 const notifyBtnMobile = document.getElementById("notifyBtnMobile");
 
 notifyBtnMobile?.addEventListener("click", e => {
-  e.stopPropagation();
+e.stopPropagation();
 
-  notifyPanel.classList.toggle("show");
+notifyPanel.classList.toggle("show");
 
-  // 🔥 SAME behavior as desktop
-  setLastSeenNotify(Date.now());
-  notifyDots.forEach(dot => (dot.style.display = "none"));
+// 🔥 SAME behavior as desktop
+setLastSeenNotify(Date.now());
+notifyDots.forEach(dot => (dot.style.display = "none"));
 });
 
-  /* 🔥 REAL-TIME FETCH */
-  const q = query(
-    collection(db, "notifications"),
-    orderBy("createdAt", "desc")
-  );
-  
-  onSnapshot(q, snap => {
-  notifyList.innerHTML = "";
+/* 🔥 REAL-TIME FETCH */
+const q = query(
+collection(db, "notifications"),
+orderBy("createdAt", "desc")
+);
 
-  if (snap.empty) {
-    notifyList.innerHTML =
-      "<div class='notify-item'>No notifications</div>";
-    return;
-  }
+onSnapshot(q, snap => {
+notifyList.innerHTML = "";
 
-  let newestTime = 0;
-  const lastSeen = getLastSeenNotify();
+if (snap.empty) {
+notifyList.innerHTML =
+"<div class='notify-item'>No notifications</div>";
+return;
+}
 
-  snap.forEach(docSnap => {
-    const data = docSnap.data();
+let newestTime = 0;
+const lastSeen = getLastSeenNotify();
 
-    const created =
-      data.createdAt?.toMillis?.() || 0;
+snap.forEach(docSnap => {
+const data = docSnap.data();
 
-    if (created > newestTime) {
-      newestTime = created;
-    }
+const created =    
+  data.createdAt?.toMillis?.() || 0;    
 
-    const item = document.createElement("div");
+if (created > newestTime) {    
+  newestTime = created;    
+}    
+
+const item = document.createElement("div");
+
 item.className = "notify-item";
 
 item.innerHTML = `
-  <p class="notify-text">${data.message}</p>
-  <small class="notify-time">${formatTime(data.createdAt)}</small>
-`;
 
-    notifyList.appendChild(item);
-  });
+  <p class="notify-text">${data.message}</p>    
+  <small class="notify-time">${formatTime(data.createdAt)}</small>    
+`;    notifyList.appendChild(item);
 
-  // 🔔 SHOW DOT ONLY IF NEW NOTIFICATION ARRIVED
-  if (newestTime > lastSeen) {
-    notifyDots.forEach(dot => (dot.style.display = "inline-block"));
-  }
+});
+
+// 🔔 SHOW DOT ONLY IF NEW NOTIFICATION ARRIVED
+if (newestTime > lastSeen) {
+notifyDots.forEach(dot => (dot.style.display = "inline-block"));
+}
 });
 }
 function getLastSeenNotify() {
-  return parseInt(localStorage.getItem("lastSeenNotify") || "0");
+return parseInt(localStorage.getItem("lastSeenNotify") || "0");
 }
 
 function setLastSeenNotify(ts) {
-  localStorage.setItem("lastSeenNotify", ts);
+localStorage.setItem("lastSeenNotify", ts);
 }
 function formatTime(ts) {
-  if (!ts) return "";
+if (!ts) return "";
 
-  const date = ts.toDate();
-  const now = new Date();
+const date = ts.toDate();
+const now = new Date();
 
-  const diffMin = Math.floor((now - date) / 60000);
+const diffMin = Math.floor((now - date) / 60000);
 
-  if (diffMin < 1) return "Just now";
-  if (diffMin < 60) return `${diffMin} min ago`;
-
-  const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr} hr ago`;
-
-  return date.toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short"
-  });
+if (diffMin < 1) return "Just now";
+if (diffMin < 60) return `${diffMin} min ago`;
+const diffHr = Math.floor(diffMin / 60);
+if (diffMin < 24) return `${diffHr} hr ago`;
+return date.toLocaleDateString("en-IN", {
+day: "numeric",
+month: "short"
+});
 }
 /* =========================
-   ADMIN SIDEBAR VISIBILITY
+ADMIN SIDEBAR VISIBILITY
 ========================= */
 const ADMIN_EMAILS = [
-  "nicknow20@gmail.com",
-  "saurabhjoshionly@gmail.com"
+"nicknow20@gmail.com",
+"saurabhjoshionly@gmail.com"
 ];
 
 onAuthStateChanged(auth, user => {
-  const adminItems = document.querySelectorAll(".admin-only");
-  if (!adminItems.length) return;
+const adminItems = document.querySelectorAll(".admin-only");
+if (!adminItems.length) return;
 
-  const isAdmin =
-    user && ADMIN_EMAILS.includes(user.email);
+const isAdmin =
+user && ADMIN_EMAILS.includes(user.email);
 
-  adminItems.forEach(el => {
-    el.style.display = isAdmin ? "block" : "none";
-  });
-  
-  
+adminItems.forEach(el => {
+el.style.display = isAdmin ? "block" : "none";
+});
+
 });
 
 const TEMP_TEST_REF = doc(db, "tempTests", "current");
 onSnapshot(TEMP_TEST_REF, snap => {
-  if (!snap.exists()) {
-    injectTempTestItem(false);
-    return;
-  }
-  
-  const data = snap.data();
-  
-  // 🔥 ADMIN HEARTBEAT CHECK
-  const lastSeen = data.adminLastSeen?.toDate?.();
-  if (!lastSeen) {
-    injectTempTestItem(false);
-    return;
-  }
-  
-  const diff = Date.now() - lastSeen.getTime();
-  
-  // ⛔ Admin offline → hide test
-  if (diff > 15000) {
-    injectTempTestItem(false);
-    return;
-  }
-  
-  if (data.status === "live") {
-    injectTempTestItem(true);
-  } else {
-    injectTempTestItem(false);
-  }
+if (!snap.exists()) {
+injectTempTestItem(false);
+return;
+}
+
+const data = snap.data();
+
+// 🔥 ADMIN HEARTBEAT CHECK
+const lastSeen = data.adminLastSeen?.toDate?.();
+if (!lastSeen) {
+injectTempTestItem(false);
+return;
+}
+
+const diff = Date.now() - lastSeen.getTime();
+
+// ⛔ Admin offline → hide test
+if (diff > 15000) {
+injectTempTestItem(false);
+return;
+}
+
+if (data.status === "live") {
+injectTempTestItem(true);
+} else {
+injectTempTestItem(false);
+}
 });
 
 /* =========================
-   PWA SERVICE WORKER
+PWA SERVICE WORKER
 ========================= */
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      const reg = await navigator.serviceWorker.register("/sw.js");
-      console.log("Service Worker registered");
+window.addEventListener("load", async () => {
+try {
+const reg = await navigator.serviceWorker.register("/sw.js");
+console.log("Service Worker registered");
 
-      // 🔄 Force update check
-      reg.update();
-    } catch (err) {
-      console.error("❌ SW failed", err);
-    }
-  });
+// 🔄 Force update check    
+  reg.update();    
+} catch (err) {    
+  console.error("❌ SW failed", err);    
+}
+
+});
 }
 
 /* =========================
-   PWA INSTALL LOGIC
+PWA INSTALL LOGIC
 ========================= */
 let installPrompt = null;
 let installTimer = null;
 
 function initPWAInstall() {
-  const banner = document.getElementById("installBanner");
-  const installBtn = document.getElementById("installBtn");
-  const closeBtn = document.getElementById("installClose");
+const banner = document.getElementById("installBanner");
+const installBtn = document.getElementById("installBtn");
+const closeBtn = document.getElementById("installClose");
 
-  if (!banner || !installBtn || !closeBtn) {
-    console.warn("❌ PWA banner elements missing");
-    return;
-  }
+if (!banner || !installBtn || !closeBtn) {
+console.warn("❌ PWA banner elements missing");
+return;
+}
 
-  window.addEventListener("beforeinstallprompt", e => {
-    e.preventDefault();
-    installPrompt = e;
+window.addEventListener("beforeinstallprompt", e => {
+e.preventDefault();
+installPrompt = e;
 
-    installTimer = setTimeout(() => {
+installTimer = setTimeout(() => {
       if (!localStorage.getItem("pwaDismissed")) {
         banner.classList.remove("hidden");
         banner.classList.add("pwa-attention");

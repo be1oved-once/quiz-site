@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin – Create Live Questions</title>
+
+  <!-- Base styles -->
+  <link rel="stylesheet" href="/assets/css/common.css">
+  <link rel="stylesheet" href="temp.css">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+<link rel="icon" href="/assets/favicon/favicon.ico">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon/android-chrome-512x512.png">
+
+<link rel="manifest" href="/assets/favicon/site.webmanifest">
+</head>
+
+<body>
+<!-- ================= ADMIN DASHBOARD ================= -->
+<main class="admin-dashboard">
+
+  <!-- ===== TOP STATS ===== -->
+  <section class="admin-stats">
+    <div class="stat-box">
+      <span class="stat-label">Total Users</span>
+      <span class="stat-value">00</span>
+    </div>
+
+    <div class="stat-box">
+      <span class="stat-label">Active Users</span>
+      <span class="stat-value">00</span>
+    </div>
+
+    <div class="stat-box">
+      <span class="stat-label">Total Notifications</span>
+      <span class="stat-value">00</span>
+    </div>
+
+    <div class="stat-box">
+      <span class="stat-label">Admins</span>
+      <span class="stat-value">00</span>
+    </div>
+  </section>
+
+  <!-- ===== TOP OPTION BAR ===== -->
+  <section class="admin-tabs">
+    <button class="tab-btn active" data-tab="notifications">Notifications</button>
+    <button class="tab-btn" data-tab="users">Users</button>
+    <button class="tab-btn" data-tab="requests">Requests</button>
+    <button class="tab-btn" data-tab="admins">Admins</button>
+  </section>
+
+  <!-- ===== SCREENS ===== -->
+  <section class="admin-panels">
+
+    <div class="panel active" id="notifications">
+      <div class="panel-card">
+        Notifications management screen
+      </div>
+    </div>
+
+    <div class="panel" id="users">
+      <div class="panel-card">
+        Users list / enable-disable / roles
+      </div>
+    </div>
+
+    <div class="panel" id="requests">
+      <div class="panel-card">
+        Pending access / role change requests
+      </div>
+    </div>
+
+    <div class="panel" id="admins">
+      <div class="panel-card">
+        Sub-admins / super-admins control
+      </div>
+    </div>
+
+  </section>
+
+</main>
+<script>
+  const tabs = document.querySelectorAll(".tab-btn");
+  const panels = document.querySelectorAll(".panel");
+
+  tabs.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabs.forEach(b => b.classList.remove("active"));
+      panels.forEach(p => p.classList.remove("active"));
+
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).classList.add("active");
+    });
+  });
+</script>
+<!-- Global layout / auth -->
+<script src="/assets/js/common-layout.js"></script>
+<script type="module" src="/assets/js/firebase.js"></script>
+<script type="module" src="/assets/js/common.js"></script>
+
+</body>
+</html>

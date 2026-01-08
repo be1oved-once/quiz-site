@@ -389,8 +389,7 @@
     <div class="footer-brand">
 <a href="/index.html" class="brand-link">
 <div class="brand-logo">
-  <span class="footer-before"><span class="before-text">Before</span><span class="before-underline"></span></span><span class="brand-x">X</span>
-  <span class="brand-am">am</span>
+<span class="footer-before"><span class="before-text">Before</span><span class="before-underline"></span></span><span class="brand-x">x</span><span class="brand-am">am</span>
 </div>
 </a>
       <p class="footer-tagline">

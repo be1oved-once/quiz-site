@@ -54,13 +54,13 @@ body {
 
 .admin-head h2 {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .admin-head p {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* =========================
@@ -130,7 +130,7 @@ body {
 
 .subject-popup {
   position: absolute;
-  top: 40px;
+  top: 44px;
   left: 0;
   right: 0;
 
@@ -141,12 +141,39 @@ body {
   overflow: hidden;
   z-index: 20;
   width: 160px;
+
+  /* 🔥 animation base */
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+
+  transition:
+    max-height 0.25s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+body.dark .subject-popup {
+  background: #141414;                 /* deep dark card */
+  border: 1.5px solid #2a2a2a;         /* soft dark border */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.subject-popup.show {
+  max-height: 260px; /* enough for items */
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#subjectArrow {
+  transition: transform 0.16s ease;
 }
 
-.subject-popup.hidden {
-  display: none;
+/* Popup open */
+#subjectArrow.open {
+  transform: rotate(180deg);
 }
-
 .subject-item {
   padding: 6px 14px;
   cursor: pointer;
@@ -1392,7 +1419,7 @@ body.dark {
 }
 
 .logs-clear:hover {
-  text-decoration: dashed underline;
+  text-decoration: 0.5px underline;
 }
 
 /* Logs container */
@@ -1534,4 +1561,215 @@ body.dark .logs-body::-webkit-scrollbar-thumb {
 
 .log-item.success {
   color: #4ade80;
+}
+
+/* =========================
+   BASE LAYOUT FIX
+========================= */
+
+.admin-dashboard {
+  padding: 14px;
+  padding-top: 92px;
+  background: #f8fafc;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+body.dark .admin-dashboard {
+  background: #020617;
+}
+
+/* =========================
+   TOP STATS (SCROLLABLE)
+========================= */
+
+.admin-stats {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+
+.stat-box {
+  min-width: 132px;
+  height: 92px;
+  border-radius: 18px;
+  padding: 10px;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+/* CARD COLORS */
+.stat-box.users {
+  background: linear-gradient(135deg, #6c63ff, #8b84ff);
+}
+
+.stat-box.active {
+  background: linear-gradient(135deg, #22c55e, #4ade80);
+}
+
+.stat-box.notify {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.stat-box.global {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+}
+
+/* =========================
+   TAB BAR
+========================= */
+
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  margin-bottom: 14px;
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  background: #f1f5f9;
+  color: #334155;
+  border: 1.5px solid #e5e7eb;
+
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #6c63ff, #8b84ff);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 6px 14px rgba(108,99,255,0.35);
+}
+
+body.dark .tab-btn {
+  background: #020617;
+  color: #cbd5f5;
+  border-color: rgba(255,255,255,0.12);
+}
+
+body.dark .tab-btn.active {
+  background: linear-gradient(135deg, #7c6fff, #9a94ff);
+  color: #ffffff;
+}
+
+/* =========================
+   PANEL AREA
+========================= */
+
+.admin-panel {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 16px;
+  min-height: 220px;
+
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.08),
+    inset 0 0 0 1px #e5e7eb;
+}
+
+body.dark .admin-panel {
+  background: #0f172a;
+  color: #e5e7eb;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.6),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+/* =========================
+   PANEL PLACEHOLDER TEXT
+========================= */
+
+.panel-placeholder {
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+}
+
+body.dark .panel-placeholder {
+  color: #cbd5f5;
+}
+
+/* =========================
+   SCROLLBAR HIDE (MOBILE)
+========================= */
+
+.admin-stats::-webkit-scrollbar,
+.admin-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-stats,
+.admin-tabs {
+  scrollbar-width: none;
+}
+
+/* =========================
+   RESPONSIVE FIX
+========================= */
+
+@media (max-width: 480px) {
+  .stat-box {
+    min-width: 120px;
+    height: 86px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+}
+/* FORCE ADMIN DASHBOARD BELOW DOUBLE HEADER */
+
+.admin-dashboard {
+  position: relative;
+  margin-top: 0 !important;
+  padding-top: 140px !important; /* 🔥 key fix */
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+body.dark .admin-dashboard {
+  background: #020617;
+}
+
+/* Prevent headers from overlapping content */
+header,
+.global-header,
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Make sure stats are fully visible */
+.admin-stats {
+  margin-top: 6px;
+  padding-top: 6px;
 }
