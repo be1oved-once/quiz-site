@@ -440,12 +440,28 @@ body.dark .demo-option:hover {
 .section-achievement {
   margin-top: 20px;
   padding: 70px 16px;
-  background: linear-gradient(
-    135deg,
-    #ecfeff 0%,
-    #cffafe 50%,
-    #e0f2fe 100%
-  );
+
+  /* Base gradient */
+  background:
+    radial-gradient(
+      circle at 1px 1px,
+      rgba(2,132,199,0.12) 1px,
+      transparent 0
+    ),
+    linear-gradient(
+      135deg,
+      #ecfeff 0%,
+      #cffafe 50%,
+      #e0f2fe 100%
+    );
+
+  background-size:
+    22px 22px,   /* dots spacing */
+    cover;
+
+  background-position:
+    top left,
+    center;
 }
 
 .achievement-wrap {
@@ -500,7 +516,7 @@ body.dark .demo-option:hover {
   padding: 10px 14px;
   font-size: 13px;
   border-radius: 12px;
-  background: #ffffff;
+  background: #FFFFFF1F;
   border: 1px solid #e2e8f0;
   white-space: nowrap;
 }
@@ -530,12 +546,26 @@ body.dark .demo-option:hover {
 ========================= */
 
 body.dark .section-achievement {
-  background: linear-gradient(
-    135deg,
-    #022c22 0%,
-    #064e3b 50%,
-    #022c22 100%
-  );
+  background:
+    radial-gradient(
+      circle at 1px 1px,
+      rgba(34, 211, 238, 0.18) 1px,
+      transparent 0
+    ),
+    linear-gradient(
+      135deg,
+      #022c22 0%,
+      #064e3b 50%,
+      #022c22 100%
+    );
+
+  background-size:
+    22px 22px,   /* dot spacing */
+    cover;
+
+  background-position:
+    top left,
+    center;
 }
 
 body.dark .achievement-badge {
@@ -750,9 +780,163 @@ body.dark .truth-sub {
 }
 .content-wide {
   max-width: 960px;
-  margin: 0 24px;
+  margin-left: 6vw;
   padding: 0 16px;
 }
 .content-wide h2{
   font-weight: 500;
+}
+/* =========================
+   EXAM INTEGRITY SECTION
+========================= */
+
+.section-integrity {
+  padding: 90px 16px;
+  background-color: #e8f0f8;
+  background-image:
+    radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 14px 14px;
+  justify-content: center;
+}
+.integrity-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Badge */
+.integrity-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+  color: #3730a3;
+  background: rgba(79,70,229,0.12);
+  text-align: center;
+  margin: 0 auto 16px;
+  
+}
+
+/* Title */
+.integrity-title {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.integrity-title span {
+  color: #4f46e5;
+}
+
+/* Desc */
+.integrity-desc {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #334155;
+  margin-bottom: 40px;
+}
+
+/* Timeline */
+.integrity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Step */
+.integrity-step {
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.integrity-step.danger {
+  border-color: #ef4444;
+  background: rgba(239,68,68,0.06);
+}
+
+/* Icon */
+.step-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(79,70,229,0.12);
+  color: #4f46e5;
+  flex-shrink: 0;
+}
+
+.integrity-step.danger .step-icon {
+  background: rgba(239,68,68,0.15);
+  color: #dc2626;
+}
+
+.step-icon i {
+  font-size: 16px;
+}
+
+/* Content */
+.step-content h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.step-content p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #475569;
+}
+
+/* Note */
+.integrity-note {
+  margin-top: 32px;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+body.dark .section-integrity {
+  background-color: #0b1c2d;
+  background-image:
+    radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+body.dark .integrity-badge {
+  color: #a5b4fc;
+  background: rgba(99,102,241,0.25);
+}
+
+body.dark .integrity-title {
+  color: #e5e7eb;
+}
+
+body.dark .integrity-desc,
+body.dark .step-content p,
+body.dark .integrity-note {
+  color: #cbd5e1;
+}
+
+body.dark .integrity-step {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.12);
+}
+
+body.dark .integrity-step.danger {
+  background: rgba(239,68,68,0.18);
+  border-color: #ef4444;
 }

@@ -155,11 +155,50 @@ body.dark .logo-dot {
 .before-text {
   font-size: 20px;
   font-weight: 600;
-  color: var(--violet);
+  color: black;
   position: relative;
   z-index: 1;
 }
+.bordered-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
 
+/* STRAIGHT BORDER, ROTATED COLORS */
+.bordered-logo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1.6px; /* border thickness */
+  pointer-events: none;
+
+  /* 🔥 ROTATED COLORS (not border) */
+  background: linear-gradient(
+    135deg,
+    #6366f1 0%,
+    #22d3ee 50%,
+    #8b5cf6 100%
+  );
+
+  /* hollow center */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+body.dark .bordered-logo::before {
+  background: linear-gradient(
+    135deg,
+    #22d3ee 0%,
+    #818cf8 50%,
+    #a78bfa 100%
+  );
+}
 /* underline */
 .before-underline {
   position: absolute;
@@ -202,7 +241,7 @@ body.dark .logo-dot {
 .brand-am {
   font-size: 20px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: #A2A2AB;
 }
 
 /* =========================

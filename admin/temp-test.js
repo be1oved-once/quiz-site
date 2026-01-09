@@ -64,6 +64,21 @@ function adminLog(message, type = "info") {
 /* =========================
    CONSOLE → ADMIN LOG BRIDGE
 ========================= */
+function disablePublishMode() {
+  liveBtn?.classList.add("disabled");
+  scheduleBtn?.classList.add("disabled");
+
+  liveBtn && (liveBtn.style.pointerEvents = "none");
+  scheduleBtn && (scheduleBtn.style.pointerEvents = "none");
+}
+
+function enablePublishMode() {
+  liveBtn?.classList.remove("disabled");
+  scheduleBtn?.classList.remove("disabled");
+
+  liveBtn && (liveBtn.style.pointerEvents = "");
+  scheduleBtn && (scheduleBtn.style.pointerEvents = "");
+}
 
 (function hookConsole() {
   const original = {
@@ -126,7 +141,14 @@ document.addEventListener("DOMContentLoaded", () => {
 /* =========================
    ADMIN-ONLINE SCHEDULER
 ========================= */
+function calculateRemainingSeconds(expiresAt) {
+  if (!expiresAt) return 0;
 
+  const now = Date.now();
+  const end = expiresAt.toDate().getTime();
+
+  return Math.max(Math.floor((end - now) / 1000), 0);
+}
 /* =========================
    ADMIN-ONLINE SCHEDULER (FIXED)
 ========================= */
@@ -134,43 +156,94 @@ console.log("Attaching onSnapshot to TEMP_TEST_REF");
 
 let schedulerInterval = null;
 
-onSnapshot(TEMP_TEST_REF, snap => {
+onSnapshot(TEMP_TEST_REF, async (snap) => {
 
+  /* =========================
+     NO ACTIVE TEST
+  ========================= */
   if (!snap.exists()) {
     console.log("No active test");
 
-    clearTestBtn.disabled = true;
+    clearTestBtn && (clearTestBtn.disabled = true);
     leaderboardBtn?.classList.remove("hidden");
 
-    // stop scheduler safely
+    // stop all timers safely
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
     if (schedulerInterval) {
       clearInterval(schedulerInterval);
       schedulerInterval = null;
     }
+
+    remainingSeconds = 0;
+    timerDisplay && (timerDisplay.textContent = "00:00");
+    liveTimerText && (liveTimerText.textContent = "00:00");
+    liveTimerBar?.classList.add("hidden");
+
+enablePublishMode();
     return;
   }
 
+  /* =========================
+     TEST EXISTS
+  ========================= */
   const data = snap.data();
+disablePublishMode();
   console.log(
-  "Test:",
-  data.status,
-  "| Q:", data.questions?.length || 0
-);
+    "Test:",
+    data.status,
+    "| Questions:",
+    data.questions?.length || 0
+  );
 
-  /* ======================
-     UI INFO
-  ====================== */
+  clearTestBtn && (clearTestBtn.disabled = false);
+
+  /* =========================
+     DISPLAY INFO
+  ========================= */
   scheduleInfo && (scheduleInfo.textContent =
     formatDateTime(data.schedule?.at));
 
   expiresInfo && (expiresInfo.textContent =
     formatDateTime(data.expiresAt));
 
-  clearTestBtn.disabled = false;
+  /* =========================
+     🔥 LIVE TIMER SYNC (FIX)
+  ========================= */
+  if (data.status === "live" && data.expiresAt) {
 
-  /* ======================
-     SCHEDULER LOGIC
-  ====================== */
+    const now = Date.now();
+    const end = data.expiresAt.toDate().getTime();
+
+    remainingSeconds = Math.max(
+      Math.floor((end - now) / 1000),
+      0
+    );
+
+    // show timer UI
+    liveTimerBar?.classList.remove("hidden");
+
+    // update text immediately
+    updateTimerDisplay();
+
+    // restart interval ONLY if not running
+    if (!timerInterval && remainingSeconds > 0) {
+      startTimer();
+    }
+
+    // if time already over
+    if (remainingSeconds <= 0) {
+      timerDisplay.textContent = "TIME UP";
+      liveTimerText.textContent = "TIME UP";
+    }
+  }
+
+  /* =========================
+     ⏰ SCHEDULE → LIVE HANDLER
+  ========================= */
   if (
     data.publishMode === "schedule" &&
     data.status !== "live" &&
@@ -182,11 +255,9 @@ onSnapshot(TEMP_TEST_REF, snap => {
       console.log("Scheduler armed");
 
       schedulerInterval = setInterval(async () => {
-        const now = new Date();
+        if (Date.now() < scheduledTime.getTime()) return;
 
-        if (now < scheduledTime) return;
-
-        console.log("TIME REACHED -> GOING LIVE");
+        console.log("TIME REACHED → GOING LIVE");
 
         clearInterval(schedulerInterval);
         schedulerInterval = null;
@@ -202,8 +273,8 @@ onSnapshot(TEMP_TEST_REF, snap => {
       }, 1000);
     }
   }
-});
 
+});
 /* =========================
    SUBJECT DROPDOWN
 ========================= */
@@ -743,26 +814,29 @@ clearTestBtn.disabled = false;
 }
 
 async function startTimer() {
-  clearInterval(timerInterval);
+  if (timerInterval) return; // ⛔ prevent double intervals
 
   updateTimerDisplay();
 
-timerInterval = setInterval(async () => {
-  remainingSeconds--;
-  updateTimerDisplay();
+  timerInterval = setInterval(async () => {
+    remainingSeconds--;
+    updateTimerDisplay();
 
-  if (remainingSeconds <= 0) {
-  clearInterval(timerInterval);
-  timerDisplay.textContent = "TIME UP";
-  
-  try {
-    await deleteDoc(TEMP_TEST_REF);
-   adminLog("Test auto-ended (TIME UP)", "warn");
-  } catch (e) {
-    console.error(e);
-  }
-}
-}, 1000);
+    if (remainingSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      timerDisplay.textContent = "TIME UP";
+      liveTimerText.textContent = "TIME UP";
+
+      try {
+        await deleteDoc(TEMP_TEST_REF);
+        adminLog("Test auto-ended (TIME UP)", "warn");
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, 1000);
 }
 
 function updateTimerDisplay() {
@@ -1055,5 +1129,5 @@ function startAdminPresenceCheck() {
     if (!pageVisible || !pageFocused || !online) {
       forceClearTest("Admin not active / offline");
     }
-  }, 15000); // ✅ 15 seconds
+  }, 30000); // ✅ 15 seconds
 }
