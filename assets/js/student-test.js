@@ -31,17 +31,25 @@ onSnapshot(TEMP_TEST_REF, (snap) => {
 
   const data = snap.data();
   // 🔥 ADMIN HEARTBEAT CHECK
-const lastSeen = data.adminLastSeen?.toDate?.();
-if (!lastSeen) {
-  console.log("❌ Admin offline");
+// ✅ TEST VALIDITY CHECK (ONLY TIMER BASED)
+if (data.status !== "live") {
+  console.log("⌛ Test not live yet");
   return;
 }
 
-const diff = Date.now() - lastSeen.getTime();
-if (diff > 15000) {
-  console.log("⛔ Admin inactive → test invalid");
+if (!data.expiresAt) {
+  console.warn("⚠️ No expiry set");
   return;
 }
+
+const now = Date.now();
+const end = data.expiresAt.toDate().getTime();
+
+if (now >= end) {
+  console.log("⏰ Test expired");
+  return;
+}
+
   window.currentTestId = data.testId;
   // ✅ Only react when test is LIVE
   if (data.status !== "live") {
