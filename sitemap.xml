@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- =====================
+       CORE / PUBLIC PAGES
+  ===================== -->
+  <url>
+    <loc>https://beforexam.vercel.app/index.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/About-us.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/contact.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/sponsor-us.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- =====================
+       PRACTICE / EXAM PAGES
+  ===================== -->
+  <url>
+    <loc>https://beforexam.vercel.app/chapters.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/business-laws.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/mtp-rtp.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- =====================
+       BLOG INDEX
+  ===================== -->
+  <url>
+    <loc>https://beforexam.vercel.app/blogs.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- =====================
+       BLOG ARTICLES
+  ===================== -->
+  <url>
+    <loc>https://beforexam.vercel.app/Blog/Essential-Things-You-Must-Keep-in-Mind.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/Blog/how-to-speed-up-handwriting.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/Blog/i-knew-everything-forgot-everything-in-exam-hall.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/Blog/my-teacher-was-wrong-about-ca-foundation-and-i-paid-the-price.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/Blog/Presentation-vs-Content-What-Matters-More.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/Blog/Why-Hard-Work-Alone-Is-Not-Enough-to-Clear-CA-Foundation.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- =====================
+       LEGAL PAGES
+  ===================== -->
+  <url>
+    <loc>https://beforexam.vercel.app/Legal/disclaimer.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/Legal/privacy-policy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/Legal/terms.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://beforexam.vercel.app/Legal/our-mission.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+</urlset>
