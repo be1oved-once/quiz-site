@@ -27,7 +27,7 @@ function initGoogleOneTap() {
 if (!window.google || !auth) return;
 
 google.accounts.id.initialize({
-client_id: "54581941326-9bsoei7p9gem6bff3pjsl5tju1ckst8l.apps.googleusercontent.com", // SAME AS FIREBASE
+client_id: "17479597538-v0arppvqpf198bubbtd93i5roimuu5dr.apps.googleusercontent.com", // SAME AS FIREBASE
 callback: async (response) => {
 try {
 const credential = GoogleAuthProvider.credential(
@@ -305,10 +305,25 @@ password
 );
 
 const user = userCred.user;
-
+await setDoc(
+  doc(db, "users", user.uid),
+  {
+    uid: user.uid,
+    username: username, // 👈 FROM AUTH BOX
+    email: user.email,
+    provider: "password",
+    createdAt: serverTimestamp(),
+    xp: 0,
+    bookmarks: [],
+    settings: {
+      theme: localStorage.getItem("quizta-theme") || "dark"
+    }
+  },
+  { merge: true }
+);
 // 📩 Send verification email
 await sendEmailVerification(user, {
-url: "http://localhost:7700/signup-verified.html"
+url: "https://beforexam.vercel.app/signup-verified.html"
 });
 
 console.log("📩 Verification email sent");
@@ -345,7 +360,7 @@ user.displayName ||
 user.email?.split("@")[0] ||
 "Student";
 
-if (!snap.exists()) {
+if (!snap.exists() || !snap.data().username) {
 await setDoc(
 userRef,
 {
@@ -410,15 +425,6 @@ loginBtns.forEach(btn => btn.style.display = "none");
 signupBtns.forEach(btn => btn.style.display = "none");
 logoutBtns.forEach(btn => btn.style.display = "inline-flex");
 
-console.log(
-  "User logged in:",
-  {
-    uid: user.uid,
-    username: user.displayName || user.email?.split("@")[0],
-    email: user.email
-  }
-);    
-
 await ensureUserProfile(user);    
 // ⏳ Load Firestore data separately    
 loadUserProfile(user.uid);
@@ -453,23 +459,26 @@ console.error("Logout failed:", err);
 });
 
 async function loadUserProfile(uid) {
-try {
-const userRef = doc(db, "users", uid);
-const snap = await getDoc(userRef);
+  try {
+    const userRef = doc(db, "users", uid);
+    const snap = await getDoc(userRef);
 
-if (!snap.exists()) return;    
+    if (!snap.exists()) return;
 
-const data = snap.data();    
+    const data = snap.data();
 
-// Example future use:    
-// window.userXP = data.xp;    
-// window.userSettings = data.settings;    
+    console.log(
+      "User logged in:",
+      {
+        uid,
+        username: data.username,
+        email: data.email
+      }
+    );
 
-console.log("User profile synced");
-
-} catch (err) {
-console.error("Profile sync failed:", err);
-}
+  } catch (err) {
+    console.error("Profile sync failed:", err);
+  }
 }
 
 const settingsModal = document.getElementById("settingsModal");

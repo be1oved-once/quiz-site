@@ -2,575 +2,267 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Blogs|Tickar</title>
-  <link rel="stylesheet" href="assets/css/common.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogs | Beforexam</title>
+
+  <meta name="description" content="Exam-focused blogs for CA Foundation students. Real preparation advice, exam psychology, strategy, and practical insights from Beforexam." />
+  <meta name="robots" content="index, follow" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="/assets/css/common.css">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- FAVICONS -->
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
-<link rel="icon" href="assets/favicon/favicon.ico">
+  <link rel="icon" href="/assets/favicon/favicon.ico">
+  <meta name="theme-color" content="#6c63ff">
 
-<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+  <style>:root {
+  /* Brand */
+  --primary: #6c63ff;        /* Beforexam violet */
+  --primary-soft: rgba(108, 99, 255, 0.12);
 
-<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
-
-<link rel="manifest" href="assets/favicon/site.webmanifest">
-
-<meta name="theme-color" content="#6c63ff">
-<style>
-:root {
-  --accent: #4f46e5;
-  --violet: #6c63ff;
-  --violet-soft: rgba(108, 99, 255, 0.15);
-  --border-light: #e6e6ee;
+  /* Backgrounds */
   --bg-light: #ffffff;
-  --text-light: #1c1c1c;
-}
+  --bg-page: #f8f9ff;
 
+  /* Text */
+  --text-main: #111827;
+  --text-muted: #6b7280;
+
+  /* Borders */
+  --border-light: #e5e7eb;
+  --border-soft: rgba(0, 0, 0, 0.06);
+}
 body.dark {
-  --accent: #818cf8;
   --bg-light: #0f172a;
-  --text-light: #e5e7eb;
-  --border-light: rgba(255,255,255,0.08);
-  --violet-soft: rgba(108, 99, 255, 0.25);
-}
-/* =========================
-   SKELETON LOADER
-========================= */
+  --bg-page: #020617;
 
-.skeleton {
-  pointer-events: none;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  --border-light: rgba(255, 255, 255, 0.14);
+  --border-soft: rgba(255, 255, 255, 0.08);
 }
 
-.skeleton .sk-title,
-.skeleton .sk-line,
-.skeleton .sk-date,
-.skeleton .sk-btn {
-  background: linear-gradient(
-    90deg,
-    rgba(0,0,0,0.06) 25%,
-    rgba(0,0,0,0.12) 37%,
-    rgba(0,0,0,0.06) 63%
-  );
-  background-size: 400% 100%;
-  animation: shimmer 1.4s ease infinite;
-  border-radius: 8px;
+    .blogs-page {
+  max-width: 720px;
+  margin: 24px auto 40px;
+  padding: 0 12px; /* 👈 left/right margin reduced */
+  margin-left: 12px;
+}
+.page-content{
+  margin-left: 12px;
+}
+.blogs-page h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
 }
 
-/* Sizes */
-.sk-title {
-  height: 22px;
-  width: 70%;
-  margin-bottom: 10px;
+.blogs-intro {
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  opacity: 0.75;
 }
 
-.sk-line {
-  height: 14px;
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.sk-line.short {
-  width: 80%;
-}
-
-.sk-date {
-  height: 20px;
-  width: 90px;
-  border-radius: 999px;
-}
-
-.sk-btn {
-  height: 32px;
-  width: 110px;
-  border-radius: 999px;
-}
-
-/* Dark mode */
-body.dark .skeleton .sk-title,
-body.dark .skeleton .sk-line,
-body.dark .skeleton .sk-date,
-body.dark .skeleton .sk-btn {
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.06) 25%,
-    rgba(255,255,255,0.12) 37%,
-    rgba(255,255,255,0.06) 63%
-  );
-}
-
-/* Animation */
-@keyframes shimmer {
-  0% { background-position: 100% 0; }
-  100% { background-position: 0 0; }
-}
-/* =========================
-   BLOG LIST – COMPACT MODE
-========================= */
-
-.blogs-page {
-  padding: 16px 14px;
-  max-width: 760px;
-  margin-top: 30px;
-}
-
-/* Search */
-.blog-search input {
-  padding: 9px 14px;
-  font-size: 13px;
-}
-
-/* List */
-.blogs-list {
+.blog-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin: 18px 4px;
+  gap: 14px; /* 👈 pehle zyada tha */
 }
 
-/* Card */
-.blog-card {
-  background: var(--bg-light);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  padding: 12px 14px;
-  transition: transform .15s ease, box-shadow .15s ease;
+.blog-item {
+  padding: 12px 13px;  /* 👈 compact padding */
+  border-radius: 10px;
 }
 
-.blog-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0,0,0,.06);
-}
+    body.dark .blog-item {
+      background: #0f172a;
+      border-color: rgba(255,255,255,0.12);
+    }
 
-/* Title */
-.blog-title {
+.blog-item h2 {
   font-size: 15px;
-  font-weight: 600;
   line-height: 1.25;
-  margin-bottom: 4px;
-  overflow: hidden;
+  margin-bottom: 5px;
 }
 
-/* Excerpt (tight) */
-.blog-excerpt {
-  font-size: 12.5px;
-  line-height: 1.4;
-  opacity: .75;
+.blog-item p {
+  font-size: 13px;
+  line-height: 1.45;
   margin-bottom: 8px;
-
-  /* limit to 2 lines */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  opacity: 0.78;
 }
 
-/* Footer */
-.blog-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+    .blog-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      opacity: 0.7;
+    }
 
-/* Date */
-.blog-date {
-  font-size: 10.5px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--violet-soft);
-  color: var(--violet);
+.blog-meta a {
+  font-size: 12px;
   font-weight: 600;
-}
-
-/* Button – subtle */
-.read-more-btn {
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--violet);
-  color: var(--violet);
+  color: #6c63ff;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.read-more-btn:hover {
-  background: var(--violet);
-  color: #fff;
+.blog-meta a::after {
+  content: "→";
+  font-size: 14px;
+  transition: transform 0.15s ease;
 }
 
-/* Dark */
-body.dark .blog-card {
-  background: #0f172a;
-}
-/* --------------------
-   DARK MODE
--------------------- */
-body.dark .blog-card {
-  background: #0f172a;
-  border-color: rgba(255,255,255,0.12);
-}
-
-body.dark .blog-title {
-  color: #e5e7eb;
-}
-
-body.dark .blog-excerpt {
-  color: rgba(229,231,235,0.75);
-}
-
-body.dark .blog-date {
-  background: rgba(139,92,246,0.25);
-  color: #c7bfff;
-}
-
-body.dark .read-more-btn {
-  border-color: #8b5cf6;
-  color: #c7bfff;
-}
-
-body.dark .read-more-btn:hover {
-  background: #8b5cf6;
-  color: #fff;
+.blog-meta a:hover::after {
+  transform: translateX(2px);
 }
 .blog-search {
-  margin: 10px 8px 8px;
+  margin: 0 0 16px;
 }
 
 .blog-search input {
   width: 100%;
-  padding: 10px 14px;
+  padding: 9px 14px;
+  font-size: 13.5px;
   border-radius: 999px;
   border: 1.5px solid var(--border-light);
-  font-size: 14px;
   background: var(--bg-light);
-  color: var(--text-light);
 }
-
-.blog-search input:focus {
-  outline: none;
-  border-color: var(--violet);
-}
-
-/* Dark mode */
-body.dark .blog-search input {
-  background: #0f172a;
-  color: #e5e7eb;
-  border-color: rgba(255,255,255,0.15);
-}
-.blogs-list:not(.skeleton-list) {
-  display: none;
-}
-</style>
+  </style>
 </head>
+
 <body>
+<br>
+<br>
 <main class="blogs-page page-content">
 <div class="blog-search">
   <input
     type="text"
     id="blogSearch"
-    placeholder="Search articles..."
+    placeholder="Search articles…"
     aria-label="Search blogs"
   />
 </div>
-<!-- SKELETON LOADER -->
-<div id="blogSkeleton" class="blogs-list skeleton-list">
+  <h1 style="font-weight: 600;">Beforexam Blog</h1>
+  <p class="blogs-intro">
+    Honest, exam-focused writing for CA Foundation students.
+    No motivation drama. Only preparation that actually works.
+  </p>
 
-  <div class="blog-card skeleton">
-    <div class="sk-title"></div>
-    <div class="sk-line"></div>
-    <div class="sk-line short"></div>
-
-    <div class="blog-footer">
-      <div class="sk-date"></div>
-      <div class="sk-btn"></div>
-    </div>
-  </div>
-
-  <div class="blog-card skeleton">
-    <div class="sk-title"></div>
-    <div class="sk-line"></div>
-    <div class="sk-line short"></div>
-
-    <div class="blog-footer">
-      <div class="sk-date"></div>
-      <div class="sk-btn"></div>
-    </div>
-  </div>
-
-  <div class="blog-card skeleton">
-    <div class="sk-title"></div>
-    <div class="sk-line"></div>
-    <div class="sk-line short"></div>
-
-    <div class="blog-footer">
-      <div class="sk-date"></div>
-      <div class="sk-btn"></div>
-    </div>
-  </div>
-
-</div>
-  <section class="blogs-list">
+  <section class="blog-list">
 
     <!-- BLOG 1 -->
-    <article class="blog-card">
-      <h1 class="blog-title">
-        CA Foundation Exam in One Month...
-      </h1>
-
-      <p class="blog-excerpt">
-        Agar aap CA Foundation student ho aur exam sirf <strong>1 month door</strong> hai,
-    toh yeh phase sabse critical hota hai.
-    Is stage par naya padhna nahi,
-    balki jo padha hai usko <strong>exam-ready banana
+    <article class="blog-item">
+      <h2>CA Foundation Exam in One Month – What You Must Do</h2>
+      <p>
+        Last one month strategy for CA Foundation students.
+        What to revise, what to stop, and how to become exam-ready without panic.
       </p>
-
-      <div class="blog-footer">
-        <span class="blog-date">01/01/2026</span>
-        <a href="/Blog/Essential-Things-You-Must-Keep-in-Mind.html" class="read-more-btn">
-          Read More
-        </a>
+      <div class="blog-meta">
+        <span>Jan 2026</span>
+        <a href="/Blog/Essential-Things-You-Must-Keep-in-Mind.html">Read</a>
       </div>
     </article>
 
     <!-- BLOG 2 -->
-    <article class="blog-card">
-      <h1 class="blog-title">
-        What is Consideration under Business Law?
-      </h1>
-
-      <p class="blog-excerpt">
-        Consideration is an essential element of a valid contract.
-        Without consideration, an agreement generally cannot be
-        enforced by law.
+    <article class="blog-item">
+      <h2>How to Speed Up Handwriting for CA Foundation Exams</h2>
+      <p>
+        Practical handwriting speed techniques that actually work in CA exams.
+        No myths. Only exam-tested methods.
       </p>
-
-      <div class="blog-footer">
-        <span class="blog-date">05/01/2026</span>
-        <a href="/blogs/consideration-law.html" class="read-more-btn">
-          Read More
-        </a>
+      <div class="blog-meta">
+        <span>Jan 2026</span>
+        <a href="/Blog/how-to-speed-up-handwriting.html">Read</a>
       </div>
     </article>
 
     <!-- BLOG 3 -->
-    <article class="blog-card">
-      <h1 class="blog-title">
-        Normative vs Positive Economics Explained
-      </h1>
-
-      <p class="blog-excerpt">
-        Economics is often divided into positive and normative
-        statements. Understanding the difference helps in better
-        policy analysis and exam preparation.
+    <article class="blog-item">
+      <h2>I Knew Everything. I Forgot Everything in the Exam Hall.</h2>
+      <p>
+        A raw CA Foundation reality about exam pressure, blank moments,
+        and why knowledge alone fails without conditioning.
       </p>
-
-      <div class="blog-footer">
-        <span class="blog-date">10/01/2026</span>
-        <a href="/blogs/normative-positive.html" class="read-more-btn">
-          Read More
-        </a>
+      <div class="blog-meta">
+        <span>Jan 2026</span>
+        <a href="/Blog/i-knew-everything-forgot-everything-in-exam-hall.html">Read</a>
       </div>
     </article>
-<!-- BLOG 4 -->
-<article class="blog-card">
-  <h1 class="blog-title">
-    Law of Demand: Meaning and Exceptions
-  </h1>
 
-  <p class="blog-excerpt">
-    The law of demand explains the inverse relationship between price
-    and quantity demanded. This article also covers important
-    exceptions relevant for exams.
-  </p>
+    <!-- BLOG 4 -->
+    <article class="blog-item">
+      <h2>My Teacher Was Wrong About CA Foundation – And I Paid the Price</h2>
+      <p>
+        Why blindly following advice fails in CA Foundation
+        and how students must take ownership of execution.
+      </p>
+      <div class="blog-meta">
+        <span>Jan 2026</span>
+        <a href="/Blog/my-teacher-was-wrong-about-ca-foundation-and-i-paid-the-price.html">Read</a>
+      </div>
+    </article>
 
-  <div class="blog-footer">
-    <span class="blog-date">12/01/2026</span>
-    <a href="/blogs/law-of-demand.html" class="read-more-btn">
-      Read More
-    </a>
-  </div>
-</article>
+    <!-- BLOG 5 -->
+    <article class="blog-item">
+      <h2>Presentation vs Content: What Matters More in CA Foundation?</h2>
+      <p>
+        The most misunderstood CA exam debate explained clearly —
+        what actually earns marks and what doesn’t.
+      </p>
+      <div class="blog-meta">
+        <span>Jan 2026</span>
+        <a href="/Blog/Presentation-vs-Content-What-Matters-More.html">Read</a>
+      </div>
+    </article>
 
-<!-- BLOG 5 -->
-<article class="blog-card">
-  <h1 class="blog-title">
-    Elasticity of Demand Simplified
-  </h1>
+    <!-- BLOG 6 -->
+    <article class="blog-item">
+      <h2>Why Hard Work Alone Is Not Enough to Clear CA Foundation</h2>
+      <p>
+        Hard truth every CA student must understand —
+        effort without strategy often leads to failure.
+      </p>
+      <div class="blog-meta">
+        <span>Jan 2026</span>
+        <a href="/Blog/Why-Hard-Work-Alone-Is-Not-Enough-to-Clear-CA-Foundation.html">Read</a>
+      </div>
+    </article>
 
-  <p class="blog-excerpt">
-    Elasticity measures responsiveness of demand to price changes.
-    Learn types of elasticity with simple explanations and examples.
-  </p>
-
-  <div class="blog-footer">
-    <span class="blog-date">15/01/2026</span>
-    <a href="/blogs/elasticity-of-demand.html" class="read-more-btn">
-      Read More
-    </a>
-  </div>
-</article>
-
-<!-- BLOG 6 -->
-<article class="blog-card">
-  <h1 class="blog-title">
-    What is Consideration in Contract Law?
-  </h1>
-
-  <p class="blog-excerpt">
-    Consideration is a core element of a valid contract. This article
-    explains its meaning, essentials, and legal exceptions.
-  </p>
-
-  <div class="blog-footer">
-    <span class="blog-date">18/01/2026</span>
-    <a href="/blogs/consideration-contract-law.html" class="read-more-btn">
-      Read More
-    </a>
-  </div>
-</article>
-
-<!-- BLOG 7 -->
-<article class="blog-card">
-  <h1 class="blog-title">
-    Difference Between Void and Voidable Contracts
-  </h1>
-
-  <p class="blog-excerpt">
-    Many students confuse void and voidable contracts. This article
-    clearly explains differences with practical examples.
-  </p>
-
-  <div class="blog-footer">
-    <span class="blog-date">20/01/2026</span>
-    <a href="/blogs/void-vs-voidable.html" class="read-more-btn">
-      Read More
-    </a>
-  </div>
-</article>
-
-<!-- BLOG 8 -->
-<article class="blog-card">
-  <h1 class="blog-title">
-    Consumer Behaviour Theory Explained
-  </h1>
-
-  <p class="blog-excerpt">
-    Consumer behaviour theory helps understand how consumers maximize
-    satisfaction. This article breaks it down for easy revision.
-  </p>
-
-  <div class="blog-footer">
-    <span class="blog-date">22/01/2026</span>
-    <a href="/blogs/consumer-behaviour.html" class="read-more-btn">
-      Read More
-    </a>
-  </div>
-</article>
-
-<!-- BLOG 9 -->
-<article class="blog-card">
-  <h1 class="blog-title">
-    Types of Markets in Economics
-  </h1>
-
-  <p class="blog-excerpt">
-    Markets are classified into perfect competition, monopoly,
-    monopolistic competition, and oligopoly. Learn key features here.
-  </p>
-
-  <div class="blog-footer">
-    <span class="blog-date">25/01/2026</span>
-    <a href="/blogs/types-of-markets.html" class="read-more-btn">
-      Read More
-    </a>
-  </div>
-</article>
-
-<!-- BLOG 10 -->
-<article class="blog-card">
-  <h1 class="blog-title">
-    Role of Government in an Economy
-  </h1>
-
-  <p class="blog-excerpt">
-    Government plays a vital role in correcting market failures,
-    ensuring equity, and stabilizing the economy.
-  </p>
-
-  <div class="blog-footer">
-    <span class="blog-date">28/01/2026</span>
-    <a href="/blogs/role-of-government.html" class="read-more-btn">
-      Read More
-    </a>
-  </div>
-</article>
   </section>
 
 </main>
 <script>
   const searchInput = document.getElementById("blogSearch");
-const blogCards = document.querySelectorAll(".blog-card");
+  const blogCards = document.querySelectorAll(".blog-item, .blog-card");
 
-searchInput.addEventListener("input", () => {
-  const q = searchInput.value.toLowerCase();
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase().trim();
 
-  blogCards.forEach(card => {
-    const title = card.querySelector(".blog-title")?.innerText.toLowerCase() || "";
-    const excerpt = card.querySelector(".blog-excerpt")?.innerText.toLowerCase() || "";
+    blogCards.forEach(card => {
+      const title =
+        card.querySelector("h2, .blog-title")?.innerText.toLowerCase() || "";
+      const text =
+        card.querySelector("p")?.innerText.toLowerCase() || "";
 
-    card.style.display =
-      title.includes(q) || excerpt.includes(q)
-        ? "block"
-        : "none";
+      if (title.includes(query) || text.includes(query)) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    });
   });
-});
-
-let visibleCount = 6;
-const allCards = document.querySelectorAll(".blog-card");
-
-function showBlogs() {
-  allCards.forEach((card, i) => {
-    card.style.display = i < visibleCount ? "block" : "none";
-  });
-}
-
-showBlogs();
-
-window.addEventListener("scroll", () => {
-  if (
-    window.innerHeight + window.scrollY >=
-    document.body.offsetHeight - 200
-  ) {
-    visibleCount += 4;
-    showBlogs();
-  }
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const skeleton = document.getElementById("blogSkeleton");
-  const blogs = document.querySelector(".blogs-list:not(.skeleton-list)");
-
-  // Simulated network-aware delay
-  const connection = navigator.connection || {};
-  let delay = 300; // fast default
-
-  if (connection.effectiveType === "2g") delay = 1600;
-  else if (connection.effectiveType === "3g") delay = 900;
-
-  setTimeout(() => {
-    if (skeleton) skeleton.style.display = "none";
-    if (blogs) blogs.style.display = "flex";
-  }, delay);
-});
 </script>
-  <script src="assets/js/common-layout.js"></script>
-<script type="module" src="assets/js/firebase.js"></script>
-<script type="module" src="assets/js/user-metrics-init.js"></script>
-<script type="module" src="assets/js/common.js"></script></body>
+<script src="/assets/js/common-layout.js"></script>
+<script type="module" src="/assets/js/common.js"></script>
 
 </body>
 </html>

@@ -15,7 +15,9 @@
   padding-left: 0;
   margin: 14px 0 20px;
 }
-
+a{
+  text-decoration-line: none;
+}
 .about-page li {
   position: relative;
   padding-left: 28px;
@@ -141,4 +143,7 @@ body.dark #readingProgress {
     #818cf8,
     #6366f1
   );
+}
+.weight{
+  font-weight: 500;
 }

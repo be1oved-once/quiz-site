@@ -196,3 +196,13 @@ body.dark #readingProgress {
     #6366f1
   );
 }
+.content-p {
+  font-size: 14.5px;
+  line-height: 1.75;
+  margin-bottom: 16px;
+  color: #374151;
+}
+
+body.dark .content-p {
+  color: #cbd5e1;
+}

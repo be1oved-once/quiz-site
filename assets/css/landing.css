@@ -726,3 +726,33 @@ body.dark .truth-sub {
   }
 
 }
+@media (min-width: 768px) {
+  .why-section {
+    max-width: 960px;     /* match landing width */
+    padding: 0 32px;
+  }
+
+  .why-content {
+    display: block;              /* ❌ kill grid */
+    max-width: 900px;            /* readable width */
+    margin: 0 auto;              /* center */
+  }
+
+  .why-content p {
+    font-size: 15.5px;
+    line-height: 1.85;
+    margin-bottom: 18px;
+  }
+
+  .content-wide {
+    padding: 0 32px;
+  }
+}
+.content-wide {
+  max-width: 960px;
+  margin: 0 24px;
+  padding: 0 16px;
+}
+.content-wide h2{
+  font-weight: 500;
+}
