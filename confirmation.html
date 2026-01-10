@@ -28,101 +28,164 @@
 
 <body>
 
-<main class="page-content thank-full">
-  
-  <section class="thank-wrap">
-    
-    <!-- Professional success icon -->
-    <i class="fa-solid fa-circle-check success-icon"></i>
-    
-    <h1>Suggestion Sent Successfully</h1>
-    
-    <p class="lead">
-      Thank you for taking a moment to share your thoughts.<br>
-      Your feedback has been received successfully.
-    </p>
-    
-    <p class="affirm">
-      Thoughtful feedback helps us build better experiences.
-    </p>
-    
-    <div class="redirect">
-      Redirecting to home in
-      <strong id="countdown">5</strong> seconds
+<main class="success-page">
+
+  <div class="success-card">
+
+    <!-- Animated check -->
+    <div class="check-wrap">
+      <i class="fa-solid fa-check"></i>
     </div>
-    
-    <a href="index.html" class="link-home">
-      Go to Home
+
+    <h1>Message Sent!</h1>
+    <p class="lead">
+      Thanks for reaching out.  
+      Your suggestion has been received successfully.
+    </p>
+
+    <p class="sub">
+      We truly appreciate your feedback — it helps us improve.
+    </p>
+
+    <div class="countdown">
+      Redirecting to home in  
+      <span id="countdown">5</span>s
+    </div>
+
+    <a href="index.html" class="home-btn">
+      Go Home
       <i class="fa-solid fa-arrow-right"></i>
     </a>
-    
-  </section>
-  
+
+  </div>
+
 </main>
 
 <style>
-  /* ===== FULL PAGE THANK YOU ===== */
-  
-  .thank-full {
-    min-height: calc(100vh - 120px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
-  
-  .thank-wrap {
-    max-width: 620px;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .success-icon {
-    font-size: 42px;
-    color: var(--violet, #6c63ff);
-    margin-bottom: 16px;
-  }
-  
-  .thank-wrap h1 {
-    font-size: 26px;
-    font-weight: 600;
-    margin-bottom: 14px;
-    letter-spacing: -0.3px;
-  }
-  
-  .thank-wrap .lead {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text, #333);
-    margin-bottom: 14px;
-  }
-  
-  .thank-wrap .affirm {
-    font-size: 14px;
-    color: var(--muted, #777);
-    margin-bottom: 28px;
-  }
-  
-  .thank-wrap .redirect {
-    font-size: 13px;
-    color: var(--muted, #777);
-    margin-bottom: 16px;
-  }
-  
-  .link-home {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--violet, #6c63ff);
-    text-decoration: none;
-  }
-  
-  .link-home:hover {
-    text-decoration: underline;
-  }
+.success-page {
+  margin-top: 60px;
+  margin-left: 12px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #f7f6ff, #ffffff);
+  font-family: "Poppins", sans-serif;
+}
+
+.success-card {
+  background: #fff;
+  padding: 36px 26px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  animation: pop 0.6s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.check-wrap {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #6c63ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(108,99,255,0.4);
+}
+
+.check-wrap i {
+  color: #fff;
+  font-size: 28px;
+}
+
+.success-card h1 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.lead {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.sub {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 22px;
+}
+
+.countdown {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #6c63ff;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.home-btn:hover {
+  background: #5850e6;
+  transform: translateY(-1px);
+}
+/* ===== DARK MODE ===== */
+body.dark .success-page {
+  background: linear-gradient(135deg, #0f0f1a, #141428);
+}
+
+body.dark .success-card {
+  background: #1b1b2f;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+body.dark .success-card h1 {
+  color: #ffffff;
+}
+
+body.dark .lead {
+  color: #e4e4e7;
+}
+
+body.dark .sub,
+body.dark .countdown {
+  color: #a1a1aa;
+}
+
+/* Check circle glow tuned for dark */
+body.dark .check-wrap {
+  background: #6c63ff;
+  box-shadow: 0 0 18px rgba(108,99,255,0.6);
+}
+
+/* Button */
+body.dark .home-btn {
+  background: #6c63ff;
+  color: #ffffff;
+}
+
+body.dark .home-btn:hover {
+  background: #7d75ff;
+}
 </style>
 
 <script>

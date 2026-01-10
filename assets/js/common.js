@@ -50,7 +50,6 @@ context: "signin"
 
 google.accounts.id.prompt();
 }
-document.addEventListener("DOMContentLoaded", initGoogleOneTap);
 
 const sidebar = document.getElementById("rightSidebar");
 const menuBtn = document.getElementById("menuBtn");
@@ -317,7 +316,8 @@ await setDoc(
     bookmarks: [],
     settings: {
       theme: localStorage.getItem("quizta-theme") || "dark"
-    }
+    },
+    profileCompleted: false 
   },
   { merge: true }
 );
@@ -408,7 +408,9 @@ alert(err.message);
 }
 
 onAuthStateChanged(auth, async user => {
-
+if (!user) {
+    initGoogleOneTap();
+  }
 const lock = document.getElementById("loginLockOverlay");
 
 if (lock) {
@@ -428,7 +430,21 @@ logoutBtns.forEach(btn => btn.style.display = "inline-flex");
 await ensureUserProfile(user);    
 // ⏳ Load Firestore data separately    
 loadUserProfile(user.uid);
+// 🔥 FORCE PROFILE COMPLETION FOR NEW USERS
+const ref = doc(db, "users", user.uid);
+const snap = await getDoc(ref);
 
+if (snap.exists()) {
+  const data = snap.data();
+
+  // If profile not completed → force redirect
+  if (!data.profileCompleted) {
+    if (!location.pathname.includes("profile.html")) {
+      window.location.href = "/profile.html";
+      return;
+    }
+  }
+}
 } else {
 // 🔥 INSTANT UI REFLECT
 loginBtns.forEach(btn => btn.style.display = "inline-flex");

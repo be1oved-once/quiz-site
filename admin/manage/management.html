@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Global -->
+ <link rel="stylesheet" href="/assets/css/common.css">
+  <link rel="stylesheet" href="management.css">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- leave space for global header -->
+<div class="mgmt-wrapper">
+
+  <!-- TOP TABS -->
+  <div class="mgmt-tabs">
+    <button class="mgmt-tab active" data-screen="notifications">Notifications</button>
+    <button class="mgmt-tab" data-screen="users">Users</button>
+    <button class="mgmt-tab" data-screen="admins">Admins</button>
+    <button class="mgmt-tab" data-screen="requests">Requests</button>
+  </div>
+
+  <!-- SCREENS -->
+
+  <!-- 🔔 NOTIFICATIONS -->
+  <section class="mgmt-screen active" id="screen-notifications">
+    <div class="mgmt-head">
+      <h2>Notifications</h2>
+<button class="create-btn">
+  <i class="fa-solid fa-plus"></i>
+  Create
+</button>
+    </div>
+
+    <div class="notify-list">
+
+    </div>
+  </section>
+
+<!-- 👤 USERS -->
+<section class="mgmt-screen" id="screen-users">
+  <div class="mgmt-head">
+    <h2>Users</h2>
+  </div>
+
+  <div class="users-list">
+    <div class="user-card">
+
+      <div class="user-info">
+        <strong>Kanhaiya</strong>
+        <span>kanhaiya@gmail.com</span>
+        <small>Email • Joined Jan 2025</small>
+      </div>
+
+      <div class="user-actions">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+
+        <div class="user-menu">
+          <button>Promote Admin</button>
+          <button>Promote Super Admin</button>
+          <button class="warn">Disable User</button>
+          <button class="danger">Delete User</button>
+          <a href="mailto:kanhaiya@gmail.com">Contact</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+  <!-- 🛡 ADMINS -->
+  <section class="mgmt-screen" id="screen-admins">
+    <div class="mgmt-head">
+      <h2>Admins</h2>
+    </div>
+
+    <div class="admins-list">
+      <div class="admin-card">
+        <strong>Nick</strong>
+        <span>Super Admin</span>
+
+        <div class="admin-actions">
+          <button>Demote</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📩 REQUESTS -->
+  <section class="mgmt-screen" id="screen-requests">
+    <div class="mgmt-head">
+      <h2>User Requests</h2>
+    </div>
+
+    <div class="requests-list">
+      <div class="request-card">
+        <p>User requests admin access</p>
+
+        <div class="request-actions">
+          <button class="success">Approve</button>
+          <button class="danger">Reject</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="clear-all">Clear All Requests</button>
+  </section>
+
+</div>
+<!-- ===== CREATE NOTIFICATION MODAL ===== -->
+<div id="notifyModal" class="notify-modal">
+  <div class="notify-modal-box">
+    <h3>Create Notification</h3>
+
+    <textarea id="notifyMsgInput"
+      placeholder="Enter notification message..."
+      maxlength="200"></textarea>
+
+    <button id="notifySendBtn">
+      <i class="fa-solid fa-paper-plane"></i>
+      Create Notification
+    </button>
+
+  </div>
+</div>
+
+<div id="notifyModalBackdrop" class="notify-modal-backdrop"></div>
+<script type="module" src="management.js"></script>
+<script type="module" src="management-notifications.js"></script>
+  <script src="/assets/js/common-layout.js"></script>
+<script type="module" src="/assets/js/common.js"></script>
+</body>
+</html>

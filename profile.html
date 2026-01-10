@@ -90,7 +90,19 @@
   </div>
 
 </main>
+<script type="module">
+import { auth } from "./assets/js/firebase.js";
 
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+
+  // Block back navigation if profile incomplete
+  window.addEventListener("beforeunload", e => {
+    e.preventDefault();
+    e.returnValue = "";
+  });
+});
+</script>
   <script src="assets/js/common-layout.js"></script>
   <script type="module" src="assets/js/profile.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>

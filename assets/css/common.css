@@ -19,6 +19,9 @@
   /* STATES */
   --success: #16a34a;
   --error: #dc2626;
+  --scroll-track: rgba(79,70,229,0.06);
+  --scroll-thumb: rgba(79,70,229,0.35);
+  --scroll-thumb-hover: rgba(79,70,229,0.55);
 }
 body.dark {
   --brand-primary: #6366f1;   /* softer indigo */
@@ -31,6 +34,48 @@ body.dark {
   --bg-soft: #020617;
 
   --border-light: rgba(255,255,255,0.08);
+  --scroll-track: rgba(255,255,255,0.06);
+  --scroll-thumb: rgba(199,210,254,0.35);
+  --scroll-thumb-hover: rgba(199,210,254,0.6);
+}
+/* Chrome / Edge / Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--scroll-thumb),
+    var(--scroll-thumb-hover)
+  );
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    var(--scroll-thumb-hover),
+    var(--scroll-thumb)
+  );
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+@media (max-width: 768px) {
+  *::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
 }
 * {
   margin: 0;
@@ -467,8 +512,16 @@ body.scrolled .top-header {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
+/* =========================
+   MENU ICON – DARK MODE FIX
+========================= */
+
 body.dark .menu-btn span {
-  background: #fff;
+  background: linear-gradient(
+    180deg,
+    #c7d2fe,
+    #a5b4fc
+  );
 }
 
 body.dark .sidebar-list li {

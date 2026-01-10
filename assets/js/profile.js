@@ -136,7 +136,8 @@ saveBtn.onclick = async () => {
   const payload = {
   username: usernameEl.value.trim(),
   dob: dobEl.value,
-  gender: selectedGender
+  gender: selectedGender,
+  profileCompleted: true
 };
 
 await updateDoc(doc(db, "users", user.uid), payload);

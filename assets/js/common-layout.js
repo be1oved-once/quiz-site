@@ -120,7 +120,7 @@
   <div class="admin-menu" id="adminMenu">
     <a href="/admin/push-noti.html">Push Notifications</a>
     <a href="/admin/test-setup.html">Temp Test</a>
-    <a href="/admin/manage-users.html">Manage Users</a>
+    <a href="/admin/manage/management.html">Manage Users</a>
   </div>
 </li>
   <li class="mobile-left">
@@ -148,7 +148,12 @@
       <span>Take a Correction Test</span>
     </a>
   </li>
-
+<li class="mobile-left">
+  <a href="/leaderboard.html">
+    <i class="fa-solid fa-trophy"></i>
+    <span>Leaderboard</span>
+  </a>
+</li>
   <li class="mobile-left">
     <a href="/articles.html">
       <i class="fa-solid fa-newspaper"></i>

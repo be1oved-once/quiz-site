@@ -16,7 +16,10 @@ import {
 /* =========================
    ADMIN CONFIG
 ========================= */
-const ADMIN_EMAIL = "nicknow20@gmail.com";
+const ADMIN_EMAILS = [
+  "nicknow20@gmail.com",
+  "saurabhjoshionly@gmail.com"
+];
 
 /* =========================
    UI
@@ -51,9 +54,9 @@ onAuthStateChanged(auth, user => {
     return;
   }
 
-  if (user.email !== ADMIN_EMAIL) {
-    location.href = "/";
-  }
+  if (!ADMIN_EMAILS.includes(user.email)) {
+  location.href = "/";
+}
 });
 
 /* =========================
