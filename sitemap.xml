@@ -1,50 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <urlset 
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="
+http://www.sitemaps.org/schemas/sitemap/0.9 
+http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- ===== MAIN PAGES ===== -->
-  <url>
-    <loc>https://beforexam.vercel.app/</loc>
-    <priority>1.0</priority>
-  </url>
+<!-- created for beforexam.vercel.app -->
 
-  <url><loc>https://beforexam.vercel.app/index.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/About-us.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/blogs.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/bookmarks.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/business-laws.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/chapters.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/contact.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/correction-test.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/mtp-rtp.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/performance.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/profile.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/sponsor-us.html</loc></url>
+<url>
+  <loc>https://beforexam.vercel.app/</loc>
+  <lastmod>2026-01-10T10:19:40+00:00</lastmod>
+</url>
 
-  <!-- ===== BLOG ARTICLES ===== -->
-  <url>
-    <loc>https://beforexam.vercel.app/Blog/Essential-Things-You-Must-Keep-in-Mind.html</loc>
-  </url>
-  <url>
-    <loc>https://beforexam.vercel.app/Blog/how-to-speed-up-handwriting.html</loc>
-  </url>
-  <url>
-    <loc>https://beforexam.vercel.app/Blog/i-knew-everything-forgot-everything-in-exam-hall.html</loc>
-  </url>
-  <url>
-    <loc>https://beforexam.vercel.app/Blog/my-teacher-was-wrong-about-ca-foundation-and-i-paid-the-price.html</loc>
-  </url>
-  <url>
-    <loc>https://beforexam.vercel.app/Blog/Presentation-vs-Content-What-Matters-More.html</loc>
-  </url>
-  <url>
-    <loc>https://beforexam.vercel.app/Blog/Why-Hard-Work-Alone-Is-Not-Enough-to-Clear-CA-Foundation.html</loc>
-  </url>
+<!-- Main Pages -->
 
-  <!-- ===== LEGAL ===== -->
-  <url><loc>https://beforexam.vercel.app/Legal/disclaimer.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/Legal/our-mission.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/Legal/privacy-policy.html</loc></url>
-  <url><loc>https://beforexam.vercel.app/Legal/terms.html</loc></url>
+<url><loc>https://beforexam.vercel.app/index.html</loc></url>
+<url><loc>https://beforexam.vercel.app/about-us.html</loc></url>
+<url><loc>https://beforexam.vercel.app/blogs.html</loc></url>
+<url><loc>https://beforexam.vercel.app/bookmarks.html</loc></url>
+<url><loc>https://beforexam.vercel.app/business-laws.html</loc></url>
+<url><loc>https://beforexam.vercel.app/chapters.html</loc></url>
+<url><loc>https://beforexam.vercel.app/contact.html</loc></url>
+<url><loc>https://beforexam.vercel.app/correction-test.html</loc></url>
+<url><loc>https://beforexam.vercel.app/mtp-rtp.html</loc></url>
+<url><loc>https://beforexam.vercel.app/performance.html</loc></url>
+<url><loc>https://beforexam.vercel.app/profile.html</loc></url>
+<url><loc>https://beforexam.vercel.app/sponsor-us.html</loc></url>
+<url><loc>https://beforexam.vercel.app/leaderboard.html</loc></url>
+
+<!-- Blog Articles -->
+
+<url><loc>https://beforexam.vercel.app/Blog/Essential-Things-You-Must-Keep-in-Mind.html</loc></url>
+<url><loc>https://beforexam.vercel.app/Blog/how-to-speed-up-handwriting.html</loc></url>
+<url><loc>https://beforexam.vercel.app/Blog/i-knew-everything-forgot-everything-in-exam-hall.html</loc></url>
+<url><loc>https://beforexam.vercel.app/Blog/my-teacher-was-wrong-about-ca-foundation-and-i-paid-the-price.html</loc></url>
+<url><loc>https://beforexam.vercel.app/Blog/Presentation-vs-Content-What-Matters-More.html</loc></url>
+<url><loc>https://beforexam.vercel.app/Blog/Why-Hard-Work-Alone-Is-Not-Enough-to-Clear-CA-Foundation.html</loc></url>
+
+<!-- Legal Pages -->
+
+<url><loc>https://beforexam.vercel.app/Legal/privacy-policy.html</loc></url>
+<url><loc>https://beforexam.vercel.app/Legal/terms.html</loc></url>
+<url><loc>https://beforexam.vercel.app/Legal/disclaimer.html</loc></url>
+<url><loc>https://beforexam.vercel.app/Legal/our-mission.html</loc></url>
 
 </urlset>
