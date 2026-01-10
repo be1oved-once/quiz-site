@@ -3,38 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thoughts</title>
-
+  <title>Thoughts | Beforexam</title>
+<link rel="stylesheet" href="assets/css/thoughts.css">
   <link rel="stylesheet" href="assets/css/common.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <!-- FAVICONS -->
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
-<link rel="icon" href="assets/favicon/favicon.ico">
 
-<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
-
-<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png">
-
-<link rel="manifest" href="assets/favicon/site.webmanifest">
-
-<meta name="theme-color" content="#6c63ff">
+  <meta name="theme-color" content="#6c63ff">
 </head>
 
 <body>
+<div class="thought-box">
 
-  <!-- PAGE CONTENT ONLY -->
-  <main class="page-content">
-    <h1>Opinions</h1>
-  </main>
+<!-- =========================
+     PAGE HEADER
+========================= -->
+<header class="thoughts-header">
+  <h1>Open Opinions</h1>
+  <p>Share your thoughts anonymously. Let the world read.</p>
+</header>
 
-  <script src="assets/js/common-layout.js"></script>
-<script type="module" src="assets/js/firebase.js"></script>
-<script type="module" src="assets/js/user-metrics-init.js"></script>
-<script type="module" src="assets/js/common.js"></script></body>
+
+<!-- =========================
+     OPINIONS FEED
+========================= -->
+<main class="opinions-feed" id="opinionsFeed">
+
+  <!-- Example Opinion Card -->
+  <article class="opinion-card">
+
+    <!-- Subject + Menu -->
+    <div class="opinion-top">
+      <h3 class="opinion-subject">This is an example subject</h3>
+
+      <div class="menu">
+        <i class="fa-solid fa-ellipsis"></i>
+
+        <!-- Small Popup -->
+        <div class="menu-popup">
+          <button class="report-btn">
+            <i class="fa-regular fa-flag"></i> Report
+          </button>
+          <button class="hide-btn">
+            <i class="fa-regular fa-eye-slash"></i> Hide
+          </button>
+          <button class="delete-btn">
+  <i class="fa-regular fa-trash-can"></i> Delete
+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <p class="opinion-message">
+This is an example opinion message.
+User formatting will appear exactly as written.
+Extra spaces and new lines are preserved.
+    </p>
+
+    <!-- Footer -->
+    <div class="opinion-footer">
+
+      <!-- Thumbs -->
+      <div class="opinion-votes">
+        <button class="vote-btn up">
+          <i class="fa-regular fa-thumbs-up"></i>
+          <span class="count">0</span>
+        </button>
+
+        <button class="vote-btn down">
+          <i class="fa-regular fa-thumbs-down"></i>
+          <span class="count">0</span>
+        </button>
+      </div>
+
+      <!-- Time -->
+      <div class="opinion-time">
+        Posted: <span>10 Jan 2026 • 10:30 AM</span>
+      </div>
+    </div>
+
+  </article>
+
+  <!-- More opinion cards will be injected dynamically -->
+
+</main>
+
+
+<!-- =========================
+     FLOATING ADD BUTTON
+========================= -->
+<button id="addOpinionBtn" class="add-opinion-btn">
+  <i class="fa-solid fa-plus"></i>
+  <span>Your Opinion</span>
+</button>
+
+
+<!-- =========================
+     WRITE OPINION MODAL
+========================= -->
+<!-- =========================
+     FULL PAGE EDITOR
+========================= -->
+<div id="editorPage" class="reader-page">
+
+  <div class="reader-header">
+    <button id="editorClose" class="reader-close">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+
+    <div>
+      <div class="reader-header-title">Write Opinion</div>
+      <div class="reader-header-name">Anonymous Post</div>
+    </div>
+  </div>
+
+  <div class="reader-content">
+
+    <input id="opName" type="text" placeholder="Your Name (optional)">
+
+    <input id="opSubject" type="text" placeholder="Subject">
+
+    <!-- Toolbar -->
+    <div class="editor-toolbar">
+      <button data-style="bold"><i class="fa-solid fa-bold"></i></button>
+      <button data-style="italic"><i class="fa-solid fa-italic"></i></button>
+      <button data-style="normal">Normal</button>
+    </div>
+
+    <!-- WYSIWYG Editor -->
+    <div id="opMessage" class="editor-area" contenteditable="true" placeholder="Write your message..."></div>
+
+    <button id="publishOpinionBtn" class="publish-btn">
+      Publish
+    </button>
+
+  </div>
+</div>
+
+
+<!-- =========================
+     REPORT MODAL
+========================= -->
+<div id="reportModal" class="modal-overlay">
+
+  <div class="report-box">
+
+    <!-- Close -->
+    <button class="report-close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <h3>Report Opinion</h3>
+    <p>Why are you reporting this opinion?</p>
+
+    <textarea id="reportReason" placeholder="Write reason..."></textarea>
+
+    <button id="sendReportBtn" class="send-report-btn">
+      Send Report
+    </button>
+
+  </div>
+</div>
+<!-- =========================
+     FULL OPINION READER PAGE
+========================= -->
+<div id="readerPage" class="reader-page">
+
+  <div class="reader-header">
+    <button id="readerClose" class="reader-close">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+    <span>Open Opinion</span>
+  </div>
+
+  <div class="reader-content">
+    <div id="readerName" class="reader-name"></div>
+    <div id="readerSubject" class="reader-subject"></div>
+    <div id="readerMessage" class="reader-message"></div>
+
+    <div class="reader-footer">
+      <button id="readerUp" class="vote-btn up">
+        <i class="fa-regular fa-thumbs-up"></i> 0
+      </button>
+
+      <button id="readerDown" class="vote-btn down">
+        <i class="fa-regular fa-thumbs-down"></i> 0
+      </button>
+    </div>
+  </div>
+
+</div>
+</div>
+<!-- =========================
+     JAVASCRIPT (next step)
+========================= -->
+<!-- ===== SCRIPTS (logic later) ===== -->
+<script src="assets/js/common-layout.js"></script>
+<script type="module" src="assets/js/thoughts.js"></script>
+<script type="module" src="assets/js/common.js"></script>
+
+</body>
 </html>
