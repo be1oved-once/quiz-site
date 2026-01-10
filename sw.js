@@ -1,6 +1,6 @@
 
 
-const CACHE_NAME = "tic-kar-v6"; // 🔥
+const CACHE_NAME = "tic-kar-v8"; // 🔥
 
 /* =========================
    PRECACHE (SAFE)
@@ -74,6 +74,7 @@ const PRECACHE = [
   "assets/favicon/favicon-32x32.png",
   "assets/favicon/apple-touch-icon.png",
   "assets/favicon/android-chrome-192x192.png",
+  "/sitemap.xml",
   "assets/favicon/android-chrome-512x512.png",
 
   /* misc */
