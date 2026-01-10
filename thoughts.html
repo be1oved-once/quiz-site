@@ -20,8 +20,10 @@
      PAGE HEADER
 ========================= -->
 <header class="thoughts-header">
-  <h1>Open Opinions</h1>
-  <p>Share your thoughts anonymously. Let the world read.</p>
+  <div class="thoughts-header-inner">
+    <h1>Open Opinions</h1>
+    <p>Share your thoughts freely</p>
+  </div>
 </header>
 
 
@@ -196,6 +198,17 @@ Extra spaces and new lines are preserved.
 
 </div>
 </div>
+<!-- ✅ DELETE CONFIRM TOAST -->
+<div id="confirmToast" class="confirm-toast">
+  <p id="confirmText">Are you sure?</p>
+
+  <div class="confirm-actions">
+    <button id="confirmCancel" class="btn-cancel">Cancel</button>
+    <button id="confirmYes" class="btn-danger">Delete</button>
+  </div>
+</div>
+
+<div id="toastBackdrop" class="toast-backdrop"></div>
 <!-- =========================
      JAVASCRIPT (next step)
 ========================= -->

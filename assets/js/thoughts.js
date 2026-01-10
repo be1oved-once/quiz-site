@@ -19,7 +19,36 @@ import {
   increment
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+/* =========================
+   CONFIRM TOAST (THOUGHTS)
+========================= */
+const confirmToast  = document.getElementById("confirmToast");
+const confirmText   = document.getElementById("confirmText");
+const confirmYes    = document.getElementById("confirmYes");
+const confirmCancel = document.getElementById("confirmCancel");
+const toastBackdrop = document.getElementById("toastBackdrop");
 
+let confirmAction = null;
+
+function showConfirmToast(message, action) {
+  confirmText.textContent = message;
+  confirmAction = action;
+  confirmToast.classList.add("show");
+  toastBackdrop.classList.add("show");
+}
+
+function hideConfirmToast() {
+  confirmToast.classList.remove("show");
+  toastBackdrop.classList.remove("show");
+  confirmAction = null;
+}
+
+confirmCancel.onclick = hideConfirmToast;
+
+confirmYes.onclick = async () => {
+  if (confirmAction) await confirmAction();
+  hideConfirmToast();
+};
 /* ==========================================================
    DOM READY
 ========================================================== */
@@ -274,36 +303,66 @@ applyTextStyle(style) {
   /* =========================
      PUBLISH OPINION
   ========================= */
-  async publishOpinion() {
-    const name = this.nameInput.value.trim() || "Anonymous";
-    const subject = this.subjectInput.value.trim();
-    const message = this.messageInput.innerHTML;
+async publishOpinion() {
 
-    if (!subject || !message.trim()) {
-      alert("Subject and Message are required!");
-      return;
-    }
+  // 🔒 Require login
+  const user = window.currentUser;
+  if (!user) {
+    alert("Login required to post opinion.");
+    openAuth("login");
+    return;
+  }
 
-    try {
-      await addDoc(collection(db, "opinions"), {
-        name: name,
-        subject: subject,
-        message: message, // raw text preserved
-        up: 0,
-        down: 0,
-        createdAt: serverTimestamp()
-      });
+  const name = this.nameInput.value.trim() || "Anonymous";
+  const subject = this.subjectInput.value.trim();
+  const message = this.messageInput.innerHTML;
 
-      this.nameInput.value = "";
-      this.subjectInput.value = "";
-      this.messageInput.value = "";
-document.getElementById("editorPage").classList.remove("show");
-    } catch (err) {
-      console.error("Publish Error:", err);
-      alert("Failed to publish opinion.");
-    }
-  },
+  if (!subject || !message.trim()) {
+    alert("Subject and Message are required!");
+    return;
+  }
 
+  try {
+    await addDoc(collection(db, "opinions"), {
+      uid: user.uid,        // 🔥 author id stored
+      name: name,
+      subject: subject,
+      message: message,
+      up: 0,
+      down: 0,
+      voters: {},           // 🔥 initialize voters map
+      createdAt: serverTimestamp()
+    });
+
+    this.nameInput.value = "";
+    this.subjectInput.value = "";
+    this.messageInput.value = "";
+    document.getElementById("editorPage").classList.remove("show");
+
+  } catch (err) {
+    console.error("Publish Error:", err);
+    alert("Failed to publish opinion.");
+  }
+},
+/* =========================
+   CHECK DELETE PERMISSION
+========================= */
+canDeleteOpinion(data) {
+  const user = window.currentUser;
+  if (!user) return false;
+
+  // Admin emails list (same as common.js)
+  const ADMIN_EMAILS = [
+    "nicknow20@gmail.com",
+    "saurabhjoshionly@gmail.com"
+  ];
+
+  // Admin can delete any
+  if (ADMIN_EMAILS.includes(user.email)) return true;
+
+  // Owner can delete own
+  return data.uid === user.uid;
+},
   /* =========================
      REALTIME LOAD FEED
   ========================= */
@@ -354,8 +413,9 @@ getPreviewText(html, words = 20) {
 const formattedMessage = this.formatMessage(preview);
     const dateText = this.formatTimestamp(data.createdAt);
 
-    const anonId = this.getOrCreateAnonId();
-const userVote = (data.voters && data.voters[anonId]) || null;
+    const user = window.currentUser;
+const uid = user ? user.uid : null;
+const userVote = (uid && data.voters && data.voters[uid]) ? data.voters[uid] : null;
 
     card.innerHTML = `
       <div class="opinion-top">
@@ -373,9 +433,11 @@ const userVote = (data.voters && data.voters[anonId]) || null;
     <i class="fa-regular fa-eye-slash"></i> Hide
   </button>
 
-  <button class="delete-btn">
-    <i class="fa-regular fa-trash-can"></i> Delete
-  </button>
+  ${this.canDeleteOpinion(data) ? `
+<button class="delete-btn">
+  <i class="fa-regular fa-trash-can"></i> Delete
+</button>
+` : ""}
           </div>
         </div>
       </div>
@@ -452,20 +514,22 @@ formatMessage(message) {
     const deleteBtn = card.querySelector(".delete-btn");
 
 if (deleteBtn) {
-  deleteBtn.addEventListener("click", async () => {
-    menuPopup.classList.remove("show");
+deleteBtn.addEventListener("click", () => {
+  menuPopup.classList.remove("show");
 
-    const confirmDelete = confirm("Delete this opinion permanently?");
-    if (!confirmDelete) return;
-
-    try {
-      await deleteDoc(doc(db, "opinions", id));
-      card.remove();
-    } catch (err) {
-      console.error("Delete Error:", err);
-      alert("Failed to delete opinion.");
+  showConfirmToast(
+    "Delete this opinion permanently?",
+    async () => {
+      try {
+        await deleteDoc(doc(db, "opinions", id));
+        card.remove();
+      } catch (err) {
+        console.error("Delete Error:", err);
+        alert("Failed to delete opinion.");
+      }
     }
-  });
+  );
+});
 }
     /* Menu toggle */
     menuBtn.addEventListener("click", (e) => {
@@ -509,32 +573,29 @@ if (deleteBtn) {
   /* =========================
      HANDLE VOTES
   ========================= */
-  getOrCreateAnonId() {
-  let id = localStorage.getItem("anon_voter_id");
-  if (!id) {
-    id = "anon_" + Math.random().toString(36).slice(2, 12);
-    localStorage.setItem("anon_voter_id", id);
-  }
-  return id;
-},
 
   /* =========================
    HANDLE VOTES WITH TOGGLE
 ========================= */
 async handleVote(id, type) {
+
+  // 🔒 Require login
+  const user = window.currentUser;
+  if (!user) {
+    alert("Login required to vote.");
+    openAuth("login"); // uses your existing auth popup
+    return;
+  }
+
   try {
     const ref = doc(db, "opinions", id);
     const snap = await getDoc(ref);
     if (!snap.exists()) return;
 
     const data = snap.data();
-
-    // voters map stored in Firestore
     const voters = data.voters || {};
 
-    // unique id per device (or per user later if auth added)
-    const uid = this.getOrCreateAnonId();
-
+    const uid = user.uid; // 🔥 real authenticated UID
     const previousVote = voters[uid];
 
     let newUp = data.up || 0;
@@ -546,16 +607,13 @@ async handleVote(id, type) {
 
     // toggle logic
     if (previousVote === type) {
-      // clicking same again → remove vote
-      delete voters[uid];
+      delete voters[uid]; // unvote
     } else {
-      // apply new vote
       voters[uid] = type;
       if (type === "up") newUp++;
       if (type === "down") newDown++;
     }
 
-    // update Firestore
     await updateDoc(ref, {
       up: newUp,
       down: newDown,

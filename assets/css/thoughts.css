@@ -1,6 +1,18 @@
 /* =========================
    GLOBAL BASE
 ========================= */
+:root{
+    --panel: #f8fafc;
+  --border: #e5e7eb;
+  --text: #111827;
+  --danger: #dc2626;
+}
+body.dark {
+    --panel: #020617;
+  --border: rgba(255,255,255,0.12);
+  --text: #e5e7eb;
+  --danger: #f87171;
+}
 * {
   margin: 0;
   padding: 0;
@@ -26,20 +38,65 @@ body.dark {
 /* =========================
    HEADER
 ========================= */
+/* =========================
+   THOUGHTS HEADER DESIGN
+========================= */
+
 .thoughts-header {
-  text-align: center;
-  padding: 26px 16px 10px;
+  top: 55px; /* below your main site navbar */
+  z-index: 9;
+  background: var(--bg);
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid rgba(148,163,184,0.12);
+  backdrop-filter: blur(6px);
+}
+
+.thoughts-header-inner {
+  max-width: 720px;
+  margin: auto;
 }
 
 .thoughts-header h1 {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: #111827;
+  position: relative;
+  display: inline-block;
 }
 
+/* Gradient underline accent */
+.thoughts-header h1::after {
+  content: "";
+  position: absolute;
+  left: 25px;
+  bottom: -6px;
+  width: 84px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(135deg,#6c63ff,#8b5cf6);
+}
+
+/* Subtitle */
 .thoughts-header p {
+  margin-top: 10px;
   font-size: 13px;
-  opacity: 0.7;
-  margin-top: 4px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+/* Dark mode */
+body.dark .thoughts-header {
+  background: #050814;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+body.dark .thoughts-header h1 {
+  color: #f9fafb;
+}
+
+body.dark .thoughts-header p {
+  color: #9ca3af;
 }
 
 /* =========================
@@ -239,7 +296,9 @@ body.dark .menu-popup {
   position: relative;
   animation: popIn 0.25s ease;
 }
-
+.report-box h3{
+  font-weight: 500;
+}
 body.dark .modal-box,
 body.dark .report-box {
   background: #0f172a;
@@ -964,4 +1023,113 @@ body.dark .editor-toolbar button {
 body.dark .editor-toolbar button.active {
   background: linear-gradient(135deg,#6c63ff,#8b5cf6);
   color: white;
+}
+/* =========================
+   CONFIRM TOAST
+========================= */
+
+/* =========================
+   CONFIRM TOAST
+========================= */
+
+.confirm-toast {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+
+  width: calc(100% - 32px);
+  max-width: 420px;
+
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+
+  padding: 14px 16px;
+
+  box-shadow: 0 14px 40px rgba(0,0,0,0.25);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  transition: transform 0.35s cubic-bezier(.25,.8,.25,1);
+  z-index: 2000;
+}
+
+.confirm-toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.confirm-toast p {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  box-shadow: 0 6px 14px rgba(220,38,38,0.4);
+}
+
+/* Backdrop */
+.toast-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+  z-index: 1500;
+}
+
+.toast-backdrop.show {
+  opacity: 1;
+  pointer-events: all;
+}
+/* =========================
+   TOAST BACKDROP (DIM)
+========================= */
+.toast-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 1999;
+}
+
+.toast-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
 }
