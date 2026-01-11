@@ -786,6 +786,22 @@ if (day === 1 && data.lastActiveDate !== today) {
 }
 
   await updateDoc(ref, updates);
+  // ===== UPDATE PUBLIC WEEKLY LEADERBOARD =====
+const freshSnap = await getDoc(ref);
+if (freshSnap.exists()) {
+  const u = freshSnap.data();
+  const weekly = u.weeklyXp || {};
+
+  let sum = 0;
+  Object.values(weekly).forEach(v => sum += Number(v || 0));
+
+  await setDoc(doc(db, "publicLeaderboard", currentUser.uid), {
+    name: u.username || "User",
+    gender: u.gender || "",
+    dob: u.dob || "",
+    xp: sum
+  });
+}
 }
 
 async function updateBestXpIfNeeded() {

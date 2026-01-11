@@ -345,27 +345,19 @@ import {
 const list = document.getElementById("leaderboardList");
 
 async function loadLeaderboard() {
-  const snap = await getDocs(collection(db, "users"));
+  const snap = await getDocs(collection(db, "publicLeaderboard"));
 
   const users = [];
 
   snap.forEach(docSnap => {
     const data = docSnap.data();
 
-    // ---- SUM CURRENT WEEK XP ----
-    let sum = 0;
-    const weekly = data.weeklyXp || {};
-    Object.values(weekly).forEach(v => {
-      sum += Number(v || 0);
-    });
-
-    // ---- PUSH USER OBJECT ----
-    users.push({
-      name: data.username || "User",
-      gender: data.gender || "",
-      dob: data.dob || "",
-      xp: sum
-    });
+users.push({
+  name: data.name || "User",
+  gender: data.gender || "",
+  dob: data.dob || "",
+  xp: data.xp || 0
+});
   });
 
   // ---- SORT HIGH TO LOW ----

@@ -21,7 +21,10 @@ import { Timestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-fi
 ========================= */
 const logsContainer = document.getElementById("logsContainer");
 const clearLogsBtn  = document.getElementById("clearLogs");
-
+const questionsContainer = document.getElementById("questionsContainer");
+let questionCount = 0;
+let questionMode = "mcq";      // "mcq" | "direct"
+let modeLocked = false; 
 function adminLog(message, type = "info") {
   if (!logsContainer) return;
   
@@ -135,9 +138,190 @@ let remainingSeconds = 0;
 
 const TEMP_TEST_REF = doc(db, "tempTests", "current");
 
+function setupCorrectOption(block) {
+  const checks = block.querySelectorAll(".correct-check");
 
+  checks.forEach(check => {
+    check.addEventListener("change", () => {
+      checks.forEach(c => {
+        if (c !== check) c.checked = false;
+      });
+    });
+  });
+}
+
+/* =========================
+   AUTO HEIGHT GROW
+========================= */
+function setupAutoGrow(block) {
+  block.querySelectorAll("textarea").forEach(el => {
+    el.style.height = "auto";
+    el.addEventListener("input", () => {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    });
+  });
+}
+
+function toggleOptions(block, mode) {
+  const optionsWrap = block.querySelector(".options-wrap");
+  if (!optionsWrap) return;
+
+  if (mode === "direct") {
+    optionsWrap.classList.add("hidden");
+  } else {
+    optionsWrap.classList.remove("hidden");
+  }
+}
+
+function insertParsedQuestions(parsedQuestions) {
+  questionsContainer.innerHTML = "";
+  questionCount = 0;
+  modeLocked = true;
+
+  let hasMCQ = false;
+  let hasDirect = false;
+
+  parsedQuestions.forEach(q => {
+    questionCount++;
+
+    // ===== MCQ BLOCK =====
+    if (q.type === "mcq") {
+      hasMCQ = true;
+
+      const block = document.createElement("div");
+      block.className = "question-block";
+
+      block.innerHTML = `
+        <textarea
+          class="admin-textarea question-text"
+          placeholder="Question ${questionCount}">${q.question}</textarea>
+
+        <div class="options-wrap">
+          ${[0,1,2,3].map(i => `
+            <div class="option-row">
+              <input type="checkbox" class="correct-check"
+                ${q.correctIndex === i ? "checked" : ""}>
+              <input
+                type="text"
+                class="admin-input option-input"
+                placeholder="Option ${i+1}"
+                value="${q.options[i] || ""}">
+            </div>
+          `).join("")}
+        </div>
+
+        <button type="button" class="outline-btn delete-question">
+          Delete Question
+        </button>
+      `;
+
+      questionsContainer.appendChild(block);
+
+      setupCorrectOption(block);
+      setupAutoGrow(block);
+
+      block.querySelector(".delete-question")
+        .addEventListener("click", () => block.remove());
+    }
+
+
+    // ===== DIRECT BLOCK =====
+    if (q.type === "direct") {
+      hasDirect = true;
+
+      const block = document.createElement("div");
+      block.className = "question-block";
+
+      block.innerHTML = `
+        <textarea
+          class="admin-textarea question-text"
+          placeholder="Question ${questionCount}">${q.question}</textarea>
+
+        <button type="button" class="outline-btn delete-question">
+          Delete Question
+        </button>
+      `;
+
+      questionsContainer.appendChild(block);
+
+      setupAutoGrow(block);
+
+      block.querySelector(".delete-question")
+        .addEventListener("click", () => block.remove());
+    }
+
+  });
+
+  // 🔥 Set correct global mode UI
+  if (hasDirect && !hasMCQ) {
+    setQuestionMode("direct");
+  } 
+  else if (hasMCQ && !hasDirect) {
+    setQuestionMode("mcq");
+  } 
+  else {
+    // mixed file → default lock
+    setQuestionMode("mcq");
+  }
+
+  adminLog(`Inserted ${parsedQuestions.length} questions`);
+}
+function setQuestionMode(mode) {
+  questionMode = mode;
+
+  withOptionsBtn.classList.toggle("active", mode === "mcq");
+  withoutOptionsBtn.classList.toggle("active", mode === "direct");
+
+  // 🔁 Update ALL existing questions
+  document.querySelectorAll(".question-block").forEach(block => {
+    toggleOptions(block, mode);
+  });
+}
 document.addEventListener("DOMContentLoaded", () => {
+const uploadBtn = document.getElementById("uploadQuestionBtn");
+const fileInput = document.getElementById("questionFileInput");
+const fileNameLabel = document.getElementById("uploadFileName");
 
+uploadBtn.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", async () => {
+  if (!fileInput.files.length) return;
+
+  const file = fileInput.files[0];
+  fileNameLabel.textContent = file.name;
+
+  let textContent = "";
+
+  const ext = file.name.split(".").pop().toLowerCase();
+
+  if (ext === "txt") {
+    textContent = await file.text();
+  }
+
+  else if (ext === "docx") {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer });
+    textContent = result.value;
+  }
+
+  else if (ext === "pdf") {
+    textContent = await readPdfText(file);
+  }
+
+  else {
+    alert("Unsupported file type");
+    return;
+  }
+
+  console.log("RAW FILE TEXT:\n", textContent);
+
+  const questions = parseQuestionFormat(textContent);
+  console.log("PARSED QUESTIONS:", questions);
+insertParsedQuestions(questions);
+
+  // Later we will auto-insert into your question UI
+});
 /* =========================
    ADMIN-ONLINE SCHEDULER
 ========================= */
@@ -325,11 +509,8 @@ subjectBtn.addEventListener("click", e => {
    QUESTIONS
 ========================= */
 const addQuestionBtn = document.getElementById("addQuestionBtn");
-const questionsContainer = document.getElementById("questionsContainer");
 
-let questionCount = 0;
-let questionMode = "mcq";      // "mcq" | "direct"
-let modeLocked = false;  // 🔒 once first question added
+ // 🔒 once first question added
 let testDuration = null; // in minutes
 let timerSeconds = 0;
 
@@ -388,17 +569,6 @@ if (questionInput) {
   questionInput.focus();
 }
 }
-
-function toggleOptions(block, mode) {
-  const optionsWrap = block.querySelector(".options-wrap");
-  if (!optionsWrap) return;
-
-  if (mode === "direct") {
-    optionsWrap.classList.add("hidden");
-  } else {
-    optionsWrap.classList.remove("hidden");
-  }
-}
 /* =========================
    SINGLE CORRECT OPTION
 ========================= */
@@ -450,30 +620,7 @@ function setupQuestionTypeToggle(block) {
     });
   });
 }
-function setupCorrectOption(block) {
-  const checks = block.querySelectorAll(".correct-check");
 
-  checks.forEach(check => {
-    check.addEventListener("change", () => {
-      checks.forEach(c => {
-        if (c !== check) c.checked = false;
-      });
-    });
-  });
-}
-
-/* =========================
-   AUTO HEIGHT GROW
-========================= */
-function setupAutoGrow(block) {
-  block.querySelectorAll("textarea").forEach(el => {
-    el.style.height = "auto";
-    el.addEventListener("input", () => {
-      el.style.height = "auto";
-      el.style.height = el.scrollHeight + "px";
-    });
-  });
-}
 
 /* =========================
    PUBLISH MODE
@@ -669,18 +816,6 @@ withoutOptionsBtn.addEventListener("click", () => {
   if (modeLocked) return;          // ⛔ block after first question
   setQuestionMode("direct");
 });
-
-function setQuestionMode(mode) {
-  questionMode = mode;
-
-  withOptionsBtn.classList.toggle("active", mode === "mcq");
-  withoutOptionsBtn.classList.toggle("active", mode === "direct");
-
-  // 🔁 Update ALL existing questions
-  document.querySelectorAll(".question-block").forEach(block => {
-    toggleOptions(block, mode);
-  });
-}
 /* =========================
    SCHEDULE DATE & TIME RULES (SAFE)
 ========================= */
@@ -1130,4 +1265,113 @@ function startAdminPresenceCheck() {
       forceClearTest("Admin not active / offline");
     }
   }, 30000); // ✅ 15 seconds
+}
+// ===== File Upload Parsing System =====
+
+function parseQuestionFormat(raw) {
+  const lines = raw.split("\n");
+  const questions = [];
+
+  let current = {
+    question: "",
+    options: [],
+    correctIndex: null,
+    type: "direct" // 🔥 default direct
+  };
+
+  let mode = null;
+  let waitingForAnswerLetter = false;
+
+  for (let line of lines) {
+    line = line.trim();
+    if (!line) continue;
+
+    // Q:
+    if (line === "Q:" || line.startsWith("Q:")) {
+      if (current.question) {
+        // decide type before pushing
+        current.type = current.options.length ? "mcq" : "direct";
+        questions.push(current);
+        current = {
+          question: "",
+          options: [],
+          correctIndex: null,
+          type: "direct"
+        };
+      }
+
+      mode = "question";
+      waitingForAnswerLetter = false;
+
+      const qText = line.replace("Q:", "").trim();
+      if (qText) current.question += qText;
+      continue;
+    }
+
+    // A:, B:, C:, D:  → MCQ option
+    if (/^[A-D]:/.test(line)) {
+      mode = "option";
+      waitingForAnswerLetter = false;
+
+      const optText = line.replace(/^[A-D]:/, "").trim();
+      current.options.push(optText || "");
+      continue;
+    }
+
+    // ANSWER:
+    if (line.startsWith("ANSWER:")) {
+      const ansInline = line.replace("ANSWER:", "").trim();
+
+      if (ansInline) {
+        current.correctIndex = ansInline.charCodeAt(0) - 65;
+        waitingForAnswerLetter = false;
+      } else {
+        waitingForAnswerLetter = true;
+      }
+      mode = null;
+      continue;
+    }
+
+    // ANSWER letter on next line
+    if (waitingForAnswerLetter && /^[A-D]$/.test(line)) {
+      current.correctIndex = line.charCodeAt(0) - 65;
+      waitingForAnswerLetter = false;
+      continue;
+    }
+
+    // Continuation
+    if (mode === "question") {
+      current.question += (current.question ? " " : "") + line;
+    } 
+    else if (mode === "option") {
+      const last = current.options.length - 1;
+      current.options[last] +=
+        (current.options[last] ? " " : "") + line;
+    }
+  }
+
+  // Push last question
+  if (current.question) {
+    current.type = current.options.length ? "mcq" : "direct";
+    questions.push(current);
+  }
+
+  return questions;
+}
+
+// ===== PDF READER =====
+async function readPdfText(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+  let text = "";
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const strings = content.items.map(it => it.str);
+    text += strings.join(" ") + "\n";
+  }
+
+  return text;
 }

@@ -408,6 +408,7 @@ alert(err.message);
 }
 
 onAuthStateChanged(auth, async user => {
+  window.currentUser = user || null;
 if (!user) {
     initGoogleOneTap();
   }
