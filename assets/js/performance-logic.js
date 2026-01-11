@@ -90,7 +90,12 @@ function daysBetween(a, b) {
   return Math.abs((d2 - d1) / (1000 * 60 * 60 * 24));
 }
 
+const skeleton = document.getElementById("performanceSkeleton");
+const realContent = document.getElementById("performanceContent");
 
+// Show skeleton initially
+if (skeleton) skeleton.style.display = "block";
+if (realContent) realContent.style.display = "none";
 function formatK(num = 0) {
   if (num < 1000) return num;
   return (num / 1000)
@@ -453,6 +458,9 @@ options: {
 ,
   plugins: [verticalLinePlugin]
 });
+// ===== Hide skeleton, show real UI =====
+if (skeleton) skeleton.style.display = "none";
+if (realContent) realContent.style.display = "block";
 });
 const subjectBtn = document.getElementById("practiceSubjectBtn");
 const subjectPopup = document.getElementById("practiceSubjectPopup");

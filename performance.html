@@ -31,7 +31,32 @@
 
   <!-- PAGE CONTENT ONLY -->
 <main class="perform-content">
+<!-- ===== PERFORMANCE SKELETON LOADER ===== -->
+<div id="performanceSkeleton">
 
+  <!-- Header skeleton -->
+  <div class="ps-header"></div>
+
+  <!-- Stat cards skeleton -->
+  <div class="ps-stats">
+    <div class="ps-stat-card"></div>
+    <div class="ps-stat-card"></div>
+    <div class="ps-stat-card"></div>
+    <div class="ps-stat-card"></div>
+  </div>
+
+  <!-- Chart skeleton -->
+  <div class="ps-chart-card"></div>
+
+  <!-- Practice overview skeleton -->
+  <div class="ps-practice">
+    <div class="ps-practice-card"></div>
+    <div class="ps-practice-card"></div>
+    <div class="ps-practice-card"></div>
+  </div>
+
+</div>
+<div id="performanceContent" style="display:none;">
   <!-- HEADER -->
   <div class="perform-header">
     <h2>My Performance</h2>
@@ -182,6 +207,7 @@
     <li>📌 Avoid long gaps between practice days</li>
   </ul>
 </section>
+</div>
 </main>
 
   <script src="assets/js/common-layout.js"></script>

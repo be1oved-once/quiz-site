@@ -915,3 +915,81 @@ body.dark .dashed-hr {
     transparent 12px
   );
 }
+/* ===== PERFORMANCE SKELETON ===== */
+
+/* shimmer animation */
+@keyframes ps-shimmer {
+  100% { left: 100%; }
+}
+
+.ps-header,
+.ps-stat-card,
+.ps-chart-card,
+.ps-practice-card {
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+  border-radius: 16px;
+}
+
+/* shimmer layer */
+.ps-header::after,
+.ps-stat-card::after,
+.ps-chart-card::after,
+.ps-practice-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.7),
+    transparent
+  );
+  animation: ps-shimmer 1.3s infinite;
+}
+
+/* Header bar */
+.ps-header {
+  height: 54px;
+  margin-bottom: 22px;
+}
+
+/* Stats row */
+.ps-stats {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  margin-bottom: 22px;
+}
+
+.ps-stat-card {
+  min-width: 130px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+/* Chart card */
+.ps-chart-card {
+  height: 220px;
+  margin-bottom: 22px;
+}
+
+/* Practice cards */
+.ps-practice {
+  display: flex;
+  gap: 14px;
+}
+
+.ps-practice-card {
+  height: 90px;
+  flex: 1;
+}
+
+/* Dark mode */
+body.dark #performanceSkeleton * {
+  background: #1f2937;
+}

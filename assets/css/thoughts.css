@@ -1133,3 +1133,118 @@ body.dark .editor-toolbar button.active {
   opacity: 1;
   pointer-events: auto;
 }
+/* ===== Skeleton Loader Wrapper ===== */
+.skeleton-wrapper {
+  margin-left: 24px;
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Skeleton Card */
+.skeleton-card {
+  background: #f3f4f6;
+  border-radius: 14px;
+  padding: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Lines */
+.skeleton-line {
+  height: 14px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+/* Vote Pills */
+.skeleton-votes {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.skeleton-pill {
+  width: 60px;
+  height: 26px;
+  background: #e5e7eb;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer Animation */
+.skeleton-line::after,
+.skeleton-pill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.6),
+    transparent
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
+}
+
+/* Dark mode */
+body.dark .skeleton-card {
+  background: #111827;
+}
+
+body.dark .skeleton-line,
+body.dark .skeleton-pill {
+  background: #1f2937;
+}
+.pagination-box {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 20px 0 30px;
+}
+
+.pagination-box button {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: #f1f5f9;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pagination-box button.active {
+  background: #6c63ff;
+  color: white;
+}
+/* Full page editor should sit above everything */
+.top-header {
+  position: sticky;
+  z-index: 1000;
+}
+
+.left-sidebar,
+.right-sidebar,
+.notify-panel,
+.settings-modal,
+.auth-modal {
+  z-index: 2000;
+}

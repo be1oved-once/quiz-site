@@ -1269,6 +1269,14 @@ function startAdminPresenceCheck() {
 // ===== File Upload Parsing System =====
 
 function parseQuestionFormat(raw) {
+  // 🔥 FIX FOR PDF FLATTENED TEXT
+raw = raw
+  .replace(/\s+Q:/g, "\nQ:")
+  .replace(/\s+A:/g, "\nA:")
+  .replace(/\s+B:/g, "\nB:")
+  .replace(/\s+C:/g, "\nC:")
+  .replace(/\s+D:/g, "\nD:")
+  .replace(/\s+ANSWER:/g, "\nANSWER:");
   const lines = raw.split("\n");
   const questions = [];
 

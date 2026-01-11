@@ -106,7 +106,7 @@ body.dark {
     }
 
 .blog-meta a {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   color: #6c63ff;
   text-decoration: none;
@@ -116,14 +116,22 @@ body.dark {
 }
 
 .blog-meta a::after {
-  content: "→";
-  font-size: 14px;
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
   transition: transform 0.15s ease;
 }
 
 .blog-meta a:hover::after {
-  transform: translateX(2px);
+  transform: rotate(-45deg) translateX(2px);
 }
+
 .blog-search {
   margin: 0 0 16px;
 }

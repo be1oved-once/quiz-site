@@ -2449,3 +2449,49 @@ body.dark .login-lock-box p {
     padding-top: 0;
   }
 }
+/* ===== Sidebar Dropdown ===== */
+
+.sidebar-dropdown {
+  list-style: none;
+}
+
+.dropdown-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 12px;
+}
+
+.dropdown-toggle .chev {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-menu {
+  display: none;
+  flex-direction: column;
+  padding-left: 28px;
+  margin-top: 4px;
+}
+
+.dropdown-menu a {
+  padding: 6px 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Open state */
+.dropdown-menu.open {
+  display: flex;
+}
+
+.dropdown-toggle.open .chev {
+  transform: rotate(180deg);
+}

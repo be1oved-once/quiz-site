@@ -30,62 +30,90 @@
 <body>
 <main class="profile-content">
 
-  <!-- HEADER -->
-<div class="perform-header">
-  <h2>My Profile</h2>
+  <!-- ===== PROFILE SKELETON (VISIBLE FIRST) ===== -->
+  <div id="profileSkeleton">
 
-  <div class="header-actions">
-    <button id="editProfile" class="edit-inline-btn"><svg class="icon-pencil" viewBox="0 0 24 24" fill="none"
+    <!-- Header skeleton -->
+    <div class="pr-skel-header"></div>
+
+    <!-- Card skeleton -->
+    <div class="pr-skel-card">
+
+      <div class="pr-skel-title"></div>
+
+      <div class="pr-skel-field"></div>
+      <div class="pr-skel-field"></div>
+      <div class="pr-skel-field"></div>
+
+      <div class="pr-skel-btn"></div>
+    </div>
+
+  </div>
+
+
+  <!-- ===== REAL PROFILE CONTENT (HIDDEN FIRST) ===== -->
+  <div id="profileContent" style="display:none;">
+
+    <!-- HEADER -->
+    <div class="perform-header">
+      <h2>My Profile</h2>
+
+      <div class="header-actions">
+        <button id="editProfile" class="edit-inline-btn"><svg class="icon-pencil" viewBox="0 0 24 24" fill="none"
      stroke="currentColor" stroke-width="1.6"
      stroke-linecap="round" stroke-linejoin="round">
   <path d="M12 20h9"/>
   <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
 </svg>Edit
-    </button>
+        </button>
 
-    <button class="edit-inline-btn" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i>Back</button>
-  </div>
-</div>
-
-  <div class="profile-card">
-
-    <h3 class="profile-title">Profile Details</h3>
-
-    <!-- Username -->
-    <div class="field">
-      <label>Username</label>
-      <input type="text" id="username" placeholder="Your name">
-    </div>
-
-    <!-- DOB -->
-    <div class="field dob-field">
-      <label>Date of Birth</label>
-      <input type="date" id="dob">
-      <small class="hint">You must be at least 17 years old</small>
-    </div>
-
-    <!-- Gender (custom select) -->
-    <div class="field">
-      <label>Gender</label>
-
-      <button id="genderBtn" class="select-btn">
-        <span id="genderText">Select Gender</span>
-      </button>
-
-      <div id="genderPopup" class="select-popup">
-        <button data-val="Male">Male</button>
-        <button data-val="Female">Female</button>
-        <button data-val="Other">Other</button>
-        <button data-val="Prefer not to say">Prefer not to say</button>
+        <button class="edit-inline-btn" onclick="history.back()">
+          <i class="fa-solid fa-arrow-left"></i>Back
+        </button>
       </div>
     </div>
 
-    <!-- Save -->
-    <button id="saveProfile" class="save-btn">
-      Save Profile
-    </button>
+    <div class="profile-card">
 
-    <p id="profileMsg" class="msg"></p>
+      <h3 class="profile-title">Profile Details</h3>
+
+      <!-- Username -->
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="username">
+      </div>
+
+      <!-- DOB -->
+      <div class="field dob-field">
+        <label>Date of Birth</label>
+        <input type="date" id="dob">
+        <small class="hint">You must be at least 17 years old</small>
+      </div>
+
+      <!-- Gender -->
+      <div class="field">
+        <label>Gender</label>
+
+        <button id="genderBtn" class="select-btn">
+          <span id="genderText">Select Gender</span>
+        </button>
+
+        <div id="genderPopup" class="select-popup">
+          <button data-val="Male">Male</button>
+          <button data-val="Female">Female</button>
+          <button data-val="Other">Other</button>
+          <button data-val="Prefer not to say">Prefer not to say</button>
+        </div>
+      </div>
+
+      <!-- Save -->
+      <button id="saveProfile" class="save-btn">
+        Save Profile
+      </button>
+
+      <p id="profileMsg" class="msg"></p>
+
+    </div>
 
   </div>
 

@@ -30,17 +30,45 @@ const toastBackdrop = document.getElementById("toastBackdrop");
 
 let confirmAction = null;
 
-function showConfirmToast(message, action) {
+function showConfirmToast(message, action, options = {}) {
   confirmText.textContent = message;
   confirmAction = action;
+
+  // Defaults = delete mode
+  confirmCancel.textContent = options.cancelText || "Cancel";
+  confirmYes.textContent = options.okText || "Delete";
+
   confirmToast.classList.add("show");
   toastBackdrop.classList.add("show");
+
+  confirmCancel.onclick = () => {
+    hideConfirmToast();
+    if (options.onCancel) options.onCancel();
+  };
+
+  confirmYes.onclick = async () => {
+    hideConfirmToast();
+    if (confirmAction) await confirmAction();
+    if (options.onOk) options.onOk();
+  };
 }
 
 function hideConfirmToast() {
   confirmToast.classList.remove("show");
   toastBackdrop.classList.remove("show");
   confirmAction = null;
+}
+function requireLoginToast() {
+  showConfirmToast(
+    "Login required to continue",
+    null,
+    {
+      cancelText: "Login",
+      okText: "Sign Up",
+      onCancel: () => openAuth("login"),
+      onOk: () => openAuth("signup")
+    }
+  );
 }
 
 confirmCancel.onclick = hideConfirmToast;
@@ -66,7 +94,8 @@ const ThoughtApp = {
      CONFIG
   ========================= */
   HIDE_KEY: "hidden_opinions_local",
-
+CACHE_KEY: "opinions_cache_v1",
+firstLoadDone: false,
   /* =========================
      INIT
   ========================= */
@@ -308,8 +337,7 @@ async publishOpinion() {
   // 🔒 Require login
   const user = window.currentUser;
   if (!user) {
-    alert("Login required to post opinion.");
-    openAuth("login");
+    requireLoginToast();
     return;
   }
 
@@ -366,26 +394,86 @@ canDeleteOpinion(data) {
   /* =========================
      REALTIME LOAD FEED
   ========================= */
-  loadOpinionsRealtime() {
-    const q = query(
-      collection(db, "opinions"),
-      orderBy("createdAt", "desc")
-    );
+loadOpinionsRealtime() {
 
-    onSnapshot(q, (snapshot) => {
-      this.feed.innerHTML = "";
+  this.pageSize = 10;
+  this.currentPage = 1;
+  this.cachedDocs = [];
 
-      const hidden = this.getHiddenOpinions();
+  const baseQuery = query(
+    collection(db, "opinions"),
+    orderBy("createdAt", "desc")
+  );
 
-      snapshot.forEach((docSnap) => {
-        if (hidden.includes(docSnap.id)) return;
+  // Realtime cache listener
+  onSnapshot(baseQuery, (snapshot) => {
+  this.cachedDocs = snapshot.docs;
+  
+  // Keep current page if already loaded
+  const page = this.firstLoadDone ? this.currentPage : 1;
+  
+  this.renderPage(page);
+  this.buildPagination();
+});
+},
+renderPage(page) {
+  this.currentPage = page;
 
-        const data = docSnap.data();
-        const card = this.createOpinionCard(docSnap.id, data);
-        this.feed.appendChild(card);
-      });
-    });
-  },
+  const start = (page - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  const pageDocs = this.cachedDocs.slice(start, end);
+
+  // Skeleton ON
+// Skeleton only on first load or manual page change
+if (!this.firstLoadDone) {
+  document.getElementById("skeletonLoader").style.display = "block";
+  this.feed.style.display = "none";
+}
+
+setTimeout(() => {
+
+  document.getElementById("skeletonLoader").style.display = "none";
+  this.feed.style.display = "block";
+
+  this.feed.innerHTML = "";
+  const hidden = this.getHiddenOpinions();
+
+  pageDocs.forEach(docSnap => {
+    if (hidden.includes(docSnap.id)) return;
+    const data = docSnap.data();
+    const card = this.createOpinionCard(docSnap.id, data);
+    this.feed.appendChild(card);
+  });
+
+  // 🔥 Mark first load finished
+  this.firstLoadDone = true;
+
+}, this.firstLoadDone ? 0 : 200);
+},
+buildPagination() {
+  const total = this.cachedDocs.length;
+  const pages = Math.ceil(total / this.pageSize);
+
+  const wrap = document.getElementById("pagination");
+  wrap.innerHTML = "";
+
+  for (let i = 1; i <= pages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+
+    if (i === this.currentPage) {
+      btn.classList.add("active");
+    }
+
+    btn.onclick = () => {
+      this.renderPage(i);
+      this.buildPagination();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    wrap.appendChild(btn);
+  }
+},
 
   /* =========================
      CREATE OPINION CARD*/
@@ -582,7 +670,7 @@ async handleVote(id, type) {
   // 🔒 Require login
   const user = window.currentUser;
   if (!user) {
-    alert("Login required to vote.");
+    requireLoginToast();
     openAuth("login"); // uses your existing auth popup
     return;
   }

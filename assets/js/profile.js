@@ -106,6 +106,9 @@ auth.onAuthStateChanged(async user => {
     dob: data.dob || "",
     gender: data.gender || ""
   });
+  // ===== Hide skeleton, show real content =====
+document.getElementById("profileSkeleton").style.display = "none";
+document.getElementById("profileContent").style.display = "block";
 });
 
 /* Edit mode */
@@ -140,7 +143,15 @@ saveBtn.onclick = async () => {
   profileCompleted: true
 };
 
+// Update main user profile
 await updateDoc(doc(db, "users", user.uid), payload);
+
+// 🔥 ALSO update public leaderboard profile data
+await updateDoc(doc(db, "publicLeaderboard", user.uid), {
+  name: payload.username,
+  dob: payload.dob,
+  gender: payload.gender
+});
 
 /* 🔥 Sync localStorage instantly */
 saveProfileToLocal(user.uid, payload);

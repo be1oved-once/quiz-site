@@ -318,6 +318,94 @@ body.dark .lb-profile-label {
 body.dark .lb-profile-value {
   color: #e5e7eb;
 }
+/* ===== LEADERBOARD SKELETON ===== */
+
+.lb-skeleton-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 55px;   /* 🔥 exact as requested */
+  margin-left: 24px;  /* 🔥 exact as requested */
+  margin-right: 16px;
+}
+
+.lb-skeleton-card {
+  background: #f3f4f6;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.lb-skeleton-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lb-skeleton-rank {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+.lb-skeleton-name {
+  width: 120px;
+  height: 14px;
+  border-radius: 6px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+.lb-skeleton-xp {
+  width: 60px;
+  height: 14px;
+  border-radius: 6px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+/* shimmer */
+.lb-skeleton-rank::after,
+.lb-skeleton-name::after,
+.lb-skeleton-xp::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.7),
+    transparent
+  );
+  animation: lb-shimmer 1.3s infinite;
+}
+
+@keyframes lb-shimmer {
+  100% { left: 100%; }
+}
+
+/* Dark mode */
+body.dark .lb-skeleton-card {
+  background: #0f172a;
+}
+
+body.dark .lb-skeleton-rank,
+body.dark .lb-skeleton-name,
+body.dark .lb-skeleton-xp {
+  background: #1f2937;
+}
 </style>
 </head>
 
@@ -326,7 +414,34 @@ body.dark .lb-profile-value {
 <main class="leaderboard-page">
 
   <div class="lb-heading">WEEKLY LEADERS</div>
+<!-- ===== LEADERBOARD SKELETON ===== -->
+<div id="leaderboardSkeleton" class="lb-skeleton-wrapper">
 
+  <div class="lb-skeleton-card">
+    <div class="lb-skeleton-left">
+      <div class="lb-skeleton-rank"></div>
+      <div class="lb-skeleton-name"></div>
+    </div>
+    <div class="lb-skeleton-xp"></div>
+  </div>
+
+  <div class="lb-skeleton-card">
+    <div class="lb-skeleton-left">
+      <div class="lb-skeleton-rank"></div>
+      <div class="lb-skeleton-name"></div>
+    </div>
+    <div class="lb-skeleton-xp"></div>
+  </div>
+
+  <div class="lb-skeleton-card">
+    <div class="lb-skeleton-left">
+      <div class="lb-skeleton-rank"></div>
+      <div class="lb-skeleton-name"></div>
+    </div>
+    <div class="lb-skeleton-xp"></div>
+  </div>
+
+</div>
   <div id="leaderboardList" class="lb-list"></div>
 
 </main>
@@ -339,31 +454,43 @@ body.dark .lb-profile-value {
 import { db } from "./assets/js/firebase.js";
 import {
   collection,
-  getDocs
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const list = document.getElementById("leaderboardList");
+const skeleton = document.getElementById("leaderboardSkeleton");
 
-async function loadLeaderboard() {
-  const snap = await getDocs(collection(db, "publicLeaderboard"));
+function listenLeaderboard() {
 
-  const users = [];
+  // Show skeleton first
+  skeleton.style.display = "block";
+  list.style.display = "none";
 
-  snap.forEach(docSnap => {
-    const data = docSnap.data();
+  const ref = collection(db, "publicLeaderboard");
 
-users.push({
-  name: data.name || "User",
-  gender: data.gender || "",
-  dob: data.dob || "",
-  xp: data.xp || 0
-});
+  // 🔥 Realtime Firestore listener
+  onSnapshot(ref, (snap) => {
+    const users = [];
+
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      users.push({
+        name: data.name || "User",
+        gender: data.gender || "",
+        dob: data.dob || "",
+        xp: data.xp || 0
+      });
+    });
+
+    // Sort by XP high → low
+    users.sort((a, b) => b.xp - a.xp);
+
+    // Hide skeleton after first data arrives
+    skeleton.style.display = "none";
+    list.style.display = "flex";
+
+    renderLeaderboard(users);
   });
-
-  // ---- SORT HIGH TO LOW ----
-  users.sort((a, b) => b.xp - a.xp);
-
-  renderLeaderboard(users);
 }
 
 function renderLeaderboard(users) {
@@ -373,54 +500,52 @@ function renderLeaderboard(users) {
     const row = document.createElement("div");
 
     let cls = "";
-let icon = "";
+    let icon = "";
 
-if (i === 0) {
-  cls = "lb-gold";
-  icon = `<i class="fa-solid fa-crown"></i>`;
-}
-else if (i === 1) {
-  cls = "lb-silver";
-  icon = `<i class="fa-solid fa-medal"></i>`;
-}
-else if (i === 2) {
-  cls = "lb-bronze";
-  icon = `<i class="fa-solid fa-award"></i>`;
-}
-else {
-  // 🔢 Serial number for 4th onward
-  icon = `<span class="lb-serial">${i + 1}</span>`;
-}
+    if (i === 0) {
+      cls = "lb-gold";
+      icon = `<i class="fa-solid fa-crown"></i>`;
+    }
+    else if (i === 1) {
+      cls = "lb-silver";
+      icon = `<i class="fa-solid fa-medal"></i>`;
+    }
+    else if (i === 2) {
+      cls = "lb-bronze";
+      icon = `<i class="fa-solid fa-award"></i>`;
+    }
+    else {
+      icon = `<span class="lb-serial">${i + 1}</span>`;
+    }
+
     row.className = `lb-row ${cls}`;
     row.innerHTML = `
-<div class="lb-top">
-  <div class="lb-left">
-    <div class="lb-rank">${icon}</div>
-    <div class="lb-name">${u.name}</div>
-  </div>
-  <div class="lb-xp">${u.xp} XP</div>
-</div>
+      <div class="lb-top">
+        <div class="lb-left">
+          <div class="lb-rank">${icon}</div>
+          <div class="lb-name">${u.name}</div>
+        </div>
+        <div class="lb-xp">${u.xp} XP</div>
+      </div>
 
-<div class="lb-expand">
-  <div class="lb-profile-card">
-    
-    <div class="lb-profile-row">
-      <span class="lb-profile-label">Name</span>
-      <span class="lb-profile-value">${u.name}</span>
-    </div>
-    
-    <div class="lb-profile-row">
-      <span class="lb-profile-label">Gender</span>
-      <span class="lb-profile-value">${u.gender || "—"}</span>
-    </div>
-    
-    <div class="lb-profile-row">
-      <span class="lb-profile-label">DOB</span>
-      <span class="lb-profile-value">${u.dob || "—"}</span>
-    </div>
-    
-  </div>
-</div>
+      <div class="lb-expand">
+        <div class="lb-profile-card">
+          <div class="lb-profile-row">
+            <span class="lb-profile-label">Name</span>
+            <span class="lb-profile-value">${u.name}</span>
+          </div>
+
+          <div class="lb-profile-row">
+            <span class="lb-profile-label">Gender</span>
+            <span class="lb-profile-value">${u.gender || "—"}</span>
+          </div>
+
+          <div class="lb-profile-row">
+            <span class="lb-profile-label">DOB</span>
+            <span class="lb-profile-value">${u.dob || "—"}</span>
+          </div>
+        </div>
+      </div>
     `;
 
     list.appendChild(row);
@@ -435,7 +560,9 @@ function enableExpand() {
   rows.forEach(row => {
     row.addEventListener("click", e => {
       e.stopPropagation();
-      rows.forEach(r => { if (r !== row) r.classList.remove("expanded"); });
+      rows.forEach(r => {
+        if (r !== row) r.classList.remove("expanded");
+      });
       row.classList.toggle("expanded");
     });
   });
@@ -445,7 +572,9 @@ function enableExpand() {
   });
 }
 
-loadLeaderboard();
+// 🚀 Start realtime listener
+listenLeaderboard();
+</script>
 </script>
 
 </body>

@@ -155,7 +155,7 @@
   </a>
 </li>
   <li class="mobile-left">
-    <a href="/articles.html">
+    <a href="/blogs.html">
       <i class="fa-solid fa-newspaper"></i>
       <span>Articles</span>
     </a>
@@ -166,7 +166,7 @@
 </li>
     <li class="desktop-left"><a href="/mtp-rtp.html"><i class="fa-solid fa-file-lines"></i><span>RTP / MTP</span></a></li>
     <li class="desktop-left"><a href="/business-laws.html"><i class="fa-solid fa-scale-balanced"></i></i><span>Business Laws</span></a></li>
-  <li class="desktop-left"><a href="/articles.html"><i class="fa-solid fa-newspaper"></i><span>Articles</span></a></li>
+  <li class="desktop-left"><a href="/blogs.html"><i class="fa-solid fa-newspaper"></i><span>Articles</span></a></li>
   <li class="desktop-left"><a href="/About-us.html"><i class="fa-solid fa-circle-info"></i><span>About</span></a></li>
   <li class="desktop-left"><a href="javascript:void(0)" onclick="openSettings()"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
   <li class="desktop-left"><a href="/contact.html"><i class="fa-solid fa-comment"></i><span>Suggestions</span></a></li>

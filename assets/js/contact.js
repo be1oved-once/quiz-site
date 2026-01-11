@@ -1,3 +1,10 @@
+import { db } from "./firebase.js";
+import {
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("contactForm");
   if (!form) return;
@@ -8,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     if (locked) return;
 
-    // 🔐 Cloudflare Turnstile token
     const token = document.querySelector(
       'input[name="cf-turnstile-response"]'
     )?.value;
@@ -33,6 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
+
+      /* =======================
+         1) SAVE TO FIRESTORE
+      ======================= */
+      await addDoc(collection(db, "contactMessages"), {
+        name: data.name,
+        email: data.email,
+        subject: data.subject,
+        message: data.message,
+        createdAt: serverTimestamp()
+      });
+
+      /* =======================
+         2) CALL YOUR EXISTING API
+      ======================= */
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,9 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       let result = {};
-      try {
-        result = await res.json();
-      } catch {}
+      try { result = await res.json(); } catch {}
 
       if (!res.ok) {
         throw new Error(result.error || "Server error");
@@ -54,11 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.turnstile) {
         turnstile.reset();
       }
+
       setTimeout(() => {
-  window.location.replace("/confirmation.html");
-}, 200);
+        window.location.replace("/confirmation.html");
+      }, 200);
 
     } catch (err) {
+      console.error("Contact error:", err);
       showToast("Something went wrong. Try again.");
     }
 
@@ -69,9 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <span>Send Message</span>
     `;
   });
-});
-
-/* ===== TOAST ===== */
+  /* ===== TOAST ===== */
 function showToast(text) {
   const t = document.createElement("div");
   t.className = "toast";
@@ -88,3 +107,4 @@ function showToast(text) {
     setTimeout(() => t.remove(), 300);
   }, 2400);
 }
+});
