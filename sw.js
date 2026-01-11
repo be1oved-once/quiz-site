@@ -1,17 +1,15 @@
-
-
-const CACHE_NAME = "tic-kar-v8"; // 🔥
+const CACHE_NAME = "beforexam-cache-v1";
+const OFFLINE_URL = "/offline.html";
 
 /* =========================
-   PRECACHE (SAFE)
+   PRECACHE LIST
 ========================= */
-const PRECACHE = [
-  /* root */
-  "/",
+const PRECACHE_URLS = [
+  "/", 
   "/index.html",
-  "/offline.html",
+  OFFLINE_URL,
 
-  /* main pages */
+  // Main pages
   "/About-us.html",
   "/blogs.html",
   "/bookmarks.html",
@@ -23,69 +21,80 @@ const PRECACHE = [
   "/performance.html",
   "/profile.html",
   "/sponsor-us.html",
+
+  // Blog pages
   "/Blog/Essential-Things-You-Must-Keep-in-Mind.html",
   "/Blog/how-to-speed-up-handwriting.html",
   "/Blog/i-knew-everything-forgot-everything-in-exam-hall.html",
   "/Blog/my-teacher-was-wrong-about-ca-foundation-and-i-paid-the-price.html",
   "/Blog/Presentation-vs-Content-What-Matters-More.html",
   "/Blog/Why-Hard-Work-Alone-Is-Not-Enough-to-Clear-CA-Foundation.html",
+
+  // Legal
   "/Legal/disclaimer.html",
   "/Legal/our-mission.html",
   "/Legal/privacy-policy.html",
   "/Legal/terms.html",
-  /* blog pages */
 
-  /* styles */
-  "assets/css/common.css",
-  "assets/css/common-review.css",
-  "assets/css/landing.css",
-  "assets/css/about.css",
-  "/Legal/legal.css",
-  "/Legal/legal.js",
-  "assets/css/contact.css",
-  "assets/css/profile.css",
-  "assets/css/perform.css",
-  "assets/css/penalty.css",
-  "assets/css/sponsor.css",
-  "assets/css/style-law.css",
+  // CSS
   "/style.css",
   "/style-rtp.css",
+  "/assets/css/common.css",
+  "/assets/css/common-review.css",
+  "/assets/css/landing.css",
+  "/assets/css/about.css",
+  "/assets/css/contact.css",
+  "/assets/css/profile.css",
+  "/assets/css/perform.css",
+  "/assets/css/penalty.css",
+  "/assets/css/sponsor.css",
+  "/assets/css/style-law.css",
+  "/Legal/legal.css",
 
-  /* scripts */
-  "assets/js/common-layout.js",
-  "assets/js/common-logic.js",
-  "assets/js/common.js",
-  "assets/js/profile.js",
-  "assets/js/performance-logic.js",
-  "assets/js/bookmark-logic.js",
-  "assets/js/law-logic.js",
-  "assets/js/law-pdf-logic.js",
-  "assets/js/insight-engine.js",
-  "assets/js/questions.js",
-  "assets/js/questions-law.js",
-  "assets/js/questions-logic.js",
-  "assets/js/questions-logic-rtp.js",
-  "assets/js/rtp-mtp.js",
-  "assets/js/settings.js",
+  // JS
+  "/assets/js/common-layout.js",
+  "/assets/js/common-logic.js",
+  "/assets/js/common.js",
+  "/assets/js/settings.js",
+  "/assets/js/profile.js",
+  "/assets/js/performance-logic.js",
+  "/assets/js/bookmark-logic.js",
+  "/assets/js/questions.js",
+  "/assets/js/questions-law.js",
+  "/assets/js/questions-logic.js",
+  "/assets/js/questions-logic-rtp.js",
+  "/assets/js/rtp-mtp.js",
+  "/assets/js/law-logic.js",
+  "/assets/js/law-pdf-logic.js",
 
-  /* icons */
+  // Icons
   "/assets/favicon/favicon.ico",
-  "assets/favicon/favicon-16x16.png",
-  "assets/favicon/favicon-32x32.png",
-  "assets/favicon/apple-touch-icon.png",
-  "assets/favicon/android-chrome-192x192.png",
-  "/sitemap.xml",
-  "assets/favicon/android-chrome-512x512.png",
+  "/assets/favicon/favicon-16x16.png",
+  "/assets/favicon/favicon-32x32.png",
+  "/assets/favicon/apple-touch-icon.png",
+  "/assets/favicon/android-chrome-192x192.png",
+  "/assets/favicon/android-chrome-512x512.png",
 
-  /* misc */
-  "assets/QR/qr.webp"
+  // Misc
+  "/assets/QR/qr.webp",
+  "/sitemap.xml"
 ];
 
+/* =========================
+   INSTALL
+========================= */
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(PRECACHE))
-      .catch(err => console.warn("❌ Precache failed", err))
+    caches.open(CACHE_NAME).then(async cache => {
+      // Add files one-by-one so one failure doesn't break all
+      for (const url of PRECACHE_URLS) {
+        try {
+          await cache.add(url);
+        } catch (err) {
+          console.warn("❌ Failed to cache:", url);
+        }
+      }
+    })
   );
   self.skipWaiting();
 });
@@ -96,7 +105,9 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+      Promise.all(
+        keys.map(k => (k !== CACHE_NAME ? caches.delete(k) : null))
+      )
     )
   );
   self.clients.claim();
@@ -109,44 +120,44 @@ self.addEventListener("fetch", event => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Never touch Firebase / Google APIs
+  // Ignore Firebase + Google APIs + Vercel serverless
   if (
     url.hostname.includes("googleapis") ||
     url.hostname.includes("firebase") ||
+    url.hostname.includes("gstatic") ||
     url.pathname.startsWith("/api/")
   ) {
     return;
   }
 
-  // 🌐 HTML → Network First, fallback offline
-  if (req.headers.get("accept")?.includes("text/html")) {
+  // Handle page navigations
+  if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
         .then(res => {
-          // Save fresh copy
           const copy = res.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
           return res;
         })
-        .catch(() => 
-          caches.match(req)
-            .then(r => r || caches.match("/offline.html"))
+        .catch(() =>
+          caches.match(req).then(r => r || caches.match(OFFLINE_URL))
         )
     );
     return;
   }
 
-  // ⚡ Assets → Cache First, then Network update
+  // Handle assets: Cache first → Network fallback
   event.respondWith(
     caches.match(req).then(cached => {
       if (cached) return cached;
 
       return fetch(req)
         .then(res => {
-          caches.open(CACHE_NAME).then(cache => cache.put(req, res.clone()));
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
           return res;
         })
-        .catch(() => caches.match("/offline.html"));
+        .catch(() => caches.match(OFFLINE_URL));
     })
   );
 });
