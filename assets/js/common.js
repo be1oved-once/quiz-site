@@ -409,7 +409,10 @@ alert(err.message);
 
 onAuthStateChanged(auth, async user => {
   window.currentUser = user || null;
+  if (user) {
+    window.currentUser = user; }
 if (!user) {
+  window.currentUser = null;
     initGoogleOneTap();
   }
 const lock = document.getElementById("loginLockOverlay");
