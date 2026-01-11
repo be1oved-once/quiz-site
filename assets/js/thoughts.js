@@ -34,7 +34,6 @@ function showConfirmToast(message, action, options = {}) {
   confirmText.textContent = message;
   confirmAction = action;
 
-  // Defaults = delete mode
   confirmCancel.textContent = options.cancelText || "Cancel";
   confirmYes.textContent = options.okText || "Delete";
 
@@ -47,10 +46,10 @@ function showConfirmToast(message, action, options = {}) {
   };
 
   confirmYes.onclick = async () => {
-    hideConfirmToast();
-    if (confirmAction) await confirmAction();
-    if (options.onOk) options.onOk();
-  };
+  if (confirmAction) await confirmAction();  // run first
+  hideConfirmToast();                         // then clear
+  if (options.onOk) options.onOk();
+};
 }
 
 function hideConfirmToast() {
@@ -70,13 +69,6 @@ function requireLoginToast() {
     }
   );
 }
-
-confirmCancel.onclick = hideConfirmToast;
-
-confirmYes.onclick = async () => {
-  if (confirmAction) await confirmAction();
-  hideConfirmToast();
-};
 /* ==========================================================
    DOM READY
 ========================================================== */
@@ -602,22 +594,33 @@ formatMessage(message) {
     const deleteBtn = card.querySelector(".delete-btn");
 
 if (deleteBtn) {
-deleteBtn.addEventListener("click", () => {
-  menuPopup.classList.remove("show");
+  deleteBtn.addEventListener("click", () => {
+    console.log("🟡 Delete button clicked for ID:", id);
 
-  showConfirmToast(
-    "Delete this opinion permanently?",
-    async () => {
-      try {
-        await deleteDoc(doc(db, "opinions", id));
-        card.remove();
-      } catch (err) {
-        console.error("Delete Error:", err);
-        alert("Failed to delete opinion.");
+    menuPopup.classList.remove("show");
+
+    showConfirmToast(
+      "Delete this opinion permanently?",
+      async () => {
+        console.log("🟠 Confirm delete pressed for ID:", id);
+
+        try {
+          const ref = doc(db, "opinions", id);
+          console.log("🔵 Firestore ref:", ref.path);
+
+          await deleteDoc(ref);
+
+          console.log("✅ Firestore delete successful:", id);
+
+          card.remove();
+          console.log("✅ Card removed from DOM");
+
+        } catch (err) {
+          console.error("❌ Delete Error:", err);
+        }
       }
-    }
-  );
-});
+    );
+  });
 }
     /* Menu toggle */
     menuBtn.addEventListener("click", (e) => {
