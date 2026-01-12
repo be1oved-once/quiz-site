@@ -20,11 +20,10 @@ onSnapshot
 import { auth, db, googleProvider } from "./firebase.js";
 import {
 signInWithCredential,
-GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 function initGoogleOneTap() {
-if (!window.google || !auth) return;
+if (!window.google?.accounts?.id) return;
 
 google.accounts.id.initialize({
 client_id: "17479597538-v0arppvqpf198bubbtd93i5roimuu5dr.apps.googleusercontent.com", // SAME AS FIREBASE
@@ -434,19 +433,29 @@ logoutBtns.forEach(btn => btn.style.display = "inline-flex");
 await ensureUserProfile(user);    
 // ⏳ Load Firestore data separately    
 loadUserProfile(user.uid);
-// 🔥 FORCE PROFILE COMPLETION FOR NEW USERS
+// 🔥 FORCE PROFILE COMPLETION ONLY AFTER EMAIL VERIFIED
 const ref = doc(db, "users", user.uid);
 const snap = await getDoc(ref);
 
 if (snap.exists()) {
   const data = snap.data();
 
-  // If profile not completed → force redirect
+  // ❗ NEW CONDITION ADDED
+  if (!user.emailVerified) {
+    // User is logged in but email not verified
+    // Stay on signup-verified page
+    if (!location.pathname.includes("signup-verified.html")) {
+      window.location.href = "/signup-verified.html";
+    }
+    return;
+  }
+
+  // ✅ Only now enforce profile completion
   if (!data.profileCompleted) {
     if (!location.pathname.includes("profile.html")) {
       window.location.href = "/profile.html";
-      return;
     }
+    return;
   }
 }
 } else {
@@ -458,6 +467,22 @@ logoutBtns.forEach(btn => btn.style.display = "none");
 console.log("User logged out");
 
 }
+if (!user) return;
+
+  if (!user.emailVerified) return;
+
+  const lbRef = doc(db, "publicLeaderboard", user.uid);
+  const lbSnap = await getDoc(lbRef);
+
+  // 🔥 Create leaderboard doc if not exists
+  if (!lbSnap.exists()) {
+    await setDoc(lbRef, {
+      name: user.displayName || "User",
+      gender: "",
+      dob: "",
+      xp: 0
+    });
+  }
 });
 
 window.openAuth = openAuth;
@@ -609,6 +634,7 @@ profilePopup.style.maxHeight
 document.addEventListener("click", () => {
 lockPopup.style.display = "none";
 });
+
 });
 /* =========================
 NOTIFICATIONS (GLOBAL)
@@ -803,6 +829,9 @@ console.log("Service Worker registered");
 }
 
 });
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
 }
 
 /* =========================

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin User Manager</title>
+</head>
+<body>
+
+<h2>All Users</h2>
+<div id="userList">Loading...</div>
+
+<script type="module">
+import { auth, db } from "./assets/js/firebase.js";
+
+import {
+  collection,
+  getDocs,
+  doc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+const listDiv = document.getElementById("userList");
+
+// 🔒 Only allow admin email
+const ADMIN_EMAIL = "nicknow20@gmail.com"; 
+// ⬆️ replace with your real admin email
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    listDiv.textContent = "Not logged in";
+    return;
+  }
+
+  if (user.email !== ADMIN_EMAIL) {
+    listDiv.textContent = "Access denied. Admin only.";
+    return;
+  }
+
+  loadUsers();
+});
+
+async function loadUsers() {
+  listDiv.innerHTML = "Loading...";
+
+  const snap = await getDocs(collection(db, "users"));
+
+  if (snap.empty) {
+    listDiv.textContent = "No users found.";
+    return;
+  }
+
+  listDiv.innerHTML = "";
+
+  snap.forEach(userDoc => {
+    const data = userDoc.data();
+    const uid = userDoc.id;
+
+    const div = document.createElement("div");
+    div.style.marginBottom = "10px";
+    div.style.border = "1px solid #ccc";
+    div.style.padding = "6px";
+
+    div.innerHTML = `
+      <div><b>UID:</b> ${uid}</div>
+      <div><b>Email:</b> ${data.email || "—"}</div>
+      <div><b>Username:</b> ${data.username || "—"}</div>
+      <button data-uid="${uid}">Delete User Data</button>
+    `;
+
+    div.querySelector("button").onclick = async () => {
+      if (!confirm("Delete this user's Firestore data?")) return;
+
+      await deleteDoc(doc(db, "users", uid));
+      await deleteDoc(doc(db, "publicLeaderboard", uid));
+
+      alert("User Firestore data deleted");
+      loadUsers(); // refresh list
+    };
+
+    listDiv.appendChild(div);
+  });
+}
+</script>
+
+</body>
+</html>

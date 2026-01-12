@@ -1,11 +1,11 @@
-const CACHE_NAME = "beforexam-cache-v1";
+const CACHE_NAME = "New-Prod";
 const OFFLINE_URL = "/offline.html";
 
 /* =========================
    PRECACHE LIST
 ========================= */
 const PRECACHE_URLS = [
-  "/", 
+  "/",
   "/index.html",
   OFFLINE_URL,
 
@@ -79,14 +79,9 @@ const PRECACHE_URLS = [
   "/assets/QR/qr.webp",
   "/sitemap.xml"
 ];
-
-/* =========================
-   INSTALL
-========================= */
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async cache => {
-      // Add files one-by-one so one failure doesn't break all
       for (const url of PRECACHE_URLS) {
         try {
           await cache.add(url);

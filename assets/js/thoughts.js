@@ -1,10 +1,5 @@
 
-
-/* =========================
-   FIREBASE IMPORTS
-========================= */
 import { db } from "/assets/js/firebase.js";
-
 import {
   collection,
   addDoc,
@@ -744,12 +739,3 @@ async handleVote(id, type) {
     }
   }
 };
-
-
-/* ==========================================================
-   END OF FILE
-   Fully optimized
-   No illegal returns
-   DOM safe
-   Firebase connected
-========================================================== */

@@ -1,5 +1,5 @@
 import { auth, db } from "./firebase.js";
-import { doc, getDoc, updateDoc } from
+import { doc, getDoc, setDoc, updateDoc } from
   "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 /* Elements */
@@ -67,6 +67,23 @@ function saveProfileToLocal(uid, data) {
 }
 
 auth.onAuthStateChanged(async user => {
+  if (!user) {
+    window.location.href = "/index.html#login";
+    return;
+  }
+
+  // 🔥 Force refresh user state from Firebase
+  await user.reload();
+  user = auth.currentUser;
+
+  // Now check verification
+  if (!user.emailVerified) {
+    window.location.href = "/signup-verified.html";
+    return;
+  }
+
+  // ✅ Only verified users reach here
+  
   if (!user) {
     // Clear UI
     usernameEl.value = "";
@@ -147,11 +164,11 @@ saveBtn.onclick = async () => {
 await updateDoc(doc(db, "users", user.uid), payload);
 
 // 🔥 ALSO update public leaderboard profile data
-await updateDoc(doc(db, "publicLeaderboard", user.uid), {
+await setDoc(doc(db, "publicLeaderboard", user.uid), {
   name: payload.username,
   dob: payload.dob,
   gender: payload.gender
-});
+}, { merge: true });
 
 /* 🔥 Sync localStorage instantly */
 saveProfileToLocal(user.uid, payload);
