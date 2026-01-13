@@ -1,4 +1,4 @@
-const CACHE_NAME = "New-Prod";
+const CACHE_NAME = "Nffdhhffdvfffnhrro";
 const OFFLINE_URL = "/offline.html";
 
 /* =========================

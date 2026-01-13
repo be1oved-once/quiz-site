@@ -496,29 +496,23 @@ if (adminToggle && adminMenu) {
   });
 }
 
-function injectTempTestItem(show) {
+function injectTempTestItem() {
   const leftSidebar = document.querySelector("#leftSidebar .sidebar-list");
   if (!leftSidebar) return;
 
-  const existing = leftSidebar.querySelector(".temp-test-item");
-
-  // ❌ remove if not live
-  if (!show) {
-    existing?.remove();
-    return;
-  }
-
-  // ✅ already exists
+  // ✅ If already exists, do nothing
+  let existing = leftSidebar.querySelector(".temp-test-item");
   if (existing) return;
 
-  // ✅ inject ONLY in left sidebar
+  // ✅ Always inject
   leftSidebar.insertAdjacentHTML(
     "afterbegin",
     `
     <li class="temp-test-item">
-      <a href="/temp-test.html">
+      <a href="/temp-test.html" class="temp-test-link">
         <i class="fa-solid fa-bolt"></i>
         <span>Temp Test</span>
+        <span class="temp-test-dot"></span>
       </a>
     </li>
     `

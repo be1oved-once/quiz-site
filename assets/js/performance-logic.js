@@ -265,19 +265,7 @@ toDateInput.addEventListener("change", syncDateLimits);
   if (rtpCard) rtpCard.textContent = `${rtp} Attempts`;
   if (mtpCard) mtpCard.textContent = `${mtp} Attempts`;
   if (chapterCard) chapterCard.textContent = `${chapter} Chapters`;
-  const insightText = generatePerformanceInsight({
-  trend: currentTrend,
-  accuracy: accuracyPercent,
-  subject: selectedSubject,
-  rtp,
-  mtp,
-  chapter
-});
-
-const insightEl = document.querySelector(".period-insight p");
-if (insightEl) {
-  insightEl.textContent = insightText;
-}
+  updatePeriodInsight(rtp, mtp, chapter);
 });
 
 auth.onAuthStateChanged(async user => {
@@ -306,6 +294,7 @@ const attemptsSnap = await getDocs(
 let rtpCount = 0;
 let mtpCount = 0;
 let chapterCount = 0;
+updatePeriodInsight(rtpCount, mtpCount, chapterCount);
 
 attemptsSnap.forEach(doc => {
   const a = doc.data();
@@ -603,4 +592,77 @@ function stopScroll() {
     clearInterval(scrollInterval);
     scrollInterval = null;
   }
+}
+/* =========================
+   PERIOD INSIGHT GENERATOR
+   (Clean, Error-Free)
+========================= */
+function runInsightTyping(text) {
+  const insightPara = document.getElementById("periodInsightText");
+  if (!insightPara) return;
+
+  insightPara.textContent = ""; // clear previous
+  insightPara.classList.add("typing");
+
+  let i = 0;
+  const cursor = document.createElement("span");
+  cursor.className = "typing-cursor";
+  cursor.textContent = "█";
+  insightPara.appendChild(cursor);
+
+  const typer = setInterval(() => {
+    cursor.insertAdjacentText("beforebegin", text[i]);
+    i++;
+
+    if (i >= text.length) {
+      clearInterval(typer);
+      cursor.remove();
+      insightPara.classList.remove("typing");
+    }
+  }, 50);
+}
+/* =========================
+   BUILD & GENERATE INSIGHT
+========================= */
+
+function updatePeriodInsight(rtp, mtp, chapter) {
+
+  // ---- Accuracy ----
+  const attempts = window.allAttempts || [];
+  let correct = 0, total = 0;
+
+  attempts.forEach(a => {
+    correct += a.correct || 0;
+    total += a.total || 0;
+  });
+
+  const accuracy = total === 0 ? 0 : Math.round((correct / total) * 100);
+
+  // ---- Trend ----
+  let currentTrend = "Stable";
+  const trendEls = document.querySelectorAll(".practice-trend");
+
+  trendEls.forEach(el => {
+    if (el.classList.contains("up")) currentTrend = "Improving";
+    else if (el.classList.contains("down")) currentTrend = "Needs Focus";
+    else if (el.classList.contains("critical")) currentTrend = "Critical";
+  });
+
+  // ---- Subject ----
+  const subject =
+    document.getElementById("practiceSubjectValue")
+      ?.dataset?.subject || "All Subjects";
+
+  // ---- Generate Insight Text ----
+  const insightText = generatePerformanceInsight({
+    trend: currentTrend,
+    accuracy: accuracy,
+    subject: subject,
+    rtp: rtp,
+    mtp: mtp,
+    chapter: chapter
+  });
+
+  // ---- Typing Animation ----
+  runInsightTyping(insightText);
 }

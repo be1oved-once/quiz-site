@@ -783,35 +783,32 @@ el.style.display = isAdmin ? "block" : "none";
 });
 
 const TEMP_TEST_REF = doc(db, "tempTests", "current");
+
 onSnapshot(TEMP_TEST_REF, snap => {
-if (!snap.exists()) {
-injectTempTestItem(false);
-return;
-}
 
-const data = snap.data();
+  // Always ensure menu item exists
+  injectTempTestItem();
 
-// 🔥 ADMIN HEARTBEAT CHECK
-const lastSeen = data.adminLastSeen?.toDate?.();
-if (!lastSeen) {
-injectTempTestItem(false);
-return;
-}
+  // No test → hide dot
+  if (!snap.exists()) {
+    setTempTestDot(false);
+    return;
+  }
 
-const diff = Date.now() - lastSeen.getTime();
+  const data = snap.data();
 
-// ⛔ Admin offline → hide test
-if (diff > 15000) {
-injectTempTestItem(false);
-return;
-}
-
-if (data.status === "live") {
-injectTempTestItem(true);
-} else {
-injectTempTestItem(false);
-}
+  // Live test → show dot
+  if (data.status === "live") {
+    setTempTestDot(true);
+  } else {
+    setTempTestDot(false);
+  }
 });
+function setTempTestDot(show) {
+  const dot = document.querySelector(".temp-test-dot");
+  if (!dot) return;
+  dot.style.display = show ? "inline-block" : "none";
+}
 
 /* =========================
 PWA SERVICE WORKER

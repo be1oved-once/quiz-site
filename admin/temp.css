@@ -62,7 +62,104 @@ body {
   color: var(--muted);
   font-size: 13px;
 }
+.live-monitor {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 14px 0 18px;
+}
 
+/* ✅ FULL BORDER AROUND EACH BLOCK */
+.monitor-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+
+  background: var(--card-bg);
+  
+  /* 🔥 Visible border in both modes */
+  border: 2px solid rgba(108, 99, 255, 0.55);
+
+  box-shadow: var(--soft-shadow);
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+.monitor-card:active {
+  transform: scale(0.97);
+}
+
+/* icon box */
+.monitor-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(108, 99, 255, 0.15);
+  color: #6c63ff;
+  flex-shrink: 0;
+}
+
+.monitor-icon i {
+  font-size: 15px;
+}
+
+.monitor-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.monitor-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.monitor-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* 📱 Mobile */
+@media (max-width: 520px) {
+  .live-monitor {
+    gap: 10px;
+  }
+
+  .monitor-card {
+    padding: 12px 10px;
+    flex-direction: column;
+    text-align: center;
+    gap: 6px;
+  }
+
+  .monitor-text {
+    align-items: center;
+  }
+}
+
+/* 💻 Desktop */
+@media (min-width: 900px) {
+  .monitor-card {
+    padding: 16px 18px;
+  }
+
+  .monitor-value {
+    font-size: 18px;
+  }
+}
+
+/* 🌙 Dark mode fine-tune */
+body.dark .monitor-card {
+  border-color: rgba(129, 140, 248, 0.6);
+  background: rgba(15, 23, 42, 0.65);
+}
 /* =========================
    CARD
 ========================= */
@@ -1157,9 +1254,11 @@ body.dark .leaderboard-card {
 ========================= */
 
 .admin-skeleton {
+  
   padding: 18px 14px;
   max-width: 780px;
   margin: auto;
+  margin-left: 20px;
 }
 
 .sk-card {

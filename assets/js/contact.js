@@ -1,10 +1,3 @@
-import { db } from "./firebase.js";
-import {
-  collection,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("contactForm");
   if (!form) return;
@@ -39,20 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-
       /* =======================
-         1) SAVE TO FIRESTORE
-      ======================= */
-      await addDoc(collection(db, "contactMessages"), {
-        name: data.name,
-        email: data.email,
-        subject: data.subject,
-        message: data.message,
-        createdAt: serverTimestamp()
-      });
-
-      /* =======================
-         2) CALL YOUR EXISTING API
+         ONLY CALL YOUR API
       ======================= */
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -90,21 +71,22 @@ document.addEventListener("DOMContentLoaded", () => {
       <span>Send Message</span>
     `;
   });
+
   /* ===== TOAST ===== */
-function showToast(text) {
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.innerHTML = `
-    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4ec.svg">
-    <span>${text}</span>
-  `;
+  function showToast(text) {
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.innerHTML = `
+      <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4ec.svg">
+      <span>${text}</span>
+    `;
 
-  document.body.appendChild(t);
-  setTimeout(() => t.classList.add("show"), 50);
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add("show"), 50);
 
-  setTimeout(() => {
-    t.classList.remove("show");
-    setTimeout(() => t.remove(), 300);
-  }, 2400);
-}
+    setTimeout(() => {
+      t.classList.remove("show");
+      setTimeout(() => t.remove(), 300);
+    }, 2400);
+  }
 });

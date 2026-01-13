@@ -3,6 +3,7 @@ import {
   collection,
   collectionGroup,
   query,
+  where,
   orderBy,
   getDocs,
   setDoc,
@@ -161,6 +162,38 @@ function setupAutoGrow(block) {
       el.style.height = el.scrollHeight + "px";
     });
   });
+}
+
+const joinedEl = document.getElementById("joinedCount");
+const submittedEl = document.getElementById("submittedCount");
+const activeEl = document.getElementById("activeCount");
+
+const testId = window.currentTestId; // already set in your admin publish
+
+// --- LISTEN JOINED ---
+onSnapshot(collectionGroup(db, "testJoins"), snap => {
+  let joined = 0;
+  snap.forEach(d => {
+    if (d.data().testId === window.currentTestId) joined++;
+  });
+  joinedEl.textContent = joined;
+  updateActive();
+});
+
+// --- LISTEN SUBMITTED ---
+onSnapshot(collectionGroup(db, "testSubmissions"), snap => {
+  let submitted = 0;
+  snap.forEach(d => {
+    if (d.data().testId === window.currentTestId) submitted++;
+  });
+  submittedEl.textContent = submitted;
+  updateActive();
+});
+
+function updateActive() {
+  const j = Number(joinedEl.textContent || 0);
+  const s = Number(submittedEl.textContent || 0);
+  activeEl.textContent = Math.max(j - s, 0);
 }
 
 function toggleOptions(block, mode) {
@@ -333,6 +366,19 @@ function calculateRemainingSeconds(expiresAt) {
 
   return Math.max(Math.floor((end - now) / 1000), 0);
 }
+const leaderboardBtn = document.getElementById("leaderboardBtn");
+const leaderboardPage = document.getElementById("leaderboardPage");
+const leaderboardBackBtn = document.getElementById("leaderboardBackBtn");
+
+leaderboardBtn?.addEventListener("click", () => {
+  leaderboardPage.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+});
+
+leaderboardBackBtn?.addEventListener("click", () => {
+  leaderboardPage.classList.add("hidden");
+  document.body.style.overflow = "";
+});
 /* =========================
    ADMIN-ONLINE SCHEDULER (FIXED)
 ========================= */
@@ -1087,9 +1133,6 @@ confirmYes.onclick = () => {
   }
   hideConfirmToast();
 };
-
-
-const leaderboardBtn = document.getElementById("leaderboardBtn");
 
 
 const leaderboardOverlay = document.getElementById("leaderboardOverlay");

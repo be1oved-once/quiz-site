@@ -2495,3 +2495,34 @@ body.dark .login-lock-box p {
 .dropdown-toggle.open .chev {
   transform: rotate(180deg);
 }
+.temp-test-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.temp-test-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  display: none;
+  margin-left: auto;
+  position: relative;
+}
+
+/* Pulse animation */
+.temp-test-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: rgba(34,197,94,0.35);
+  animation: pulseLive 1.2s infinite ease-out;
+}
+
+@keyframes pulseLive {
+  0%   { transform: scale(0.6); opacity: 0.9; }
+  70%  { transform: scale(1.8); opacity: 0; }
+  100%{ opacity: 0; }
+}
