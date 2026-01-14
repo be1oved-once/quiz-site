@@ -109,7 +109,6 @@ auth.onAuthStateChanged(async user => {
 
   /* 2️⃣ BACKGROUND SYNC FROM FIRESTORE */
   const ref = doc(db, "users", uid);
-  const snap = await getDoc(ref);
   if (!snap.exists()) return;
 
   const data = snap.data();
