@@ -49,7 +49,6 @@
   margin: 70px auto 80px;
   padding: 0 16px;
   font-family: "Poppins", sans-serif;
-  margin-left: 15px;
 }
 
 /* =====================================================
@@ -267,10 +266,13 @@ body.dark .lb-serial {
 /* =====================================================
    MOBILE TWEAK
 ===================================================== */
-@media (max-width:480px) {
+@media (max-width:678px) {
   .lb-name { font-size: 14px; }
   .lb-xp { font-size: 12px; }
   .lb-rank { width:38px;height:38px;font-size:16px; }
+  .leaderboard-page{
+    margin-left: 16px;
+  }
 }
 /* ===== EXPAND PROFILE CARD ===== */
 
@@ -424,14 +426,34 @@ body.dark .lb-skeleton-name,
 body.dark .lb-skeleton-xp {
   background: #1f2937;
 }
+.lb-heading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+/* reset timer text */
+.lb-reset-text {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: #475569;
+}
+
+/* dark mode */
+body.dark .lb-reset-text {
+  color: #94a3b8;
+}
 </style>
 </head>
-
 <body>
-
 <main class="leaderboard-page">
-
+<div class="lb-heading-wrap">
   <div class="lb-heading">WEEKLY LEADERS</div>
+  <div id="lbResetTimer" class="lb-reset-text">Resets in: --</div>
+</div>
 <!-- ===== LEADERBOARD SKELETON ===== -->
 <div id="leaderboardSkeleton" class="lb-skeleton-wrapper">
 
@@ -477,6 +499,65 @@ import {
 
 const list = document.getElementById("leaderboardList");
 const skeleton = document.getElementById("leaderboardSkeleton");
+
+function getNextWeeklyReset() {
+  const now = new Date();
+
+  // Convert to IST
+  const istNow = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
+
+  const day = istNow.getDay(); 
+  // Sunday = 0
+
+  const next = new Date(istNow);
+
+  // Move to coming Sunday
+  const daysToSunday = (7 - day) % 7;
+  next.setDate(istNow.getDate() + daysToSunday);
+
+  // Set time to 23:59:59
+  next.setHours(23, 59, 59, 0);
+
+  // If already past this week's reset → next Sunday
+  if (next <= istNow) {
+    next.setDate(next.getDate() + 7);
+  }
+
+  return next;
+}
+
+function startResetTimer() {
+  const el = document.getElementById("lbResetTimer");
+  if (!el) return;
+
+  function update() {
+    const now = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+
+    const nextReset = getNextWeeklyReset();
+    const diff = nextReset - now;
+
+    if (diff <= 0) {
+      el.textContent = "Resetting...";
+      return;
+    }
+
+    const totalMin = Math.floor(diff / 60000);
+    const days = Math.floor(totalMin / 1440);
+    const hours = Math.floor((totalMin % 1440) / 60);
+    const minutes = totalMin % 60;
+
+    el.textContent =
+      `Resets in: ${days}d ${hours}h ${minutes}m`;
+  }
+
+  update();
+  setInterval(update, 60000); // update every minute
+}
+
 
 function listenLeaderboard() {
 
@@ -589,10 +670,13 @@ function enableExpand() {
     rows.forEach(r => r.classList.remove("expanded"));
   });
 }
+// 🚀 Start reset timer
+startResetTimer();
 
 // 🚀 Start realtime listener
 listenLeaderboard();
 </script>
+
 </script>
 
 </body>

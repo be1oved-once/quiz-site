@@ -171,24 +171,9 @@ const activeEl = document.getElementById("activeCount");
 const testId = window.currentTestId; // already set in your admin publish
 
 // --- LISTEN JOINED ---
-onSnapshot(collectionGroup(db, "testJoins"), snap => {
-  let joined = 0;
-  snap.forEach(d => {
-    if (d.data().testId === window.currentTestId) joined++;
-  });
-  joinedEl.textContent = joined;
-  updateActive();
-});
+
 
 // --- LISTEN SUBMITTED ---
-onSnapshot(collectionGroup(db, "testSubmissions"), snap => {
-  let submitted = 0;
-  snap.forEach(d => {
-    if (d.data().testId === window.currentTestId) submitted++;
-  });
-  submittedEl.textContent = submitted;
-  updateActive();
-});
 
 function updateActive() {
   const j = Number(joinedEl.textContent || 0);
@@ -421,6 +406,52 @@ enablePublishMode();
      TEST EXISTS
   ========================= */
   const data = snap.data();
+// ================================
+// LIVE STUDENT MONITOR (FIXED)
+// ================================
+
+const joinedEl = document.getElementById("joinedCount");
+const submittedEl = document.getElementById("submittedCount");
+const activeEl = document.getElementById("activeCount");
+
+const currentTestId = data.testId; // ✅ now guaranteed real
+
+// Clear previous listeners if reloaded
+if (window.joinListenerUnsub) window.joinListenerUnsub();
+if (window.submitListenerUnsub) window.submitListenerUnsub();
+
+// --- LISTEN JOINED ---
+window.joinListenerUnsub = onSnapshot(
+  collectionGroup(db, "testJoins"),
+  snap => {
+    let joined = 0;
+    snap.forEach(d => {
+      if (d.data().testId === currentTestId) joined++;
+    });
+    joinedEl.textContent = joined;
+    updateActive();
+  }
+);
+
+// --- LISTEN SUBMITTED ---
+window.submitListenerUnsub = onSnapshot(
+  collectionGroup(db, "testSubmissions"),
+  snap => {
+    let submitted = 0;
+    snap.forEach(d => {
+      if (d.data().testId === currentTestId) submitted++;
+    });
+    submittedEl.textContent = submitted;
+    updateActive();
+  }
+);
+
+function updateActive() {
+  const j = Number(joinedEl.textContent || 0);
+  const s = Number(submittedEl.textContent || 0);
+  activeEl.textContent = Math.max(j - s, 0);
+}
+
 disablePublishMode();
   console.log(
     "Test:",

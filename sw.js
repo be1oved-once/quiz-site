@@ -1,8 +1,10 @@
-const CACHE_NAME = "Nffdhhffdvfffnhrro";
+
+const CACHE_VERSION = "df"; // 🔥 change only if you want manual hard reset
+const CACHE_NAME = `beforexam-cache-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
 /* =========================
-   PRECACHE LIST
+   PRECACHE CORE
 ========================= */
 const PRECACHE_URLS = [
   "/",
@@ -79,17 +81,13 @@ const PRECACHE_URLS = [
   "/assets/QR/qr.webp",
   "/sitemap.xml"
 ];
+
+/* =========================
+   INSTALL
+========================= */
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(async cache => {
-      for (const url of PRECACHE_URLS) {
-        try {
-          await cache.add(url);
-        } catch (err) {
-          console.warn("❌ Failed to cache:", url);
-        }
-      }
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE_URLS))
   );
   self.skipWaiting();
 });
@@ -103,9 +101,12 @@ self.addEventListener("activate", event => {
       Promise.all(
         keys.map(k => (k !== CACHE_NAME ? caches.delete(k) : null))
       )
-    )
+    ).then(() => self.clients.claim())
+     .then(() => self.clients.matchAll())
+     .then(clients => {
+       clients.forEach(client => client.navigate(client.url));
+     })
   );
-  self.clients.claim();
 });
 
 /* =========================
@@ -115,7 +116,7 @@ self.addEventListener("fetch", event => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Ignore Firebase + Google APIs + Vercel serverless
+  // Ignore Firebase + Google APIs
   if (
     url.hostname.includes("googleapis") ||
     url.hostname.includes("firebase") ||
@@ -125,7 +126,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // Handle page navigations
+  /* === HTML pages → NETWORK FIRST === */
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
@@ -134,25 +135,21 @@ self.addEventListener("fetch", event => {
           caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
           return res;
         })
-        .catch(() =>
-          caches.match(req).then(r => r || caches.match(OFFLINE_URL))
-        )
+        .catch(() => caches.match(req).then(r => r || caches.match(OFFLINE_URL)))
     );
     return;
   }
 
-  // Handle assets: Cache first → Network fallback
+  /* === Assets → CACHE FIRST === */
   event.respondWith(
     caches.match(req).then(cached => {
       if (cached) return cached;
 
-      return fetch(req)
-        .then(res => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
-          return res;
-        })
-        .catch(() => caches.match(OFFLINE_URL));
+      return fetch(req).then(res => {
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
+        return res;
+      });
     })
   );
 });

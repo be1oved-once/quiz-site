@@ -29,6 +29,7 @@
    
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <!-- FAVICONS -->
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
@@ -216,7 +217,125 @@
     </div>
   </div>
 </section>
-<!-- IMPROVEMENT SUGGESTIONS -->
+<section class="achievement-section">
+  <h3 class="section-title">Achievements</h3>
+
+  <div class="achievement-grid">
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-fire main-ico"></i>
+      <span class="ach-title">7 Day Streak</span>
+      <span class="ach-desc">Practice 7 days in a row</span>
+    </div>
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-bolt main-ico"></i>
+      <span class="ach-title">100 XP Earned</span>
+      <span class="ach-desc">Cross 100 XP</span>
+    </div>
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-list-check main-ico"></i>
+      <span class="ach-title">10 Tests</span>
+      <span class="ach-desc">Complete 10 tests</span>
+    </div>
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-trophy main-ico"></i>
+      <span class="ach-title">Top Performer</span>
+      <span class="ach-desc">Rank #1 in leaderboard</span>
+    </div>
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-book-open main-ico"></i>
+      <span class="ach-title">Chapter Master</span>
+      <span class="ach-desc">Finish 20 chapters</span>
+    </div>
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-clock main-ico"></i>
+      <span class="ach-title">Early Bird</span>
+      <span class="ach-desc">Practice before 7 AM</span>
+    </div>
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-calendar-check main-ico"></i>
+      <span class="ach-title">30 Day Consistency</span>
+      <span class="ach-desc">30 days no gap</span>
+    </div>
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-medal main-ico"></i>
+      <span class="ach-title">Mock Champion</span>
+      <span class="ach-desc">Score 90%+ in MTP</span>
+    </div>
+
+    <div class="ach-card unlocked" data-icon="">
+      <i class="fa-solid fa-star main-ico"></i>
+      <span class="ach-title">Perfection</span>
+      <span class="ach-desc">All answers correct</span>
+    </div>
+
+  </div>
+</section>
+<!-- ================= CERTIFICATE OVERLAY ================= -->
+<div id="certOverlay" class="cert-overlay hidden">
+
+  <!-- Close button floating -->
+  <button id="closeCert" class="cert-close">✕</button>
+
+  <!-- Certificate Full Screen -->
+  <div id="certificate" class="cert-screen">
+
+      <div class="cert-inner">
+<!-- Decorative top-left header strip -->
+<div class="cert-deco-top">
+  <span class="dot red"></span>
+  <span class="dot yellow"></span>
+  <span class="dot green"></span>
+</div>
+        <div class="cert-logo">BEFOREXAM</div>
+
+        <div class="cert-title">
+          Certificate of Achievement
+        </div>
+
+        <div class="cert-text">
+          This is proudly presented to
+        </div>
+
+        <div id="certUserName" class="cert-name">
+          Student Name
+        </div>
+
+        <div class="cert-text">
+          for unlocking the achievement
+        </div>
+
+        <div id="certAchievement" class="cert-achievement">
+          7 Day Streak
+        </div>
+
+        <div id="certDesc" class="cert-desc">
+          Practice 7 days in a row
+        </div>
+
+        <div class="cert-footer">
+          Beforexam Learning Platform
+        </div>
+<!-- Bottom diagonal geometric shape -->
+<div class="cert-deco-bottom"></div>
+      </div>
+
+  </div>
+
+  <!-- Save button fixed bottom -->
+  <button id="saveCertBtn" class="cert-save-btn">
+    <i class="fa-solid fa-download"></i>
+    Save Certificate
+  </button>
+
+</div>
 <!-- IMPROVEMENT SUGGESTIONS -->
 <section class="improve-section">
   <h3 class="section-title">What You Can Improve</h3>
@@ -299,8 +418,71 @@
 </section>
 </div>
 </main>
+<script>
+// ===== CERTIFICATE SYSTEM =====
 
+const certOverlay = document.getElementById("certOverlay");
+const certUserName = document.getElementById("certUserName");
+const certAchievement = document.getElementById("certAchievement");
+const certDesc = document.getElementById("certDesc");
+const closeCert = document.getElementById("closeCert");
+const saveCertBtn = document.getElementById("saveCertBtn");
+const certificate = document.getElementById("certificate");
+
+// Replace with real username later
+function getCurrentUserName() {
+  return window.currentUser?.displayName || "Student";
+}
+
+// Attach click to achievement cards
+document.querySelectorAll(".ach-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const title = card.querySelector(".ach-title").textContent;
+    const desc = card.querySelector(".ach-desc").textContent;
+
+    certUserName.textContent = getCurrentUserName();
+    certAchievement.textContent = title;
+    certDesc.textContent = desc;
+
+    certOverlay.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  });
+});
+
+// Close overlay
+closeCert.addEventListener("click", () => {
+  certOverlay.classList.add("hidden");
+  document.body.style.overflow = "";
+});
+
+// Save as Image
+document.querySelector(".cert-save-btn").addEventListener("click", async () => {
+  const cert = document.querySelector(".cert-inner");
+  
+  // temporarily remove scroll limit
+  const oldHeight = cert.style.height;
+  cert.style.height = cert.scrollHeight + "px";
+  
+  const canvas = await html2canvas(cert, {
+  scale: 2,
+  useCORS: true,
+  backgroundColor: "#ffffff",
+  height: cert.offsetHeight   // 🔥 force exact height
+});
+  
+  // restore height
+  cert.style.height = oldHeight;
+  
+  const img = canvas.toDataURL("image/png");
+  
+  const link = document.createElement("a");
+  link.download = "Beforexam-Certificate.png";
+  link.href = img;
+  link.click();
+});
+</script>
   <script src="assets/js/common-layout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
 <script type="module" src="assets/js/common.js"></script>

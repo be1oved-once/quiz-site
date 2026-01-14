@@ -24,7 +24,24 @@ let serverTimerInterval = null;
 let remainingSeconds = 0;
 let user = null;
 
-onSnapshot(TEMP_TEST_REF, (snap) => {
+import { onAuthStateChanged } from 
+  "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+let currentUser = null; // global
+
+onAuthStateChanged(auth, usr => {
+  if (!usr) {
+    console.log("⏳ Waiting for user login...");
+    return;
+  }
+
+  currentUser = usr; // ✅ store properly
+  console.log("✅ Auth ready:", currentUser.uid);
+
+  attachTestListener(); // attach snapshot AFTER auth
+});
+function attachTestListener() {
+  onSnapshot(TEMP_TEST_REF, (snap) => {
   if (!snap.exists()) {
     console.log("❌ No active test");
     return;
@@ -64,10 +81,12 @@ if (now >= end) {
 
   console.log("🚀 Student test LIVE");
 // ---- MARK STUDENT AS JOINED ----
+if (!currentUser) return; // ✅ guard
+
 const joinRef = doc(
   db,
   "users",
-  auth.currentUser.uid,
+  currentUser.uid,
   "testJoins",
   window.currentTestId
 );
@@ -137,6 +156,7 @@ document
   .forEach(el => el.classList.remove("hidden-by-skeleton"));
   startStudentQuiz(); // 👈 tumhara existing function
 });
+}
 
 
 /* =========================
@@ -423,7 +443,7 @@ function handleAnswer(btn, idx) {
 }
 
 async function saveUserMarks() {
-  const user = auth.currentUser;
+  const user = currentUser;  // ✅ use stored auth user
   if (!user) return;
 
   const testId = window.currentTestId;
@@ -502,9 +522,11 @@ async function saveUserMarks() {
   console.log("✅ Submission saved successfully");
 }
 // ---- REMOVE JOIN MARKER AFTER SUBMIT ----
-await deleteDoc(
-  doc(db, "users", user.uid, "testJoins", window.currentTestId)
-).catch(() => {});
+if (currentUser) {
+  await deleteDoc(
+    doc(db, "users", currentUser.uid, "testJoins", window.currentTestId)
+  ).catch(() => {});
+}
 function autoNext() {
   clearTimeout(autoNextTimeout);
 autoNextTimeout = null;

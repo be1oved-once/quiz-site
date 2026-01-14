@@ -68,17 +68,20 @@ function saveProfileToLocal(uid, data) {
 
 auth.onAuthStateChanged(async user => {
   if (!user) {
-    window.location.href = "/index.html#login";
+    window.location.replace("/index.html#login");
     return;
   }
 
-  // 🔥 Force refresh user state from Firebase
-  await user.reload();
-  user = auth.currentUser;
-
-  // Now check verification
+  // If email not verified → always go verify page
   if (!user.emailVerified) {
-    window.location.href = "/signup-verified.html";
+    window.location.replace("/signup-verified.html");
+    return;
+  }
+
+  // If profile already completed → never stay here
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (snap.exists() && snap.data().profileCompleted) {
+    window.location.replace("/index.html");
     return;
   }
 
@@ -176,4 +179,7 @@ saveProfileToLocal(user.uid, payload);
   msg.textContent = "Profile saved successfully";
   msg.style.color = "#22c55e";
   setEditMode(false);
+  setTimeout(() => {
+  window.location.replace("/index.html");
+}, 500);
 };

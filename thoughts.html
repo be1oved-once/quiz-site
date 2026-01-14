@@ -194,6 +194,31 @@
         <i class="fa-regular fa-thumbs-down"></i> 0
       </button>
     </div>
+<!-- ===== COMMENTS TOGGLE ===== -->
+<div class="reader-comments-toggle" id="commentsToggle">
+  Comments ?
+</div>
+
+<!-- ===== COMMENTS PANEL ===== -->
+<div class="reader-comments-panel" id="commentsPanel">
+
+  <!-- Write Comment -->
+  <div class="comment-write-box"><div class="comment-name" id="commentNameDisplay">Anonymous</div><input type="text" id="commentNameInput" maxlength="25" placeholder="Your name" hidden />
+
+    <!-- Comment input -->
+    <div class="comment-input-wrap">
+      <textarea id="commentInput" maxlength="60" placeholder="Write a comment..."></textarea>
+      <button id="commentSendBtn">
+        <i class="fa-solid fa-arrow-up"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Comments list -->
+  <div class="comments-list" id="commentsList"></div>
+
+</div>
   </div>
 
 </div>

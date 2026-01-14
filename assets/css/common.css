@@ -39,44 +39,6 @@ body.dark {
   --scroll-thumb-hover: rgba(199,210,254,0.6);
 }
 /* Chrome / Edge / Safari */
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-*::-webkit-scrollbar-track {
-  background: var(--scroll-track);
-}
-
-*::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    var(--scroll-thumb),
-    var(--scroll-thumb-hover)
-  );
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    var(--scroll-thumb-hover),
-    var(--scroll-thumb)
-  );
-}
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
-}
-@media (max-width: 768px) {
-  *::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-}
 * {
   margin: 0;
   padding: 0;
@@ -385,7 +347,7 @@ body.dark .menu-btn span {
   color: #111;
   padding: 20px;
   transition: right 0.35s cubic-bezier(0.25,0.8,0.25,1);
-  z-index: 1000;
+  z-index: 9000;
   overflow: auto;
   font-weight: 500;
 }
@@ -479,7 +441,7 @@ body.dark .menu-dot {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s;
-  z-index: 900;
+  z-index: 7000;
 }
 
 #overlay.show {
@@ -635,7 +597,7 @@ body.dark .grab-line {
   color: #111;
   padding: 20px;
   transition: left 0.35s cubic-bezier(0.25,0.8,0.25,1);
-  z-index: 1000;
+  z-index: 9000;
   overflow: auto;
 }
 
@@ -698,7 +660,7 @@ body.dark .sidebar-list i {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s;
-  z-index: 900;
+  z-index: 7000;
 }
 
 .side-overlay.show {
@@ -929,11 +891,12 @@ body.dark .signup-btn {
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: 10000;
 }
 
 .auth-modal.show {
   display: flex;
+  z-index: 10000;
 }
 @keyframes authPopupIn {
   0% {
@@ -1647,7 +1610,7 @@ color: #c7d2fe;
 
   max-height: 0;
   transition: max-height 0.28s ease, box-shadow 0.28s ease;
-  z-index: 1200;
+  z-index: 8500;
 }
 .profile-popup.open{
   border: 1px solid rgba(108,99,255,0.25);
@@ -2505,7 +2468,7 @@ body.dark .login-lock-box p {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #C52222;
   display: none;
   margin-left: auto;
   position: relative;
@@ -2517,7 +2480,7 @@ body.dark .login-lock-box p {
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  background: rgba(34,197,94,0.35);
+  background: rgba(197, 34, 34, 0.35);
   animation: pulseLive 1.2s infinite ease-out;
 }
 

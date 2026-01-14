@@ -3,6 +3,37 @@
    (AI-LIKE, ZERO AI)
    CA FOUNDATION FOCUSED
 ========================= */
+function maybe(prob, text) {
+  return Math.random() < prob ? text : "";
+}
+
+function percentHint(accuracy) {
+  if (accuracy >= 75) return "You are now approaching distinction-level accuracy.";
+  if (accuracy >= 65) return "This accuracy is close to exam-safe range.";
+  if (accuracy >= 55) return "You are slightly below exam-safe accuracy.";
+  if (accuracy >= 45) return "Accuracy is currently risky for exam performance.";
+  return "Your accuracy level needs urgent correction.";
+}
+
+function practiceMixHint(rtp, mtp, chapter) {
+  const total = rtp + mtp + chapter;
+  if (!total) return "";
+  const r = Math.round((rtp / total) * 100);
+  const m = Math.round((mtp / total) * 100);
+  const c = Math.round((chapter / total) * 100);
+
+  if (r > 60) return "Your practice is heavily RTP-driven.";
+  if (m > 60) return "You are focusing mostly on MTP sets.";
+  if (c > 60) return "You are spending more time on chapter practice.";
+  return "Your practice mix is balanced across formats.";
+}
+
+function streakHint(streak) {
+  if (streak >= 14) return "Two-week consistency streak — excellent discipline.";
+  if (streak >= 7) return "One-week consistency streak achieved.";
+  if (streak >= 3) return "You are building consistency gradually.";
+  return "";
+}
 
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -224,22 +255,43 @@ export function generatePerformanceInsight({
   const phase = examPhase(daysLeft);
   const tone = subjectTone(subject);
 
-  let context = "";
   const total = rtp + mtp + chapter;
 
+  let context = "";
+
+  // practice count context
   if (total > 0) {
-    context = `You completed ${total} practice sets during this period. `;
+    context += `In this period you practiced ${total} sets. `;
   }
 
-  if (streak >= 5) {
-    context += "Your consistency streak is commendable. ";
-  }
+  // optional streak mention
+  context += maybe(0.6, streakHint(streak) + " ");
 
-  return (
-    context +
+  // optional accuracy hint
+  context += maybe(0.7, percentHint(accuracy) + " ");
+
+  // optional practice mix
+  context += maybe(0.5, practiceMixHint(rtp, mtp, chapter) + " ");
+
+  // core insight sentence chain
+  const main =
     pick(OPENERS[state]) + " " +
     pick(SUBJECT_ADVICE[tone]) + " " +
     pick(ACTIONS[state]) + " " +
-    pick(CLOSERS[phase])
-  );
+    pick(CLOSERS[phase]);
+
+  // optional motivational finisher
+  const finishers = [
+    "Stay calm and consistent.",
+    "Small corrections now bring big results.",
+    "Precision beats volume.",
+    "Discipline will carry you forward.",
+    "Trust your process."
+  ];
+
+  return (
+    context +
+    main +
+    maybe(0.5, " " + pick(finishers))
+  ).replace(/\s+/g, " ").trim();
 }
