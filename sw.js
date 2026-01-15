@@ -1,5 +1,5 @@
 
-const CACHE_VERSION = "df"; // 🔥 change only if you want manual hard reset
+const CACHE_VERSION = "d2"; // 🔥 change only if you want manual hard reset
 const CACHE_NAME = `beforexam-cache-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
