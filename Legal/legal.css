@@ -147,3 +147,59 @@ body.dark #readingProgress {
 .weight{
   font-weight: 500;
 }
+/* =========================
+   BREADCRUMB
+========================= */
+
+.breadcrumb {
+  font-size: 14px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: #6b7280;
+}
+
+.breadcrumb a {
+  color: #4f46e5;          /* your brand indigo */
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumb a:hover {
+  color: #6c63ff;
+  text-decoration: underline;
+}
+
+.crumb-sep {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.crumb-current {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Dark mode */
+body.dark .breadcrumb {
+  color: #9ca3af;
+}
+
+body.dark .breadcrumb a {
+  color: #a5b4fc;
+}
+
+body.dark .breadcrumb a:hover {
+  color: #c4b5fd;
+}
+
+body.dark .crumb-sep {
+  color: #6b7280;
+}
+
+body.dark .crumb-current {
+  color: #f9fafb;
+}

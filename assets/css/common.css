@@ -46,7 +46,13 @@ body.dark {
   font-family: 'Poppins', system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
-
+/* Twemoji alignment fix */
+img.emoji {
+  height: 1.15em;
+  width: 1.15em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: middle;
+}
 a, button {
   transition:
     color 0.25s cubic-bezier(0.4,0,0.2,1),

@@ -41,7 +41,7 @@ resendBtn.style.display = "none";
 
     setTimeout(() => {
   window.location.href = "/index.html#login";
-}, 10000);
+}, 5000);
 
   } catch (error) {
     console.error("❌ Verification failed", error.code, error.message);

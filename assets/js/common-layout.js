@@ -442,6 +442,23 @@ Built for serious exam practice, smart evaluation, and real results.
   `;
 
   document.body.insertAdjacentHTML("beforeend", layoutHTML);
+  // =========================
+// TWEMOJI GLOBAL LOADER
+// =========================
+(function loadTwemoji() {
+  if (window.twemoji) return; // prevent double load
+
+  const script = document.createElement("script");
+  script.src = "https://twemoji.maxcdn.com/v/latest/twemoji.min.js";
+  script.onload = () => {
+    // First parse when loaded
+    twemoji.parse(document.body, {
+      folder: "svg",
+      ext: ".svg"
+    });
+  };
+  document.head.appendChild(script);
+})();
 })();
 
 
@@ -549,3 +566,13 @@ banner.style.cssText = `
 
   update(); // initial check
 })();
+// =========================
+// AUTO PARSE NEW CONTENT
+// =========================
+window.parseEmojis = function(target = document.body) {
+  if (!window.twemoji) return;
+  twemoji.parse(target, {
+    folder: "svg",
+    ext: ".svg"
+  });
+};

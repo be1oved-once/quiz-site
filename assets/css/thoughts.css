@@ -426,23 +426,31 @@ body.dark #reportReason {
 }
 
 .reader-page {
-  margin-top: 60px;
-  margin-left: 24px;
   position: fixed;
-  inset: 0;
+  top: 55px;              /* below top navbar */
+  left: 280px;            /* exactly sidebar width */
+  right: 0;
+  bottom: 0;
+
   background: var(--bg, #ffffff);
-  z-index: 8000;
+  z-index: 9999;          /* higher than sidebar */
+  
   display: flex;
   flex-direction: column;
+
   transform: translateX(100%);
   transition: transform .35s ease;
 }
 
-/* show only when active */
+/* Show state */
 .reader-page.show {
   transform: translateX(0);
 }
-
+@media (max-width: 768px) {
+  .reader-page {
+    left: 0;   /* full screen on mobile */
+  }
+}
 /* header bar */
 .reader-header {
   height: 56px;
@@ -1254,6 +1262,7 @@ body.dark .skeleton-pill {
 ========================= */
 
 .reader-comments-toggle {
+  font-size: 11px;
   margin-top: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -1325,6 +1334,7 @@ body.dark .skeleton-pill {
   padding: 8px 10px;
   border-radius: 10px;
   border: 1.5px solid #d6d6e0;
+  outline: none;
   background: #ffffff;
   font-family: inherit;
   font-size: 14px;
@@ -1445,4 +1455,12 @@ body.dark .comment-name-edit:focus {
 @keyframes fadeIn {
   from {opacity:0; transform: translateY(-3px);}
   to {opacity:1; transform: translateY(0);}
+}
+/* ===== GLOBAL SCROLL LOCK ===== */
+body.lock-scroll {
+  overflow: hidden !important;
+  touch-action: none;
+}
+.editor-page {
+  overflow-y: auto;
 }

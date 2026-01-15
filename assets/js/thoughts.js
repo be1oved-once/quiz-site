@@ -98,6 +98,7 @@ init() {
     .addEventListener("click", () => {
       document.getElementById("readerPage")
         .classList.remove("show");
+        document.body.classList.remove("lock-scroll");
     });
 
   console.log("Thoughts Page Initialized Successfully");
@@ -137,11 +138,13 @@ init() {
 // Open full-page editor
 this.addOpinionBtn.addEventListener("click", () => {
   document.getElementById("editorPage").classList.add("show");
+  document.body.classList.add("lock-scroll");
 });
 
 // Close full-page editor
 document.getElementById("editorClose").addEventListener("click", () => {
   document.getElementById("editorPage").classList.remove("show");
+  document.body.classList.remove("lock-scroll");
 });
 
 // Close editor
@@ -178,7 +181,7 @@ document.getElementById("editorClose").addEventListener("click", () => {
 openReader(id, data) {
   const page = document.getElementById("readerPage");
   page.classList.add("show");
-  
+  document.body.classList.add("lock-scroll");
   document.getElementById("readerName").textContent =
     data.name || "Anonymous";
   
@@ -187,7 +190,7 @@ openReader(id, data) {
   
   document.getElementById("readerMessage").innerHTML =
     this.formatMessage(data.message);
-  
+  parseEmojis(document.getElementById("readerMessage"));
   // Attach vote buttons (same Firebase logic)
   const upBtn = document.getElementById("readerUp");
   const downBtn = document.getElementById("readerDown");
@@ -344,6 +347,7 @@ loadCommentsRealtime() {
     all.filter(c => !c.parent).forEach(c => {
       const el = this.renderComment(c, all);
       list.appendChild(el);
+      parseEmojis(el);
     });
   });
 },
@@ -451,6 +455,9 @@ attachReplyNameEdit(firstDisplay);
     `;
 
     repliesBox.appendChild(rDiv);
+
+// ✅ Twemoji parse for replies
+parseEmojis(rDiv);
   });
 
   return div;
@@ -491,6 +498,7 @@ initEditorToolbar() {
   // When cursor moves → update active states
   editor.addEventListener("keyup", () => this.updateToolbarState());
   editor.addEventListener("mouseup", () => this.updateToolbarState());
+
 },
 updateToolbarState() {
   const buttons = this.editorToolbar.querySelectorAll("button");
@@ -683,6 +691,7 @@ setTimeout(() => {
     const data = docSnap.data();
     const card = this.createOpinionCard(docSnap.id, data);
     this.feed.appendChild(card);
+    parseEmojis(card);
   });
 
   // 🔥 Mark first load finished

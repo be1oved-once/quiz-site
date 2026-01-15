@@ -80,10 +80,6 @@ auth.onAuthStateChanged(async user => {
 
   // If profile already completed → never stay here
   const snap = await getDoc(doc(db, "users", user.uid));
-  if (snap.exists() && snap.data().profileCompleted) {
-    window.location.replace("/index.html");
-    return;
-  }
 
   // ✅ Only verified users reach here
   
