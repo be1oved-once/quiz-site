@@ -433,7 +433,7 @@ body.dark #reportReason {
   bottom: 0;
 
   background: var(--bg, #ffffff);
-  z-index: 9999;          /* higher than sidebar */
+  z-index: 6000;          /* higher than sidebar */
   
   display: flex;
   flex-direction: column;
