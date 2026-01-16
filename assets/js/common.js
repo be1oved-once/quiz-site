@@ -267,80 +267,72 @@ pass.length >= 8 &&
 }
 
 /* ---------- LOGIN ---------- */
+/* ---------- LOGIN ---------- */
 if (loginForm) {
 loginForm.addEventListener("submit", async e => {
-e.preventDefault();
-// (keep your existing code inside)
+  e.preventDefault();
 
-const errorBox = document.getElementById("loginError");
-const emailOrUser = document.getElementById("loginUsername").value.trim();
-const password = document.getElementById("loginPassword").value;
+  const errorBox = document.getElementById("loginError");
+  const email = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
 
-try {
-const userCred = await signInWithEmailAndPassword(auth, emailOrUser, password);
-closeAuth();
-} catch (err) {
-errorBox.textContent = err.message.replace("Firebase:", "");
-}
+  try {
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
+
+    // 🚫 Stop login if not verified
+    if (!user.emailVerified) {
+      await auth.signOut();
+      errorBox.textContent = "Please verify your email before login.";
+      return;
+    }
+
+    closeAuth();
+
+  } catch (err) {
+    errorBox.textContent = err.message.replace("Firebase:", "");
+  }
 });
 }
 /* ---------- SIGNUP ---------- */
+/* ---------- SIGNUP ---------- */
 if (signupForm) {
 signupForm.addEventListener("submit", async e => {
-e.preventDefault();
+  e.preventDefault();
 
-const errorBox = document.getElementById("signupError");
+  const errorBox = document.getElementById("signupError");
 
-const username = signupUsername.value.trim();
-const email = signupEmail.value.trim();
-const password = signupPassword.value;
+  const username = signupUsername.value.trim();
+  const email = signupEmail.value.trim();
+  const password = signupPassword.value;
 
-try {
-const userCred = await createUserWithEmailAndPassword(
-auth,
-email,
-password
-);
+  try {
+    // Create Auth user
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
 
-const user = userCred.user;
-await setDoc(
-  doc(db, "users", user.uid),
-  {
-    uid: user.uid,
-    username: username, // 👈 FROM AUTH BOX
-    email: user.email,
-    provider: "password",
-    createdAt: serverTimestamp(),
-    xp: 0,
-    bookmarks: [],
-    settings: {
-      theme: localStorage.getItem("quizta-theme") || "dark"
-    },
-    profileCompleted: false 
-  },
-  { merge: true }
-);
-// 📩 Send verification email
-await sendEmailVerification(user, {
-url: "https://beforexam.vercel.app/signup-verified.html"
-});
+    // Send verification email
+    await sendEmailVerification(user, {
+      url: "https://beforexam.vercel.app/signup-verified.html"
+    });
 
-console.log("📩 Verification email sent");
+    console.log("📩 Verification email sent");
 
-// 🔒 Logout until verified
-await auth.signOut();
+    // 🔒 Immediately sign out
+    await auth.signOut();
 
-closeAuth();
+    closeAuth();
 
-// ➜ Verification info page
-window.location.href = "/signup-verified.html";
+    // Redirect to info page
+    window.location.href = "/signup-verified.html";
 
-} catch (err) {
-console.error("❌ Signup failed:", err);
-errorBox.textContent = err.message.replace("Firebase:", "");
-}
+  } catch (err) {
+    console.error("❌ Signup failed:", err);
+    errorBox.textContent = err.message.replace("Firebase:", "");
+  }
 });
 }
+
 if (window.location.hash === "#login") {
 setTimeout(() => {
 if (typeof openAuth === "function") {
@@ -407,82 +399,99 @@ alert(err.message);
 }
 
 onAuthStateChanged(auth, async user => {
-  window.currentUser = user || null;
-  if (user) {
-    window.currentUser = user; }
-if (!user) {
-  window.currentUser = null;
+
+  const loginBtns  = document.querySelectorAll(".auth-login");
+  const signupBtns = document.querySelectorAll(".auth-signup");
+  const logoutBtns = document.querySelectorAll(".auth-logout");
+  const lock       = document.getElementById("loginLockOverlay");
+
+  /* ======================
+     USER LOGGED OUT
+  ====================== */
+  if (!user) {
+    window.currentUser = null;
+
+    loginBtns.forEach(btn => btn.style.display = "inline-flex");
+    signupBtns.forEach(btn => btn.style.display = "inline-flex");
+    logoutBtns.forEach(btn => btn.style.display = "none");
+
+    if (lock) lock.style.display = "flex";
+
     initGoogleOneTap();
+    console.log("User logged out");
+    return;
   }
-const lock = document.getElementById("loginLockOverlay");
 
-if (lock) {
-lock.style.display = user ? "none" : "flex";
-}
-
-const loginBtns = document.querySelectorAll(".auth-login");
-const signupBtns = document.querySelectorAll(".auth-signup");
-const logoutBtns = document.querySelectorAll(".auth-logout");
-
-if (user) {
-// 🔥 INSTANT UI REFLECT
-loginBtns.forEach(btn => btn.style.display = "none");
-signupBtns.forEach(btn => btn.style.display = "none");
-logoutBtns.forEach(btn => btn.style.display = "inline-flex");
-
-await ensureUserProfile(user);    
-// ⏳ Load Firestore data separately    
-loadUserProfile(user.uid);
-// 🔥 FORCE PROFILE COMPLETION ONLY AFTER EMAIL VERIFIED
-// 🔐 Global auth gate
-async function handleUserRedirect(user) {
-
-  // 1. Not verified → verification page
+  /* ======================
+     USER LOGGED IN BUT NOT VERIFIED
+  ====================== */
   if (!user.emailVerified) {
+
+    // Force logout unverified user
+    await auth.signOut();
+    window.currentUser = null;
+
+    loginBtns.forEach(btn => btn.style.display = "inline-flex");
+    signupBtns.forEach(btn => btn.style.display = "inline-flex");
+    logoutBtns.forEach(btn => btn.style.display = "none");
+
+    if (lock) lock.style.display = "flex";
+
+    // Redirect to verification info page
     if (!location.pathname.includes("signup-verified.html")) {
       window.location.replace("/signup-verified.html");
     }
+
     return;
   }
 
-  // 2. Fetch profile status
-  const ref = doc(db, "users", user.uid);
-  const snap = await getDoc(ref);
+  /* ======================
+     VERIFIED USER
+  ====================== */
 
-  if (!snap.exists()) return;
+  window.currentUser = user;
 
-  const data = snap.data();
+  loginBtns.forEach(btn => btn.style.display = "none");
+  signupBtns.forEach(btn => btn.style.display = "none");
+  logoutBtns.forEach(btn => btn.style.display = "inline-flex");
 
-  // 3. Profile not completed → force profile page
-  if (!data.profileCompleted) {
-    if (!location.pathname.includes("profile.html")) {
-      window.location.replace("/profile.html");
+  if (lock) lock.style.display = "none";
+
+  /* --- Create Firestore user doc if first verified login --- */
+  await ensureUserProfile(user);
+
+  /* --- Load user profile data --- */
+  loadUserProfile(user.uid);
+
+  /* ======================
+     PROFILE COMPLETION REDIRECT
+  ====================== */
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (userSnap.exists()) {
+    const data = userSnap.data();
+
+    // Profile not completed → force profile page
+    if (!data.profileCompleted) {
+      if (!location.pathname.includes("profile.html")) {
+        window.location.replace("/profile.html");
+      }
+      return;
     }
-    return;
+
+    // Profile completed but still on profile page → send home
+    if (location.pathname.includes("profile.html")) {
+      window.location.replace("/index.html");
+    }
   }
 
-  // 4. If profile completed but user is on profile page → send home
-  if (location.pathname.includes("profile.html")) {
-    window.location.replace("/index.html");
-  }
-}
-} else {
-// 🔥 INSTANT UI REFLECT
-loginBtns.forEach(btn => btn.style.display = "inline-flex");
-signupBtns.forEach(btn => btn.style.display = "inline-flex");
-logoutBtns.forEach(btn => btn.style.display = "none");
-
-console.log("User logged out");
-
-}
-if (!user) return;
-
-  if (!user.emailVerified) return;
-
+  /* ======================
+     PUBLIC LEADERBOARD DOC
+  ====================== */
   const lbRef = doc(db, "publicLeaderboard", user.uid);
   const lbSnap = await getDoc(lbRef);
 
-  // 🔥 Create leaderboard doc if not exists
   if (!lbSnap.exists()) {
     await setDoc(lbRef, {
       name: user.displayName || "User",
@@ -491,6 +500,7 @@ if (!user) return;
       xp: 0
     });
   }
+
 });
 
 window.openAuth = openAuth;
