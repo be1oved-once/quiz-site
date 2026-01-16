@@ -78,9 +78,6 @@ auth.onAuthStateChanged(async user => {
     return;
   }
 
-  // If profile already completed → never stay here
-  const snap = await getDoc(doc(db, "users", user.uid));
-
   // ✅ Only verified users reach here
   
   if (!user) {
@@ -105,9 +102,16 @@ auth.onAuthStateChanged(async user => {
 
   /* 2️⃣ BACKGROUND SYNC FROM FIRESTORE */
   const ref = doc(db, "users", uid);
-  if (!snap.exists()) return;
+const snap = await getDoc(ref);
 
-  const data = snap.data();
+if (!snap.exists()) {
+  // No profile doc yet → just show empty form
+  document.getElementById("profileSkeleton").style.display = "none";
+  document.getElementById("profileContent").style.display = "block";
+  return;
+}
+
+const data = snap.data();
 
   // Update UI (in case Firestore is newer)
   usernameEl.value = data.username || "";

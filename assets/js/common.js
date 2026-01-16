@@ -474,11 +474,13 @@ onAuthStateChanged(auth, async user => {
 
     // Profile not completed → force profile page
     if (!data.profileCompleted) {
-      if (!location.pathname.includes("profile.html")) {
-        window.location.replace("/profile.html");
-      }
-      return;
-    }
+  // Already on profile page → do nothing
+  if (location.pathname.includes("profile.html")) return;
+
+  // Otherwise force redirect once
+  window.location.replace("/profile.html");
+  return;
+}
 
     // Profile completed but still on profile page → send home
     if (location.pathname.includes("profile.html")) {
