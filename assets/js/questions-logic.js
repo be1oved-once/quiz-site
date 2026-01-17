@@ -655,7 +655,7 @@ nextBtn.onclick = () => {
 /* =========================
    FINISH ROUND
 ========================= */
-function finishRound() {
+async function finishRound() {
   disablePenaltySystem();
   quizActive = false; // 🔥 DISABLE CHEAT CHECK
 penaltyRunning = false;
@@ -667,6 +667,44 @@ if (!round1Completed) {
   // 📸 Freeze round-1 data
   round1Snapshot = activeQuestions.map(q => ({ ...q }));
   window.round1Snapshot = round1Snapshot;
+// === SAVE WRONG QUESTIONS TO FIRESTORE ===
+// ===== SAVE ROUND-1 WRONG QUESTIONS CLEANLY =====
+if (currentUser && round1Completed === false) {
+
+  // 1️⃣ Take immutable snapshot of round-1
+  const round1Data = activeQuestions.map(q => ({
+    text: q.text,
+    options: q.options,
+    correctIndex: q.correctIndex,
+    selectedOption: q.selectedOption || "",
+    correct: q.correct
+  }));
+
+  // 2️⃣ Filter wrong only
+  const wrongOnly = round1Data.filter(q => q.correct === false);
+
+  // 3️⃣ Reference corrections collection
+  const colRef = collection(db, "users", currentUser.uid, "corrections");
+
+  // 4️⃣ Delete old stored corrections (clean overwrite)
+  const old = await getDocs(colRef);
+  old.forEach(d => deleteDoc(d.ref));
+
+  // 5️⃣ Save new wrong questions
+  for (const q of wrongOnly) {
+    await addDoc(colRef, {
+      text: q.text,
+      options: q.options,
+      correctAnswer: q.options[q.correctIndex],
+      selectedOption: q.selectedOption
+        ? q.selectedOption.replace(/^[A-D]\.\s*/, "")
+        : "",
+      createdAt: Date.now()
+    });
+  }
+
+  console.log("✅ Corrections saved:", wrongOnly.length);
+}
 
   // 🎯 UI
   marksValue.textContent = marks.toFixed(2);

@@ -120,7 +120,6 @@
   <div class="admin-menu" id="adminMenu">
     <a href="/admin/push-noti.html">Push Notifications</a>
     <a href="/admin/test-setup.html">Temp Test</a>
-    <a href="/admin/manage/management.html">Manage Users</a>
   </div>
 </li>
   <li class="mobile-left">

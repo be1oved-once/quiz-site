@@ -146,75 +146,37 @@ body.dark .student-skeleton div[class^="sk-"] {
   position: relative;
   overflow: hidden;
 }
+/* =========================
+   INDIVIDUAL BLOCK SHIMMER
+========================= */
 
-/* Moving light sweep */
-.student-skeleton::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 60%;
-  height: 100%;
-
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,0.25) 50%,
-    transparent 100%
-  );
-
-  animation: skeleton-sweep 1.8s infinite;
+.student-skeleton div[class^="sk-"] {
+  background-size: 200% 100%;
+  animation: block-shimmer 1.2s ease-in-out infinite;
 }
 
-/* Dark mode sweep */
-body.dark .student-skeleton::after {
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,0.18) 50%,
-    transparent 100%
-  );
-}
-
-/* Gentle breathing effect */
-.student-skeleton {
-  animation: skeleton-breathe 2.4s ease-in-out infinite;
-}
-
-/* Animations */
-@keyframes skeleton-sweep {
+/* Light mode shimmer */
+@keyframes block-shimmer {
   0% {
-    left: -60%;
-  }
-  100% {
-    left: 120%;
-  }
-}
-
-@keyframes skeleton-breathe {
-  0%,
-  100% {
-    opacity: 0.96;
+    background-position: 200% 0;
+    opacity: 0.85;
   }
   50% {
     opacity: 1;
   }
-}
-.student-skeleton div[class^="sk-"] {
-  animation:
-    shimmer 1.4s infinite,
-    line-pulse 2.8s ease-in-out infinite;
-}
-
-@keyframes line-pulse {
-  0%, 100% {
-    transform: scaleX(1);
-  }
-  50% {
-    transform: scaleX(0.98);
+  100% {
+    background-position: -200% 0;
+    opacity: 0.85;
   }
 }
 
+/* Dark mode keeps same animation — only gradient already defined above */
+.student-skeleton div[class^="sk-"]:nth-child(odd) {
+  animation-delay: 0.15s;
+}
+.student-skeleton div[class^="sk-"]:nth-child(even) {
+  animation-delay: 0.3s;
+}
 </style>
 </head>
 

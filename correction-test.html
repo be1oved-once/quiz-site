@@ -24,6 +24,7 @@
   }
 </script>
   <link rel="stylesheet" href="assets/css/common.css">
+  <link rel="stylesheet" href="assets/css/correction-test.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  
@@ -46,12 +47,56 @@
 
 <body>
 
-  <!-- PAGE CONTENT ONLY -->
-  <main class="page-content">
-    <h1>Correction'Test</h1>
-  </main>
+<main class="correction-page">
 
+  <!-- ===== HERO CARD ===== -->
+  <section class="correction-hero">
+
+    <div class="hero-left">
+      <h2>Fix Your Mistakes</h2>
+      <p>
+        Review all incorrectly attempted questions.  
+        Learn from errors and improve accuracy.
+      </p>
+
+      <button class="correct-btn">
+        CORRECT IT
+      </button>
+    </div>
+
+    <div class="hero-right">
+      <!-- Lottie animated man waving / pointing -->
+      <lottie-player 
+        src="https://assets6.lottiefiles.com/packages/lf20_jcikwtux.json"
+        background="transparent"
+        speed="1"
+        style="width:140px;height:140px;"
+        loop autoplay>
+      </lottie-player>
+    </div>
+
+  </section>
+
+
+  <!-- ===== INCORRECT QUESTIONS ===== -->
+  <section class="correction-list">
+  </section>
+
+</main>
+
+<!-- Lottie library -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<script>
+document.querySelectorAll(".question-header").forEach(header => {
+  header.addEventListener("click", () => {
+    const block = header.parentElement;
+    block.classList.toggle("active");
+  });
+});
+</script>
   <script src="assets/js/common-layout.js"></script>
+  <script type="module" src="assets/js/correction-test.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
 <script type="module" src="assets/js/common.js"></script>

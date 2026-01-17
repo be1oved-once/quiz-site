@@ -12,9 +12,12 @@
   --text-main: var(--text-light);
   --text-muted: #6b7280;
   --soft-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  --brand: #6c63ff;
+  --brand-light: #8b5cf6;
 }
 
-body.dark {
+body.dark { --brand: #8b5cf6;
+  --brand-light: #a78bfa;
   --bg-light: #0f172a;
   --text-light: #e5e7eb;
   --border-light: rgba(255,255,255,0.08);
@@ -144,10 +147,6 @@ body.dark .back-btn:hover {
   overflow-x: auto;
   padding-bottom: 10px;
   scroll-snap-type: x mandatory;
-}
-
-.stats-scroll::-webkit-scrollbar {
-  height: 6px;
 }
 
 .stats-scroll::-webkit-scrollbar-thumb {
@@ -852,14 +851,10 @@ input[type="date"]:focus {
 
 /* Light mode placeholder feel */
 input[type="date"]:not(:focus):not([value]) {
-  color: #64748b;
+  color: #000;
 }
-
-/* Dark mode */
-body.dark input[type="date"] {
-  background: rgba(108, 99, 255, 0.22);
-  border-color: rgba(108, 99, 255, 0.6);
-  color: #ffffff;
+body.dark input[type="date"]:not(:focus):not([value]) {
+  color: #fff;
 }
 /* =========================
    DESKTOP SIZE BOOST (≥768px)
@@ -1030,7 +1025,7 @@ body.dark .typing-cursor {
   51%,100% { opacity: 0; }
 }
 /* =========================
-   ACHIEVEMENTS – NEW PREMIUM STYLE
+   ACHIEVEMENT SECTION
 ========================= */
 
 .achievement-section {
@@ -1044,16 +1039,19 @@ body.dark .typing-cursor {
   margin-top: 12px;
 }
 
-/* Card */
+/* =========================
+   CARD BASE
+========================= */
+
 .ach-card {
   position: relative;
   background: var(--card-bg);
-  border: 1px solid var(--border-soft);
   border-radius: 18px;
   padding: 18px 14px 16px;
   text-align: center;
   overflow: hidden;
   box-shadow: var(--soft-shadow);
+  border: 1px solid var(--border-soft);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1061,68 +1059,90 @@ body.dark .typing-cursor {
   transition: transform 0.15s ease;
 }
 
-/* Giant background icon */
+/* =========================
+   LIQUID BACKGROUND BLOB
+========================= */
+
+.ach-card::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(
+    circle at 30% 20%,
+    color-mix(in srgb, var(--ach-color) 55%, white),
+    color-mix(in srgb, var(--ach-color) 35%, transparent) 60%,
+    transparent 70%
+  );
+  filter: blur(30px);
+  opacity: 1;
+  z-index: 0;
+}
+
+/* =========================
+   GIANT ICON WATERMARK
+========================= */
+
 .ach-card::before {
   content: attr(data-icon);
   position: absolute;
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
-  font-size: 70px;
-  right: -10px;
+  font-size: 80px;
+  right: -12px;
   bottom: -18px;
-  opacity: 0.06;
-  color: var(--violet);
+  color: color-mix(in srgb, var(--ach-color) 85%, white);
+  opacity: 0.18;
   pointer-events: none;
-}
-
-/* Gradient glow background */
-.ach-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at top left,
-    var(--violet-soft),
-    transparent 60%
-  );
-  opacity: 0.9;
   z-index: 0;
 }
 
-/* Keep content above glow */
+/* Keep content above effects */
 .ach-card * {
   position: relative;
   z-index: 1;
 }
 
-/* Main icon */
+/* =========================
+   MAIN ICON (LIQUID)
+========================= */
+
 .ach-card i.main-ico {
   font-size: 26px;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--violet-soft);
-  color: var(--violet);
+  background: radial-gradient(
+    circle at top left,
+    color-mix(in srgb, var(--ach-color) 85%, white),
+    var(--ach-color)
+  );
+  color: white;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--ach-color) 60%, transparent);
 }
 
-/* Title */
+/* =========================
+   TEXT
+========================= */
+
 .ach-title {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
 }
 
-/* Description */
 .ach-desc {
   font-size: 11px;
   color: var(--text-muted);
   line-height: 1.3;
 }
 
-/* Locked state */
+/* =========================
+   LOCKED STATE
+========================= */
+
 .ach-card.locked {
   opacity: 0.45;
   filter: grayscale(1);
@@ -1133,7 +1153,10 @@ body.dark .typing-cursor {
   transform: scale(0.96);
 }
 
-/* Desktop layout */
+/* =========================
+   DESKTOP LAYOUT
+========================= */
+
 @media (min-width: 900px) {
   .achievement-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -1144,41 +1167,38 @@ body.dark .typing-cursor {
   }
 
   .ach-card::before {
-    font-size: 90px;
+    font-size: 96px;
   }
 
   .ach-card i.main-ico {
     font-size: 30px;
-    width: 58px;
-    height: 58px;
+    width: 60px;
+    height: 60px;
   }
 }
+
 /* =========================
-   DARK MODE COLOR FIX ONLY
+   COLOR THEMES
+========================= */
+
+.ach-card:nth-child(1) { --ach-color: #ff6b6b; }
+.ach-card:nth-child(2) { --ach-color: #6c63ff; }
+.ach-card:nth-child(3) { --ach-color: #4fd1c5; }
+.ach-card:nth-child(4) { --ach-color: #f6ad55; }
+.ach-card:nth-child(5) { --ach-color: #68d391; }
+.ach-card:nth-child(6) { --ach-color: #63b3ed; }
+.ach-card:nth-child(7) { --ach-color: #fc8181; }
+.ach-card:nth-child(8) { --ach-color: #d53f8c; }
+.ach-card:nth-child(9) { --ach-color: #9f7aea; }
+
+/* =========================
+   DARK MODE
 ========================= */
 
 body.dark .ach-card {
-  background: #0f172a;                  /* dark card bg */
+  background: #0f172a;
   border-color: rgba(255,255,255,0.08);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.45);
-}
-
-body.dark .ach-card::before {
-  color: #6c63ff;                       /* background icon tint */
-  opacity: 0.10;
-}
-
-body.dark .ach-card::after {
-  background: radial-gradient(
-    circle at top left,
-    rgba(108,99,255,0.25),
-    transparent 65%
-  );
-}
-
-body.dark .ach-card i.main-ico {
-  background: rgba(108,99,255,0.22);
-  color: #8f88ff;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.55);
 }
 
 body.dark .ach-title {
@@ -1189,83 +1209,36 @@ body.dark .ach-desc {
   color: #9ca3af;
 }
 
-body.dark .ach-card.locked {
-  opacity: 0.35;
-  filter: grayscale(0.8);
-}
-/* =========================
-   ACHIEVEMENT COLOR THEMES
-========================= */
-
-/* Default (Light Mode) Gradient Themes */
-.ach-card:nth-child(1) { --ach-color:#ff6b6b; }
-.ach-card:nth-child(2) { --ach-color:#6c63ff; }
-.ach-card:nth-child(3) { --ach-color:#4fd1c5; }
-.ach-card:nth-child(4) { --ach-color:#f6ad55; }
-.ach-card:nth-child(5) { --ach-color:#68d391; }
-.ach-card:nth-child(6) { --ach-color:#63b3ed; }
-.ach-card:nth-child(7) { --ach-color:#fc8181; }
-.ach-card:nth-child(8) { --ach-color:#d53f8c; }
-.ach-card:nth-child(9) { --ach-color:#9f7aea; }
-
-/* Apply theme color */
-.ach-card::before {
-  color: var(--ach-color);
-}
-
-.ach-card::after {
-  background: radial-gradient(
-    circle at top left,
-    color-mix(in srgb, var(--ach-color) 35%, transparent),
-    transparent 65%
-  );
-}
-
-.ach-card i.main-ico {
-  background: color-mix(in srgb, var(--ach-color) 20%, transparent);
-  color: var(--ach-color);
-}
-
-/* Text colors safe */
-.ach-title { color: var(--text-main); }
-.ach-desc { color: var(--text-muted); }
-
-/* =========================
-   DARK MODE THEMES
-========================= */
-
 body.dark .ach-card::before {
-  opacity: 0.12;
+  color: color-mix(in srgb, var(--ach-color) 90%, white);
+  opacity: 0.22;
 }
 
 body.dark .ach-card::after {
   background: radial-gradient(
-    circle at top left,
-    color-mix(in srgb, var(--ach-color) 45%, transparent),
-    transparent 70%
+    circle at 30% 20%,
+    color-mix(in srgb, var(--ach-color) 65%, white),
+    transparent 65%
   );
+  filter: blur(36px);
 }
 
 body.dark .ach-card i.main-ico {
-  background: color-mix(in srgb, var(--ach-color) 28%, transparent);
-  color: color-mix(in srgb, var(--ach-color) 85%, white);
-}
-
-body.dark .ach-title {
-  color: #e5e7eb;
-}
-
-body.dark .ach-desc {
-  color: #9ca3af;
+  background: radial-gradient(
+    circle at top left,
+    color-mix(in srgb, var(--ach-color) 90%, white),
+    var(--ach-color)
+  );
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--ach-color) 65%, transparent);
 }
 /* =========================
-   FULL SCREEN CERTIFICATE
+   PREMIUM FULL SCREEN CERTIFICATE
 ========================= */
 
 .cert-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10,15,30,0.9);
+  background: radial-gradient(circle at top, #0f172a 0%, #070b18 80%);
   z-index: 5000;
 }
 
@@ -1277,168 +1250,78 @@ body.dark .ach-desc {
 /* Close button */
 .cert-close {
   position: fixed;
-  top: 15px;
-  right: 15px;
-  background: #ef4444;
+  top: 14px;
+  right: 14px;
+  background: linear-gradient(135deg,#ff5f5f,#ef4444);
   color: white;
   border: none;
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  font-size: 18px;
+  font-size: 17px;
   z-index: 6000;
+  box-shadow: 0 6px 18px rgba(239,68,68,0.45);
 }
 
-/* Full screen certificate area */
+/* Full screen area */
 .cert-screen {
   position: absolute;
   inset: 0;
-  background: white;
-  display: block;         /* remove flex center */
-  overflow-y: auto;       /* allow scroll */
-  padding-top: 20px;
+  background: #f8f7ff;
+  overflow-y: auto;
+  padding-top: 18px;
 }
 
-/* Dark mode */
+/* Dark mode background */
 body.dark .cert-screen {
-  background: #0f172a;
+  background: #0b1020;
 }
 
-/* Certificate content */
+/* =========================
+   CERTIFICATE CARD
+========================= */
+
 .cert-inner {
-  border: 3px solid #6c63ff;
-  padding: 36px 28px 24px;  /* reduced bottom padding */
+  border: 2px solid var(--brand);
+  border-radius: 22px;
+  padding: 34px 26px 22px;
   position: relative;
   text-align: center;
-  max-width: 680px;
-  width: 90%;
+  max-width: 720px;
+  width: 92%;
+  margin: auto;
   font-family: "Poppins", sans-serif;
+  background: linear-gradient(180deg,#ffffff,#f6f5ff);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+  overflow: hidden;
 }
 
-/* Typography spacing fix */
-.cert-logo {
-  font-size: 15px;
-  letter-spacing: 4px;
-  font-weight: 800;
-  color: #6c63ff;
-}
-
-.cert-title {
-  margin-top: 18px;
-  font-size: 26px;
-  font-weight: 700;
-}
-
-.cert-text {
-  margin-top: 18px;
-  font-size: 15px;
-  opacity: 0.75;
-}
-
-.cert-name {
-  margin-top: 10px;
-  font-size: 28px;
-  font-weight: 800;
-  color: #6c63ff;
-}
-
-.cert-achievement {
-  margin-top: 12px;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.cert-desc {
-  margin-top: 6px;
-  font-size: 15px;
-  opacity: 0.8;
-}
-
-.cert-footer {
-  margin-top: 22px;
-  font-size: 13px;
-  letter-spacing: 1px;
-  opacity: 0.7;
-}
-
-.cert-save-btn {
-  position: fixed;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  padding: 12px 26px;
-  border-radius: 999px;
-  border: none;
-  background: linear-gradient(135deg,#6c63ff,#8b5cf6);
-  color: white;
-  font-weight: 600;
-  font-size: 15px;
-  z-index: 5000;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  /* 🔒 Lock size so hover can't move it */
-  min-width: 240px;
-  box-sizing: border-box;
-
-  /* Smooth but no transform scale */
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* Hover effect without position shift */
-.cert-save-btn:hover {
-  background: linear-gradient(135deg,#7c73ff,#9b6cf6);
-  box-shadow: 0 8px 22px rgba(108,99,255,0.35);
+/* Dark mode card */
+body.dark .cert-inner {
+  background: linear-gradient(180deg,#0f172a,#0b1020);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.55);
 }
 
 /* =========================
-   MOBILE MARGIN RULE
+   TOP HEADER STRIP
 ========================= */
 
-@media (max-width: 600px) {
-  .cert-screen {
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding-top: 55px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .cert-inner {
-    width: 100%;
-  }
-}
-/* =========================
-   TOP LEFT DOT STRIP
-========================= */
-.cert-inner {
-  position: relative;
-  overflow: hidden; /* keeps shapes inside */
-}
-
-/* Header strip box */
 .cert-deco-top {
   position: absolute;
   top: 0;
   left: 0;
-  width: 120px;
-  height: 34px;
+  width: 130px;
+  height: 36px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-left: 12px;
-
-  border-right: 2px solid #6c63ff;
-  border-bottom: 2px solid #6c63ff;
-
-  /* no left / top border by design */
+  padding-left: 14px;
+  border-right: 2px solid var(--brand);
+  border-bottom: 2px solid var(--brand);
+  border-radius: 0 0 14px 0;
   background: transparent;
 }
 
-/* Dots */
 .cert-deco-top .dot {
   width: 10px;
   height: 10px;
@@ -1449,48 +1332,132 @@ body.dark .cert-screen {
 .cert-deco-top .dot.yellow { background: #facc15; }
 .cert-deco-top .dot.green { background: #22c55e; }
 
+/* =========================
+   TYPOGRAPHY
+========================= */
 
-/* Push actual content below dot strip */
 .cert-logo {
-  margin-top: 50px; /* content starts below strip */
+  margin-top: 52px;
+  font-size: 13px;
+  letter-spacing: 4px;
+  font-weight: 800;
+  color: var(--brand);
 }
 
+.cert-title {
+  margin-top: 16px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.cert-text {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.cert-name {
+  margin-top: 8px;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--brand);
+}
+
+.cert-achievement {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.cert-desc {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.cert-footer {
+  margin-top: 18px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
 
 /* =========================
-   BOTTOM DIAGONAL SHAPE
+   PREMIUM BOTTOM SHAPE
 ========================= */
+
 .cert-deco-bottom {
   position: absolute;
-  bottom: -10px;   /* slight overlap */
-  right: -10px;
-  width: 180px;
-  height: 120px;
-  background: linear-gradient(135deg, #ede9fe, #f5f3ff);
-  border-radius: 24px;
+  bottom: -18px;
+  right: -18px;
+  width: 200px;
+  height: 130px;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--brand) 25%, white),
+    color-mix(in srgb, var(--brand-light) 20%, white)
+  );
+  border-radius: 26px;
   transform: rotate(-12deg);
+  opacity: 0.45;
   z-index: 0;
-  opacity: 0.6;
 }
 
-/* Keep text above shapes */
+/* Keep content above shapes */
 .cert-inner * {
   position: relative;
   z-index: 1;
 }
 
-
 /* =========================
-   DARK MODE COLORS
+   SAVE BUTTON
 ========================= */
-body.dark .cert-deco-top {
-  border-right: 2px solid #8b5cf6;
-  border-bottom: 2px solid #8b5cf6;
+.save-btn{
+  display: flex;
+  justify-content: center;
+}
+.cert-save-btn {
+  position: fixed;
+  bottom: 22px;
+  padding: 11px 26px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg,var(--brand),var(--brand-light));
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 230px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  z-index: 5000;
+  box-shadow: 0 10px 26px rgba(108,99,255,0.45);
+  transition: box-shadow 0.2s ease, background 0.2s ease;
 }
 
-body.dark .cert-deco-bottom {
-  background: linear-gradient(
-    135deg,
-    rgba(139,92,246,0.25),
-    rgba(108,99,255,0.12)
-  );
+.cert-save-btn:hover {
+  background: linear-gradient(135deg,#7c73ff,#9b6cf6);
+  box-shadow: 0 14px 32px rgba(108,99,255,0.55);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+  .cert-screen {
+    padding-top: 50px;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .cert-inner {
+    width: 100%;
+    padding: 30px 22px 20px;
+  }
+
+  .cert-title { font-size: 22px; }
+  .cert-name { font-size: 24px; }
 }

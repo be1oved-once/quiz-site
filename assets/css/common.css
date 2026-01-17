@@ -346,8 +346,8 @@ body.dark .menu-btn span {
 .right-sidebar {
   position: fixed;
   top: 50px;
-  right: -280px;
-  width: 280px;
+  right: -300px;
+  width: 300px;
   height: calc(100% - 50px);
   background: #ffffff;
   color: #111;
@@ -596,8 +596,8 @@ body.dark .grab-line {
 .left-sidebar {
   position: fixed;
   top: 56px;
-  left: -280px;
-  width: 280px;
+  left: -300px;
+  width: 300px;
   height: calc(100% - 56px);
   background: #ffffff;
   color: #111;

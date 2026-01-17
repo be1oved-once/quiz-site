@@ -446,6 +446,19 @@ body.dark .lb-skeleton-xp {
 body.dark .lb-reset-text {
   color: #94a3b8;
 }
+.lb-profile-pfp-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.lb-profile-pfp {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid rgba(108,99,255,0.6);
+  object-fit: cover;
+}
 </style>
 </head>
 <body>
@@ -574,11 +587,12 @@ function listenLeaderboard() {
     snap.forEach(docSnap => {
       const data = docSnap.data();
       users.push({
-        name: data.name || "User",
-        gender: data.gender || "",
-        dob: data.dob || "",
-        xp: data.xp || 0
-      });
+  name: data.name || "User",
+  gender: data.gender || "",
+  dob: data.dob || "",
+  xp: data.xp || 0,
+  pfp: data.pfp || ""   // ← take exactly saved one
+});
     });
 
     // Sort by XP high → low
@@ -629,6 +643,12 @@ function renderLeaderboard(users) {
 
       <div class="lb-expand">
         <div class="lb-profile-card">
+
+  ${u.pfp ? `
+    <div class="lb-profile-pfp-wrap">
+      <img src="${u.pfp}" class="lb-profile-pfp">
+    </div>
+  ` : ""}
           <div class="lb-profile-row">
             <span class="lb-profile-label">Name</span>
             <span class="lb-profile-value">${u.name}</span>

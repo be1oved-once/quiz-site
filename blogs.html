@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <!-- FAVICONS -->
   <link rel="icon" href="/assets/favicon/favicon.ico">
   
@@ -70,7 +70,7 @@ body.dark {
 
 .blogs-page {
   max-width: 720px;
-  margin: 70px auto 60px;  /* leaves space for common header */
+  margin: 12px auto 60px;  /* leaves space for common header */
   padding: 0 14px;
 }
 
@@ -93,7 +93,7 @@ body.dark {
 /* ===== Search bar ===== */
 
 .blog-search {
-  margin-bottom: 16px;
+  margin-bottom: 4px;
 }
 
 .blog-search input {
@@ -179,8 +179,8 @@ body.dark .blog-item {
 
 .blog-meta a::after {
   content: "";
-  width: 7px;
-  height: 7px;
+  width: 4px;
+  height: 4px;
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: rotate(-45deg);
@@ -197,7 +197,6 @@ body.dark .blog-item {
   .blogs-page {
     margin-left: 12px;
     padding: 0 12px;
-    margin-top: 55px;
   }
 }
   </style>
@@ -206,7 +205,7 @@ body.dark .blog-item {
 <body>
 <br>
 <br>
-<main class="blogs-page page-content">
+<main class="blogs-page">
 <div class="blog-search">
   <input
     type="text"
@@ -215,131 +214,110 @@ body.dark .blog-item {
     aria-label="Search blogs"
   />
 </div>
-  <h1 style="font-weight: 600;">Beforexam Blog</h1>
-  <p class="blogs-intro">
-    Honest, exam-focused writing for CA Foundation students.
-    No motivation drama. Only preparation that actually works.
-  </p>
+<section class="blog-list">
 
-  <section class="blog-list">
-<!-- BLOG 7 -->
-<article class="blog-item">
-  <h2>The Day My Phone Became My Therapist</h2>
-  <p>
-    A playful modern-life story about how a glowing rectangle
-    became better at handling emotions than most humans.
-  </p>
-  <div class="blog-meta">
-    <span>Feb 2026</span>
-    <a href="/Blog/The-Day-My-Phone-BecaMe-My-Therapist.html">Read</a>
-  </div>
-</article>
+  <!-- BLOG 1 -->
+  <article class="blog-item">
+    <h2>CA Foundation Exam in One Month – What You Must Do</h2>
+    <p>
+      Agar aap CA Foundation student ho aur exam sirf ek mahina door hai,
+      toh yeh phase syllabus se zyada decision-making aur discipline ka hota hai.
+      A realistic, ground-level guide - no fake timetables, no drama.
+    </p>
+    <div class="blog-meta">
+      <span>Jan 2026</span>
+      <a href="/Blog/Essential-Things-You-Must-Keep-in-Mind.html">Read</a>
+    </div>
+  </article>
 
-<!-- BLOG 8 -->
-<article class="blog-item">
-  <h2>The Day I Tried to Become Productive and Failed Gloriously</h2>
-  <p>
-    A humorous survival documentary of one ambitious to-do list,
-    one human, and zero discipline.
-  </p>
-  <div class="blog-meta">
-    <span>Feb 2026</span>
-    <a href="/Blog/the-day-i-tried-to-become-productive.html">Read</a>
-  </div>
-</article>
+  <!-- BLOG 2 -->
+  <article class="blog-item">
+    <h2>How to Speed Up Handwriting for CA Foundation Exams</h2>
+    <p>
+      Handwriting speed is not about beautiful writing.
+      It is about finishing the paper on time with clean presentation.
+      Practical exam-tested techniques - no myths.
+    </p>
+    <div class="blog-meta">
+      <span>Jan 2026</span>
+      <a href="/Blog/how-to-speed-up-handwriting.html">Read</a>
+    </div>
+  </article>
 
-<!-- BLOG 9 -->
-<article class="blog-item">
-  <h2>The Midnight Scroll Confession Sessions</h2>
-  <p>
-    A lighthearted look at 2AM overthinking,
-    reels therapy, and emotional support algorithms.
-  </p>
-  <div class="blog-meta">
-    <span>Feb 2026</span>
-    <a href="/Blog/the-midnight-scroll-confession.html">Read</a>
-  </div>
-</article>
-    <!-- BLOG 1 -->
-    <article class="blog-item">
-      <h2>CA Foundation Exam in One Month – What You Must Do</h2>
-      <p>
-        Last one month strategy for CA Foundation students.
-        What to revise, what to stop, and how to become exam-ready without panic.
-      </p>
-      <div class="blog-meta">
-        <span>Jan 2026</span>
-        <a href="/Blog/Essential-Things-You-Must-Keep-in-Mind.html">Read</a>
-      </div>
-    </article>
+  <!-- BLOG 3 -->
+  <article class="blog-item">
+    <h2>I Knew Everything. I Forgot Everything in the Exam Hall.</h2>
+    <p>
+      A CA Foundation reality story.
+      Syllabus completed. Notes revised. Confidence real.
+      And yet - mind blanked in the first 15 minutes.
+      Because pressure training was missing.
+    </p>
+    <div class="blog-meta">
+      <span>Jan 2026</span>
+      <a href="/Blog/i-knew-everything-forgot-everything-in-exam-hall.html">Read</a>
+    </div>
+  </article>
 
-    <!-- BLOG 2 -->
-    <article class="blog-item">
-      <h2>How to Speed Up Handwriting for CA Foundation Exams</h2>
-      <p>
-        Practical handwriting speed techniques that actually work in CA exams.
-        No myths. Only exam-tested methods.
-      </p>
-      <div class="blog-meta">
-        <span>Jan 2026</span>
-        <a href="/Blog/how-to-speed-up-handwriting.html">Read</a>
-      </div>
-    </article>
+  <!-- BLOG 4 -->
+  <article class="blog-item">
+    <h2>My Teacher Was Wrong About CA Foundation - And I Paid the Price</h2>
+    <p>
+      I believed: “Follow teacher exactly and you will clear.”
+      I didn’t question strategies. Didn’t analyse results.
+      Blind faith cost me an attempt.
+      This is that story.
+    </p>
+    <div class="blog-meta">
+      <span>Jan 2026</span>
+      <a href="/Blog/my-teacher-was-wrong-about-ca-foundation-and-i-paid-the-price.html">Read</a>
+    </div>
+  </article>
 
-    <!-- BLOG 3 -->
-    <article class="blog-item">
-      <h2>I Knew Everything. I Forgot Everything in the Exam Hall.</h2>
-      <p>
-        A raw CA Foundation reality about exam pressure, blank moments,
-        and why knowledge alone fails without conditioning.
-      </p>
-      <div class="blog-meta">
-        <span>Jan 2026</span>
-        <a href="/Blog/i-knew-everything-forgot-everything-in-exam-hall.html">Read</a>
-      </div>
-    </article>
+  <!-- BLOG 5 -->
+  <article class="blog-item">
+    <h2>Presentation vs Content - What Matters More in CA Foundation?</h2>
+    <p>
+      “Marks presentation se milte hain ya content se?”
+      Both sides are half-truths.
+      And half-truths are dangerous in CA exams.
+      This article clears it brutally.
+    </p>
+    <div class="blog-meta">
+      <span>Jan 2026</span>
+      <a href="/Blog/Presentation-vs-Content-What-Matters-More.html">Read</a>
+    </div>
+  </article>
 
-    <!-- BLOG 4 -->
-    <article class="blog-item">
-      <h2>My Teacher Was Wrong About CA Foundation – And I Paid the Price</h2>
-      <p>
-        Why blindly following advice fails in CA Foundation
-        and how students must take ownership of execution.
-      </p>
-      <div class="blog-meta">
-        <span>Jan 2026</span>
-        <a href="/Blog/my-teacher-was-wrong-about-ca-foundation-and-i-paid-the-price.html">Read</a>
-      </div>
-    </article>
+  <!-- BLOG 6 -->
+  <article class="blog-item">
+    <h2>Why Hard Work Alone Is Not Enough to Clear CA Foundation</h2>
+    <p>
+      Hard work feels sufficient.
+      Yet thousands fail every attempt.
+      Because effort without strategy breaks in exams.
+      An uncomfortable but necessary truth.
+    </p>
+    <div class="blog-meta">
+      <span>Jan 2026</span>
+      <a href="/Blog/Why-Hard-Work-Alone-Is-Not-Enough-to-Clear-CA-Foundation.html">Read</a>
+    </div>
+  </article>
 
-    <!-- BLOG 5 -->
-    <article class="blog-item">
-      <h2>Presentation vs Content: What Matters More in CA Foundation?</h2>
-      <p>
-        The most misunderstood CA exam debate explained clearly -
-        what actually earns marks and what doesn’t.
-      </p>
-      <div class="blog-meta">
-        <span>Jan 2026</span>
-        <a href="/Blog/Presentation-vs-Content-What-Matters-More.html">Read</a>
-      </div>
-    </article>
-
-    <!-- BLOG 6 -->
-    <article class="blog-item">
-      <h2>Why Hard Work Alone Is Not Enough to Clear CA Foundation</h2>
-      <p>
-        Hard truth every CA student must understand -
-        effort without strategy often leads to failure.
-      </p>
-      <div class="blog-meta">
-        <span>Jan 2026</span>
-        <a href="/Blog/Why-Hard-Work-Alone-Is-Not-Enough-to-Clear-CA-Foundation.html">Read</a>
-      </div>
-    </article>
-
-  </section>
-
+  <!-- BLOG 7 -->
+  <article class="blog-item">
+    <h2>The Day My Phone Became My Therapist</h2>
+    <p>
+      Some go to therapy. Some talk to friends.
+      I opened my phone.
+      And that glowing rectangle understood me better than humans.
+    </p>
+    <div class="blog-meta">
+      <span>Feb 2026</span>
+      <a href="/Blog/The-Day-My-Phone-BecaMe-My-Therapist.html">Read</a>
+    </div>
+  </article>
+</section>
 </main>
 <script>
   const searchInput = document.getElementById("blogSearch");

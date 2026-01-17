@@ -483,9 +483,6 @@ onAuthStateChanged(auth, async user => {
 }
 
     // Profile completed but still on profile page → send home
-    if (location.pathname.includes("profile.html")) {
-      window.location.replace("/index.html");
-    }
   }
 
   /* ======================
