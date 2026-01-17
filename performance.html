@@ -12,7 +12,7 @@
     "url": "https://beforexam.vercel.app"
   }
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <!-- Organization Schema -->
 <script type="application/ld+json">
   {
@@ -456,33 +456,38 @@ closeCert.addEventListener("click", () => {
 });
 
 // Save as Image
-document.querySelector(".cert-save-btn").addEventListener("click", async () => {
+saveCertBtn.addEventListener("click", async () => {
+
+  // 1. Ensure overlay is visible
+  certOverlay.classList.remove("hidden");
+
+  // 2. Wait one frame so mobile can render
+  await new Promise(r => requestAnimationFrame(r));
+
   const cert = document.querySelector(".cert-inner");
-  
-  // temporarily remove scroll limit
-  const oldHeight = cert.style.height;
+
+  // 3. Force full height
+  const prev = cert.style.height;
   cert.style.height = cert.scrollHeight + "px";
-  
+
+  // 4. Capture
   const canvas = await html2canvas(cert, {
-  scale: 2,
-  useCORS: true,
-  backgroundColor: "#ffffff",
-  height: cert.offsetHeight   // 🔥 force exact height
-});
-  
-  // restore height
-  cert.style.height = oldHeight;
-  
-  const img = canvas.toDataURL("image/png");
-  
+    scale: 2.5,
+    backgroundColor: "#ffffff",
+    useCORS: true
+  });
+
+  // 5. Restore
+  cert.style.height = prev;
+
+  // 6. Download
   const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
   link.download = "Beforexam-Certificate.png";
-  link.href = img;
   link.click();
 });
 </script>
   <script src="assets/js/common-layout.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
 <script type="module" src="assets/js/user-metrics-init.js"></script>
 <script type="module" src="assets/js/common.js"></script>

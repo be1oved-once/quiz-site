@@ -16,75 +16,116 @@ const msg = document.getElementById("profileMsg");
 const pfpCircle = document.getElementById("pfpCircle");
 const pfpImage = document.getElementById("pfpImage");
 const pfpPopup = document.getElementById("pfpPopup");
+// ===== MASTER GRID AVATAR BUILDER =====
 
-let selectedPfp = "";
-// ===== PREDEFINED AVATARS =====
-/* ===== PFP LIST ===== */
-const avatarList = [
-  // Human / realistic cartoon
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Ayaan",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Riya",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Kunal",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Meera",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Sana",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Dev",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Anika",
-  
-  // Glasses / hoodie style
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Hoodie1",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Hoodie2",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Geek1",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Geek2",
-  
-  // Pastel flat humans
-  "https://api.dicebear.com/7.x/lorelei/svg?seed=P1",
-  "https://api.dicebear.com/7.x/lorelei/svg?seed=P2",
-  "https://api.dicebear.com/7.x/lorelei/svg?seed=P3",
-  "https://api.dicebear.com/7.x/lorelei/svg?seed=P4",
-  
-  // Anime style
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=Anime1",
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=Anime2",
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=Anime3",
-  "https://api.dicebear.com/7.x/adventurer/svg?seed=Anime4",
-  
-  // Minimal clean humans
-  "https://api.dicebear.com/7.x/personas/svg?seed=Mini1",
-  "https://api.dicebear.com/7.x/personas/svg?seed=Mini2",
-  "https://api.dicebear.com/7.x/personas/svg?seed=Mini3",
-  "https://api.dicebear.com/7.x/personas/svg?seed=Mini4",
-  
-  // Pixel style
-  "https://api.dicebear.com/7.x/pixel-art/svg?seed=Pix1",
-  "https://api.dicebear.com/7.x/pixel-art/svg?seed=Pix2",
-  "https://api.dicebear.com/7.x/pixel-art/svg?seed=Pix3",
-  "https://api.dicebear.com/7.x/pixel-art/svg?seed=Pix4",
-  
-  // Fun stylized
-  "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Fun1",
-  "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Fun2",
-  "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Fun3",
-  "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Fun4",
-  
-  // Extra human variations
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Zoya",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Kabir",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Ishita",
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan"
+// ===== FINAL MULTI MASTER AVATAR BUILDER =====
+
+const masterImages = [
+  "/assets/images/avatar-master.png",
+  "/assets/images/avatar-master2.png",
+  "/assets/images/avatar-master3.png"
 ];
 
-// Build avatar popup
-avatarList.forEach(url => {
-  const img = document.createElement("img");
-  img.src = url;
-  img.onclick = () => {
-    selectedPfp = url;
-    pfpImage.src = url;
-    pfpPopup.classList.remove("show");
+const rows = 4;
+const cols = 4;
+const OUT = 200;
+
+let selectedPfp = "";
+let selectedGender = "";
+let editMode = false;
+
+function buildAvatars() {
+  pfpPopup.innerHTML = "";
+
+  // ---- Upload Slot First ----
+  const uploadSlot = document.createElement("div");
+  uploadSlot.className = "pfp-upload-slot";
+  uploadSlot.innerHTML = `
+    <span>+</span>
+    <input type="file" id="pfpFileInput" accept="image/*" hidden>
+  `;
+  pfpPopup.appendChild(uploadSlot);
+
+  const fileInput = uploadSlot.querySelector("#pfpFileInput");
+
+  uploadSlot.onclick = () => {
+    if (!editMode) return;
+    fileInput.click();
   };
-  pfpPopup.appendChild(img);
-});
+
+  fileInput.onchange = e => {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith("image/")) return;
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const size = Math.min(img.width, img.height);
+        const sx = (img.width - size)/2;
+        const sy = (img.height - size)/2;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = OUT;
+        canvas.height = OUT;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, sx, sy, size, size, 0, 0, OUT, OUT);
+
+        const dataURL = canvas.toDataURL("image/png");
+        selectedPfp = dataURL;
+        pfpImage.src = dataURL;
+        if (window.updateStripColor) window.updateStripColor();
+        pfpPopup.classList.remove("show");
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // ---- Load Master Images ----
+  masterImages.forEach(src => {
+    const img = new Image();
+    img.onload = () => {
+
+      const cellW = img.width / cols;
+      const cellH = img.height / rows;
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+
+          const size = Math.min(cellW, cellH) * 0.86;
+          const sx = c * cellW + (cellW - size)/2;
+          const sy = r * cellH + (cellH - size)/2;
+
+          const canvas = document.createElement("canvas");
+          canvas.width = OUT;
+          canvas.height = OUT;
+          const ctx = canvas.getContext("2d");
+
+          ctx.drawImage(img, sx, sy, size, size, 0, 0, OUT, OUT);
+
+          const dataURL = canvas.toDataURL("image/png");
+
+          const avatar = document.createElement("img");
+          avatar.src = dataURL;
+
+          avatar.onclick = () => {
+            selectedPfp = dataURL;
+            pfpImage.src = dataURL;
+            if (window.updateStripColor) window.updateStripColor();
+            pfpPopup.classList.remove("show");
+          };
+
+          pfpPopup.appendChild(avatar);
+        }
+      }
+    };
+    img.src = src;
+  });
+}
+
+// Build once
+buildAvatars();
 // Open popup only in edit mode
 pfpCircle.onclick = () => {
   if (!editMode) return;
@@ -97,10 +138,6 @@ document.addEventListener("click", e => {
     pfpPopup.classList.remove("show");
   }
 });
-
-
-let selectedGender = "";
-let editMode = false;
 
 /* DOB restriction */
 const today = new Date();
@@ -152,7 +189,6 @@ function saveProfileToLocal(uid, data) {
     })
   );
 }
-
 auth.onAuthStateChanged(async user => {
   if (!user) {
     window.location.replace("/index.html#login");
@@ -204,14 +240,15 @@ if (!snap.exists()) {
 
 const data = snap.data();
 // ===== LOAD PROFILE PICTURE =====
+// ===== LOAD PROFILE PICTURE =====
 selectedPfp = data.pfp || "";
 
 if (selectedPfp) {
   pfpImage.src = selectedPfp;
+  if (window.updateStripColor) window.updateStripColor();
 } else {
-  // default avatar if none saved
-  selectedPfp = avatarList[0];
-  pfpImage.src = selectedPfp;
+  // default placeholder if user never picked
+  pfpImage.src = "/assets/images/avatar-master.png";
 }
 
   // Update UI (in case Firestore is newer)
@@ -230,6 +267,7 @@ if (selectedPfp) {
 document.getElementById("profileSkeleton").style.display = "none";
 document.getElementById("profileContent").style.display = "block";
 });
+
 
 /* Edit mode */
 function setEditMode(state) {
@@ -260,7 +298,7 @@ saveBtn.onclick = async () => {
   username: usernameEl.value.trim(),
   dob: dobEl.value,
   gender: selectedGender,
-  pfp: selectedPfp || avatarList[0],
+  pfp: selectedPfp || null,
   profileCompleted: true
 };
 
@@ -285,3 +323,4 @@ saveProfileToLocal(user.uid, payload);
   window.location.replace("/index.html");
 }, 500);
 };
+

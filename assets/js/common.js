@@ -411,8 +411,8 @@ onAuthStateChanged(auth, async user => {
   if (!user) {
     window.currentUser = null;
 
-    loginBtns.forEach(btn => btn.style.display = "inline-flex");
-    signupBtns.forEach(btn => btn.style.display = "inline-flex");
+    loginBtns.forEach(btn => btn.style.display = "flex");
+    signupBtns.forEach(btn => btn.style.display = "flex");
     logoutBtns.forEach(btn => btn.style.display = "none");
 
     if (lock) lock.style.display = "flex";
@@ -431,8 +431,8 @@ onAuthStateChanged(auth, async user => {
     await auth.signOut();
     window.currentUser = null;
 
-    loginBtns.forEach(btn => btn.style.display = "inline-flex");
-    signupBtns.forEach(btn => btn.style.display = "inline-flex");
+    loginBtns.forEach(btn => btn.style.display = "flex");
+    signupBtns.forEach(btn => btn.style.display = "flex");
     logoutBtns.forEach(btn => btn.style.display = "none");
 
     if (lock) lock.style.display = "flex";

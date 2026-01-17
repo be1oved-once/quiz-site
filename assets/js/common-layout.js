@@ -107,7 +107,7 @@
       </p>
       <button class="primary-btn pill"
               onclick="openAuth('login')">
-        Login to Unlock
+        UNLOCK
       </button>
     </div>
   </div>

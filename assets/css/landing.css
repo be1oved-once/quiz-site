@@ -32,6 +32,9 @@ body.dark .auth-strip{
   margin-bottom: 7px;
   margin-left: 10px;
   margin-right: 10px;
+  display: inline-flex;
+  width: 180px;
+  gap: 6px;
 }
 .landing {
   max-width: 720px;

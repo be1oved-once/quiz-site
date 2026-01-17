@@ -96,13 +96,23 @@
       <h3 class="profile-title">Profile Details</h3>
 <!-- Profile Picture -->
 <div class="field profile-f">
-  <!-- Circle -->
-  <div id="pfpCircle" class="pfp-circle">
-    <img id="pfpImage" src="https://api.dicebear.com/7.x/thumbs/svg?seed=Default" alt="Profile">
-  </div>  <!-- Popup -->
-  <div id="pfpPopup" class="pfp-popup">
-    <!-- Avatars injected by JS -->
+
+  <!-- Profile strip -->
+  <div class="pfp-strip">
+
+    <!-- particles canvas (if you already have it) -->
+    <canvas id="pfpParticles"></canvas>
+
+    <!-- profile circle -->
+    <div id="pfpCircle" class="pfp-circle">
+      <img id="pfpImage" src="...">
+    </div>
+
   </div>
+
+  <!-- popup remains outside strip -->
+  <div id="pfpPopup" class="pfp-popup"></div>
+
 </div>
       <!-- Username -->
       <div class="field">
@@ -145,6 +155,75 @@
   </div>
 
 </main>
+<script type="module">
+import { auth } from "./assets/js/firebase.js";
+
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+});
+</script>
+<script type="module">
+
+const strip = document.querySelector(".pfp-strip");
+const img = document.getElementById("pfpImage");
+
+/* ---------- MAIN FUNCTION ---------- */
+function updateStripColor(){
+
+  if (!img || !strip) return;
+  if (!img.complete || img.naturalWidth === 0) return; 
+  // prevents DOMException
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  const size = 50;
+  canvas.width = size;
+  canvas.height = size;
+
+  ctx.drawImage(img, 0, 0, size, size);
+
+  const data = ctx.getImageData(0,0,size,size).data;
+
+  let r=0,g=0,b=0,count=0;
+  for(let i=0;i<data.length;i+=4){
+    r+=data[i];
+    g+=data[i+1];
+    b+=data[i+2];
+    count++;
+  }
+
+  r = Math.floor(r/count);
+  g = Math.floor(g/count);
+  b = Math.floor(b/count);
+
+  const r2 = Math.min(255, r+60);
+  const g2 = Math.min(255, g+60);
+  const b2 = Math.min(255, b+60);
+
+  strip.style.setProperty("--strip-color-1", `rgb(${r},${g},${b})`);
+  strip.style.setProperty("--strip-color-2", `rgb(${r2},${g2},${b2})`);
+
+if(document.body.classList.contains("dark")){
+  const dr = Math.max(0, r - 40);
+  const dg = Math.max(0, g - 40);
+  const db = Math.max(0, b - 40);
+
+  const dr2 = Math.min(255, dr + 50);
+  const dg2 = Math.min(255, dg + 50);
+  const db2 = Math.min(255, db + 50);
+
+  strip.style.setProperty("--strip-color-1", `rgb(${dr},${dg},${db})`);
+  strip.style.setProperty("--strip-color-2", `rgb(${dr2},${dg2},${db2})`);
+}
+
+/* ---------- AUTO UPDATE WHEN IMAGE LOADS ---------- */
+img.addEventListener("load", updateStripColor);
+}
+/* ---------- EXPOSE TO OTHER MODULES ---------- */
+window.updateStripColor = updateStripColor;
+
+</script>
   <script src="assets/js/common-layout.js"></script>
   <script type="module" src="assets/js/profile.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>

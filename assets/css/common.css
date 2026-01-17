@@ -2383,14 +2383,14 @@ body.dark .login-lock-box p {
    BUTTON
 ========================= */
 
-.login-lock-box .login-btn {
+.login-lock-box .pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
   padding: 10px 20px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
 
   border-radius: 999px;
   border: none;
@@ -2404,7 +2404,7 @@ body.dark .login-lock-box p {
   transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-.login-lock-box .login-btn:active {
+.login-lock-box .pill:active {
   transform: scale(0.96);
 }
 
