@@ -145,13 +145,6 @@
   </div>
 
 </main>
-<script type="module">
-import { auth } from "./assets/js/firebase.js";
-
-auth.onAuthStateChanged(user => {
-  if (!user) return;
-});
-</script>
   <script src="assets/js/common-layout.js"></script>
   <script type="module" src="assets/js/profile.js"></script>
 <script type="module" src="assets/js/firebase.js"></script>
