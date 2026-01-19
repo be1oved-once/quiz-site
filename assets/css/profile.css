@@ -342,6 +342,9 @@ body.dark .pr-skel-btn {
   .profile-content {
     margin-top: 65px;
   }
+  .dob-sheet{
+    left: 0;
+  }
 }
 /* ===== REMOVE DOB CALENDAR ARROW COMPLETELY ===== */
 
@@ -501,9 +504,41 @@ body.dark .pfp-popup{
 
   box-shadow: inset 0 0 18px rgba(255,255,255,0.6);
 }
+/* ============================= */
+/*        PROFILE STRIP BASE     */
+/* ============================= */
+
+.pfp-strip{
+  position:relative;
+  width:100%;
+  height:135px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+
+  /* Main flowing gradient (dynamic from JS) */
+  background:
+    radial-gradient(circle at var(--gx,30%) var(--gy,30%), 
+      var(--strip-color-2), transparent 55%),
+    linear-gradient(135deg,
+      var(--strip-color-1),
+      var(--strip-color-2)
+    );
+  animation: gradientMove 12s linear infinite;
+}
+
+@keyframes gradientMove{
+  0%   { --gx:20%; --gy:30%; }
+  25%  { --gx:80%; --gy:20%; }
+  50%  { --gx:70%; --gy:80%; }
+  75%  { --gx:30%; --gy:70%; }
+  100% { --gx:20%; --gy:30%; }
+}
 
 /* ============================= */
-/*     GRID TEXTURE LAYER        */
+/*   ABSTRACT GRID TEXTURE       */
 /* ============================= */
 
 .pfp-strip::before{
@@ -512,21 +547,20 @@ body.dark .pfp-popup{
   inset:0;
   border-radius:18px;
 
-  /* grid pattern using repeating linear gradients */
   background:
     repeating-linear-gradient(
       45deg,
-      rgba(255,255,255,0.18) 0px,
-      rgba(255,255,255,0.18) 1px,
+      rgba(255,255,255,0.20) 0px,
+      rgba(255,255,255,0.20) 3px,
       transparent 1px,
-      transparent 8px
+      transparent 16px
     ),
     repeating-linear-gradient(
       -45deg,
       rgba(255,255,255,0.12) 0px,
-      rgba(255,255,255,0.12) 1px,
+      rgba(255,255,255,0.12) 3px,
       transparent 1px,
-      transparent 10px
+      transparent 20px
     );
 
   opacity:0.35;
@@ -534,17 +568,34 @@ body.dark .pfp-popup{
   pointer-events:none;
 }
 
-/* soft glow blobs */
+/* ============================= */
+/*   SOFT COLOR GLOW BLOBS       */
+/* ============================= */
+
 .pfp-strip::after{
   content:"";
   position:absolute;
-  inset:-40%;
+  inset:-30%;
   background:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.25), transparent 45%);
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.22), transparent 50%);
+  opacity:0.55;
+  filter: blur(26px);
   z-index:2;
-  opacity:0.6;
-  filter: blur(20px);
+  pointer-events:none;
+}
+
+/* ============================= */
+/*        NOISE GRAIN LAYER      */
+/* ============================= */
+
+.pfp-strip .noise-layer{
+  position:absolute;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.20'/%3E%3C/svg%3E");
+  opacity:0.25;
+  mix-blend-mode:overlay;
+  z-index:3;
   pointer-events:none;
 }
 
@@ -555,27 +606,27 @@ body.dark .pfp-popup{
 #pfpParticles{
   position:absolute;
   inset:0;
-  z-index:3;
+  z-index:10;
   pointer-events:none;
 }
 
 /* ============================= */
-/*       PROFILE CIRCLE TOP      */
+/*       PROFILE CIRCLE          */
 /* ============================= */
 
 .pfp-circle{
   position:relative;
-  z-index:5;
-  width:82px;
-  height:82px;
+  z-index:6;
+  width:86px;
+  height:86px;
   border-radius:50%;
-  border:3px solid rgba(255,255,255,0.9);
-  background: var(--bg);
+  border:3px solid rgba(255,255,255,0.95);
+  background:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
   overflow:hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.18);
 }
 
 .pfp-circle img{
@@ -585,56 +636,212 @@ body.dark .pfp-popup{
 }
 
 /* ============================= */
-/*       HOVER COLOR SHIFT       */
+/*       HOVER SATURATION        */
 /* ============================= */
 
 .pfp-strip:hover{
-  filter: saturate(1.15) brightness(1.05);
-  transition: 0.4s ease;
+  filter: saturate(1.12) brightness(1.04);
+  transition:0.4s ease;
 }
 
 /* ============================= */
-/*          DARK MODE            */
+/*            DARK MODE          */
 /* ============================= */
 
 body.dark .pfp-strip{
   background:
     linear-gradient(135deg,
       var(--strip-color-1, #1e1b4b),
-      var(--strip-color-2, #0f172a)
+      var(--strip-color-2, #312e81)
     );
-  box-shadow: inset 0 0 22px rgba(0,0,0,0.8);
 }
 
 body.dark .pfp-strip::before{
   background:
     repeating-linear-gradient(
       45deg,
-      rgba(255,255,255,0.06) 0px,
-      rgba(255,255,255,0.06) 1px,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255, 255, 255, 0.49) 3px,
       transparent 1px,
-      transparent 9px
+      transparent 18px
     ),
     repeating-linear-gradient(
       -45deg,
-      rgba(255,255,255,0.04) 0px,
-      rgba(255,255,255,0.04) 1px,
+      rgba(255,255,255,0.03) 0px,
+      rgba(255,255,255,0.49) 3px,
       transparent 1px,
-      transparent 11px
+      transparent 22px
     );
-  opacity:0.25;
+  opacity:0.30;
 }
 
 body.dark .pfp-strip::after{
   background:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.12), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08), transparent 45%);
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.06), transparent 50%);
+  opacity:0.5;
 }
 
 /* ============================= */
-/*     RESPONSIVE SAFETY         */
+/*     MOBILE SAFETY             */
 /* ============================= */
 
 @media(max-width:520px){
   .pfp-strip{ height:125px; }
+}
+/* ==== DOB DISPLAY BUTTON ==== */
+.dob-display-btn{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--card);
+  font-size:14px;
+  text-align:left;
+  color:var(--text);
+}
+
+/* === DOB BOTTOM SHEET === */
+.dob-sheet{
+  position:fixed;
+  left:20px;
+  right:0;
+  bottom:-60%;
+  height:45vh;
+  background:#fff;
+  border-radius:18px 18px 0 0;
+  box-shadow:0 -12px 40px rgba(0,0,0,0.18);
+  transition:bottom 0.38s cubic-bezier(.18,.89,.32,1.28);
+  z-index:999;
+  will-change:bottom;
+}
+
+.dob-sheet.show{
+  bottom:0;
+ animation: dobPop 0.45s ease;
+}
+
+@keyframes dobPop{
+  0%{ transform:translateY(100%); }
+  80%{ transform:translateY(-6px); }
+  100%{ transform:translateY(0); }
+}
+.dob-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 14px;
+  font-weight:600;
+}
+
+.dob-header button{
+  background:none;
+  border:none;
+  color:var(--accent);
+  font-weight:600;
+}
+
+.dob-divider{
+  height:2px;
+  background:linear-gradient(to right,transparent,var(--accent),transparent);
+}
+
+.dob-wheels{
+  display:flex;
+  justify-content:space-around;
+  height:100%;
+  position:relative;
+}
+
+.dob-wheels::before{
+  content:"";
+  position:absolute;
+  top:16%;
+  left:0; right:0;
+  height:2px;
+  background:linear-gradient(to right,transparent,var(--accent),transparent);
+  transform:translateY(-18px);
+}
+
+.dob-wheel{
+  width:33%;
+  height:100%;
+  overflow-y:auto;
+  text-align:center;
+  font-size:18px;
+  scrollbar-width:none;
+}
+.dob-wheel::-webkit-scrollbar{display:none;}
+
+.wheel-item{
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0.35;
+}
+.wheel-item.active{
+  opacity:1;
+  font-weight:600;
+  color:var(--accent);
+  transform:scale(1.08);
+}
+/* ============================= */
+/*        DARK MODE DOB          */
+/* ============================= */
+
+body.dark .dob-display-btn{
+  background: #0f172a;
+  border:1px solid rgba(255,255,255,0.08);
+  color:#e5e7eb;
+}
+
+/* Bottom sheet base */
+body.dark .dob-sheet{
+  background:#0f172a;
+  box-shadow:0 -12px 40px rgba(0,0,0,0.6);
+}
+
+/* Header text + buttons */
+body.dark .dob-header{
+  color:#e5e7eb;
+}
+
+body.dark .dob-header button{
+  color:#8b5cf6; /* accent in dark */
+}
+
+/* Divider gradient */
+body.dark .dob-divider{
+  background:linear-gradient(
+    to right,
+    transparent,
+    #8b5cf6,
+    transparent
+  );
+}
+
+/* Center highlight line */
+body.dark .dob-wheels::before{
+  background:linear-gradient(
+    to right,
+    transparent,
+    #8b5cf6,
+    transparent
+  );
+}
+
+/* Wheel text */
+body.dark .wheel-item{
+  color:#9ca3af;
+}
+
+/* Active wheel item */
+body.dark .wheel-item.active{
+  color:#c4b5fd;
+}
+
+/* Backdrop (if you added it earlier) */
+body.dark #dobBackdrop{
+  background:rgba(0,0,0,0.55);
 }

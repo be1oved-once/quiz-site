@@ -1,4 +1,5 @@
 import { auth, db } from "./firebase.js";
+import { cacheUsername } from "./insight-engine.js";
 import { doc, getDoc, setDoc, updateDoc } from
   "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -74,8 +75,10 @@ function buildAvatars() {
         const dataURL = canvas.toDataURL("image/png");
         selectedPfp = dataURL;
         pfpImage.src = dataURL;
-        if (window.updateStripColor) window.updateStripColor();
-        pfpPopup.classList.remove("show");
+pfpPopup.classList.remove("show");
+
+// ✅ Update strip color
+setTimeout(() => window.updateStripColor(), 50);
       };
       img.src = ev.target.result;
     };
@@ -110,11 +113,13 @@ function buildAvatars() {
           avatar.src = dataURL;
 
           avatar.onclick = () => {
-            selectedPfp = dataURL;
-            pfpImage.src = dataURL;
-            if (window.updateStripColor) window.updateStripColor();
-            pfpPopup.classList.remove("show");
-          };
+  selectedPfp = dataURL;
+  pfpImage.src = dataURL;
+  pfpPopup.classList.remove("show");
+
+  // ✅ Update strip color after image change
+  setTimeout(() => window.updateStripColor(), 50);
+};
 
           pfpPopup.appendChild(avatar);
         }
@@ -223,6 +228,10 @@ auth.onAuthStateChanged(async user => {
   if (cached) {
     usernameEl.value = cached.username || "";
     dobEl.value = cached.dob || "";
+    if(cached.dob){
+  const [yy, mm, dd] = cached.dob.split("-");
+  document.getElementById("dobBtn").textContent = `${dd}-${mm}-${yy}`;
+}
     selectedGender = cached.gender || "";
     if (selectedGender) genderText.textContent = selectedGender;
   }
@@ -253,7 +262,13 @@ if (selectedPfp) {
 
   // Update UI (in case Firestore is newer)
   usernameEl.value = data.username || "";
+  cacheUsername(usernameEl.value);
   dobEl.value = data.dob || "";
+  if(data.dob){
+  // data.dob format = "YYYY-MM-DD"
+  const [yy, mm, dd] = data.dob.split("-");
+  document.getElementById("dobBtn").textContent = `${dd}-${mm}-${yy}`;
+}
   selectedGender = data.gender || "";
   if (selectedGender) genderText.textContent = selectedGender;
 
@@ -272,6 +287,7 @@ document.getElementById("profileContent").style.display = "block";
 /* Edit mode */
 function setEditMode(state) {
   editMode = state;
+  window.profileEditMode = state;
   usernameEl.readOnly = !state;
   dobEl.readOnly = !state;
 genderBtn.classList.toggle("readonly", !state);
@@ -304,6 +320,7 @@ saveBtn.onclick = async () => {
 
 // Update main user profile
 await updateDoc(doc(db, "users", user.uid), payload);
+cacheUsername(payload.username);
 
 // 🔥 ALSO update public leaderboard profile data
 await setDoc(doc(db, "publicLeaderboard", user.uid), {

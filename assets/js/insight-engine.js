@@ -1,246 +1,219 @@
-/* =========================
-   ADVANCED PERFORMANCE INSIGHT ENGINE
-   (AI-LIKE, ZERO AI)
-   CA FOUNDATION FOCUSED
-========================= */
-function maybe(prob, text) {
-  return Math.random() < prob ? text : "";
-}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+// ---- Local Memory Keys ----
+const USED_KEY = "uniqueFlirtyInsights_v2";
+const NAME_KEY = "cachedUsername";
 
-function percentHint(accuracy) {
-  if (accuracy >= 75) return "You are now approaching distinction-level accuracy.";
-  if (accuracy >= 65) return "This accuracy is close to exam-safe range.";
-  if (accuracy >= 55) return "You are slightly below exam-safe accuracy.";
-  if (accuracy >= 45) return "Accuracy is currently risky for exam performance.";
-  return "Your accuracy level needs urgent correction.";
+let usedInsights = JSON.parse(localStorage.getItem(USED_KEY) || "[]");
+// ---- Username helper ----
+function getUserName(){
+  return localStorage.getItem(NAME_KEY) || "you";
 }
+// Call this once after profile load:
+export function cacheUsername(name){
+  if(name) localStorage.setItem(NAME_KEY, name);
+}
+// ---- Time of day ----
+function timeGreeting(){
+  const h = new Date().getHours();
+  const name = getUserName();
 
-function practiceMixHint(rtp, mtp, chapter) {
+  if(h < 12) return pick([
+    `Good morning ${name}`,
+    `Morning vibes ${name}`,
+    `${name}, you’re up early… cute.`
+  ]);
+
+  if(h < 18) return pick([
+    `Good afternoon ${name}`,
+    `Hey ${name}, mid-day check-in.`,
+    `${name}, I’ve been waiting all afternoon.`
+  ]);
+
+  return pick([
+    `Good evening ${name}`,
+    `Late night study date again, ${name}?`,
+    `${name}, night mode activated.`
+  ]);
+}
+// ---- Accuracy Lines ----
+function accuracyLine(acc){
+  if(acc >= 80) return pick([
+    `${acc}% accuracy… topper energy detected `,
+    `You’re casually flexing at ${acc}% accuracy.`,
+    `${acc}%? okay genius, I see you.`
+  ]);
+
+  if(acc >= 65) return pick([
+    `${acc}% accuracy - exam-safe and attractive combo.`,
+    `${acc}%… smart and stable.`,
+    `Safe zone accuracy (${acc}%) - stay here for me.`
+  ]);
+
+  if(acc >= 55) return pick([
+    `${acc}% accuracy - borderline, I won’t let you fall.`,
+    `${acc}%… you’re teasing danger.`,
+    `Almost safe at ${acc}%, come closer.`
+  ]);
+
+  if(acc >= 45) return pick([
+    `${acc}% accuracy - risky, I’m holding your hand now.`,
+    `${acc}%… this needs attention, babe.`,
+    `Low accuracy (${acc}%), study date incoming.`
+  ]);
+
+  return pick([
+    `${acc}% accuracy… emergency cuddle & revision session.`,
+    `${acc}%? don’t scare me like that.`,
+    `Critical zone (${acc}%) - I’m not leaving you alone.`
+  ]);
+}
+// ---- Trend Lines ----
+function trendLine(trend){
+  const map = {
+    Improving: [
+      "Your progress graph is rising… so is my interest.",
+      "Glow-up detected in your attempts.",
+      "You’re leveling up quietly."
+    ],
+    Stable: [
+      "You’re steady… but I want fireworks.",
+      "Stable phase… don’t get too cozy.",
+      "Holding ground nicely."
+    ],
+    "Needs Focus": [
+      "Focus slipped… come back to me.",
+      "Your trend dipped… I noticed.",
+      "Hey, eyes back on books."
+    ],
+    Critical: [
+      "Critical trend… I’m officially worried.",
+      "This slope is scary… fix it with me.",
+      "Emergency study alert"
+    ]
+  };
+  return pick(map[trend] || map.Stable);
+}
+// ---- Practice Mix Lines ----
+function mixLine(rtp, mtp, chapter){
   const total = rtp + mtp + chapter;
-  if (!total) return "";
-  const r = Math.round((rtp / total) * 100);
-  const m = Math.round((mtp / total) * 100);
-  const c = Math.round((chapter / total) * 100);
+  if(!total) return "";
 
-  if (r > 60) return "Your practice is heavily RTP-driven.";
-  if (m > 60) return "You are focusing mostly on MTP sets.";
-  if (c > 60) return "You are spending more time on chapter practice.";
-  return "Your practice mix is balanced across formats.";
+  const r = Math.round((rtp/total)*100);
+  const m = Math.round((mtp/total)*100);
+  const c = Math.round((chapter/total)*100);
+
+  if(r>60) return `RTP is your main love story (${r}%).`;
+  if(m>60) return `MTP addiction spotted (${m}%).`;
+  if(c>60) return `Chapter dates only (${c}%).`;
+
+  return "Balanced practice… responsible and cute.";
 }
-
-function streakHint(streak) {
-  if (streak >= 14) return "Two-week consistency streak — excellent discipline.";
-  if (streak >= 7) return "One-week consistency streak achieved.";
-  if (streak >= 3) return "You are building consistency gradually.";
-  return "";
-}
-
-function pick(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-/* ---------- STATE CLASSIFIER ---------- */
-function classifyState(trend, accuracy) {
-  if (trend === "Improving" && accuracy >= 65) return "strong";
-  if (trend === "Critical" || accuracy < 40) return "critical";
-  if (trend === "Needs Focus" || accuracy < 55) return "weak";
-  return "stable";
-}
-
-/* ---------- EXAM PROXIMITY ---------- */
-function examPhase(daysLeft) {
-  if (daysLeft <= 30) return "near";
-  if (daysLeft <= 60) return "mid";
-  return "far";
-}
-
-/* ---------- SUBJECT CONTEXT ---------- */
-function subjectTone(subject) {
-  if (!subject) return "general";
+// ---- Subject Lines ----
+function subjectLine(subject){
   const s = subject.toLowerCase();
-  if (s.includes("account")) return "accounts";
-  if (s.includes("law")) return "law";
-  if (s.includes("eco")) return "economics";
-  if (s.includes("math")) return "maths";
-  return "general";
+
+  if(s.includes("account")) return pick([
+    "Working notes are your charm point.",
+    "Adjustments win hearts and marks.",
+    "Final accounts love your attention."
+  ]);
+
+  if(s.includes("law")) return pick([
+    "Structured answers make me blush.",
+    "Keywords are your flirting style.",
+    "Provisions first, always."
+  ]);
+
+  if(s.includes("eco")) return pick([
+    "Definitions impress me.",
+    "Crisp theory beats long stories.",
+    "Concept clarity is your glow."
+  ]);
+
+  if(s.includes("math")) return pick([
+    "Formulas need daily love.",
+    "Step-wise solving = attractive.",
+    "Silly mistakes break hearts."
+  ]);
+
+  return pick([
+    "Revision is your secret charm.",
+    "Error analysis makes you sharper.",
+    "Consistency looks good on you."
+  ]);
 }
+// ---- Attempts + streak ----
+function attemptLine(total, streak){
+  let line = pick([
+    `I saw ${total} practice attempts logged.`,
+    `${total} attempts… effort noticed.`,
+    `You didn’t skip practice (${total} attempts).`
+  ]);
 
-/* ---------- TEXT BANKS ---------- */
+  if(streak >= 7) line += ` ${streak}-day streak… discipline is sexy.`;
+  if(streak >= 14) line += ` Two weeks streak… marry your books already.`;
 
-const OPENERS = {
-  strong: [
-    "Your recent practice shows clear upward momentum.",
-    "You are converting practice into measurable improvement.",
-    "Your preparation discipline is reflecting in accuracy.",
-    "This period shows strong exam-oriented progress.",
-    "You are moving in the right direction consistently.",
-    "Your effort is translating into marks.",
-    "You are building solid CA Foundation readiness.",
-    "Your performance curve is clearly improving."
-  ],
-  stable: [
-    "Your preparation has remained steady during this phase.",
-    "You are holding a stable performance level.",
-    "Your accuracy indicates partial conceptual clarity.",
-    "This phase shows balance but limited growth.",
-    "Your practice is consistent but needs refinement.",
-    "You are maintaining, not yet improving.",
-    "Your preparation is stable but not exam-sharp yet.",
-    "You are close to improvement with correct adjustments."
-  ],
-  weak: [
-    "This phase needs sharper focus and correction.",
-    "Your accuracy suggests conceptual gaps.",
-    "This performance level needs structured revision.",
-    "Your attempts are not converting into marks yet.",
-    "This pattern needs immediate correction.",
-    "Your preparation lacks exam-level precision.",
-    "You need to slow down and strengthen basics.",
-    "This phase demands focused improvement."
-  ],
-  critical: [
-    "Immediate correction in preparation strategy is required.",
-    "Your current pattern can impact exam performance.",
-    "This phase signals serious gaps in fundamentals.",
-    "Your accuracy level needs urgent attention.",
-    "This preparation approach is risky for exams.",
-    "You must pause and reset your strategy.",
-    "Your current accuracy is not exam-safe.",
-    "This stage requires disciplined rebuilding."
-  ]
-};
+  return line;
+}
+// ---- Exam phase ----
+function phaseLine(daysLeft){
+  if(daysLeft <= 30) return pick([
+    "Exam door is close… no drama now.",
+    "Final phase… calm and precise.",
+    "Near exam zone… stick with me."
+  ]);
 
-const SUBJECT_ADVICE = {
-  accounts: [
-    "Focus on working notes and adjustment logic.",
-    "Accuracy depends on concept clarity, not speed.",
-    "Revise formats and calculation steps.",
-    "Practice fewer questions with full working.",
-    "Avoid careless arithmetic errors.",
-    "Strengthen fundamentals before speed.",
-    "Revise illustrations before RTP/MTP.",
-    "Presentation can significantly improve marks."
-  ],
-  law: [
-    "Improve structure: provision → explanation → conclusion.",
-    "Avoid memorisation without understanding.",
-    "Practice writing precise legal language.",
-    "Focus on keywords and case relevance.",
-    "Presentation matters more than length.",
-    "Clarity beats volume in law answers.",
-    "Revise provisions repeatedly.",
-    "Avoid vague conclusions."
-  ],
-  economics: [
-    "Focus on conceptual clarity before diagrams.",
-    "Use definitions and keywords clearly.",
-    "Avoid writing irrelevant theory.",
-    "Practice numerical logic step-wise.",
-    "Accuracy improves with concept revision.",
-    "Use diagrams only where needed.",
-    "Avoid over-explaining.",
-    "Keep answers crisp and exam-oriented."
-  ],
-  maths: [
-    "Accuracy is more important than speed.",
-    "Reduce silly mistakes through practice.",
-    "Revise formulas daily.",
-    "Practice step-wise solving.",
-    "Avoid guess-based attempts.",
-    "Focus on concept clarity.",
-    "Practice mixed difficulty questions.",
-    "Time management is critical here."
-  ],
-  general: [
-    "Focus on converting attempts into marks.",
-    "Revise mistakes before adding new practice.",
-    "Accuracy matters more than quantity.",
-    "Analyse errors carefully.",
-    "Practice with exam conditions.",
-    "Avoid random attempts.",
-    "Consistency is key.",
-    "Structured practice gives results."
-  ]
-};
+  if(daysLeft <= 60) return pick([
+    "Mid-phase glow-up time.",
+    "Refinement arc unlocked.",
+    "Now we polish your skills."
+  ]);
 
-const ACTIONS = {
-  strong: [
-    "Shift focus towards speed and presentation.",
-    "Increase difficulty level gradually.",
-    "Analyse mistakes to reach 75%+ accuracy.",
-    "Focus on exam simulation now.",
-    "Refine weak chapters only.",
-    "Maintain consistency without burnout.",
-    "Practice under time pressure.",
-    "Strengthen revision cycles."
-  ],
-  stable: [
-    "Target weak areas deliberately.",
-    "Reduce attempt volume, increase accuracy.",
-    "Revise basics before advanced questions.",
-    "Improve answer structure.",
-    "Identify recurring mistakes.",
-    "Shift from practice to analysis.",
-    "Focus on scoring chapters.",
-    "Increase accuracy by 5–10%."
-  ],
-  weak: [
-    "Pause new attempts and revise basics.",
-    "Reduce question volume temporarily.",
-    "Focus on concept clarity.",
-    "Avoid exam-level tests for now.",
-    "Rebuild confidence with solved examples.",
-    "Strengthen fundamentals first.",
-    "Focus on understanding, not speed.",
-    "Practice with guidance if needed."
-  ],
-  critical: [
-    "Stop random practice immediately.",
-    "Restart preparation from core concepts.",
-    "Focus only on basics for now.",
-    "Avoid full-length tests temporarily.",
-    "Revise theory and examples deeply.",
-    "Rebuild accuracy before speed.",
-    "Seek guidance if required.",
-    "Discipline is essential now."
-  ]
-};
+  return pick([
+    "Early phase… building something beautiful.",
+    "Foundation stage… make it strong.",
+    "Slow growth, strong finish."
+  ]);
+}
+// ---- Micro inference (AI-feel) ----
+function inferenceLine(acc, trend){
+  if(acc>=70 && trend==="Improving")
+    return "This tells me your study method finally clicked.";
 
-const CLOSERS = {
-  far: [
-    "Strong fundamentals now will simplify the exam phase.",
-    "Early correction saves exam pressure.",
-    "This phase defines your final outcome.",
-    "Consistency now builds confidence later.",
-    "Foundation strength decides final scores.",
-    "Right habits now give long-term advantage.",
-    "Early discipline pays highest returns.",
-    "Build now, perform later."
-  ],
-  mid: [
-    "This is the most important improvement window.",
-    "Your next phase decides exam readiness.",
-    "Focused effort now makes exams manageable.",
-    "Accuracy gains now are crucial.",
-    "Correct strategy matters most now.",
-    "This phase separates average from strong.",
-    "Smart work matters now.",
-    "Refinement is key at this stage."
-  ],
-  near: [
-    "Exam time demands control, not panic.",
-    "Accuracy now matters more than volume.",
-    "Avoid last-minute experimentation.",
-    "Stick to proven strategy.",
-    "Confidence comes from revision, not attempts.",
-    "Revise more, attempt less.",
-    "Trust your preparation.",
-    "Calm, focused practice wins exams."
-  ]
-};
+  if(acc<55 && trend!=="Improving")
+    return "This tells me concepts need deeper revision.";
 
-/* ---------- MAIN GENERATOR ---------- */
+  if(acc>=65 && trend==="Stable")
+    return "You’re ready, consistency decides final outcome.";
 
+  return "Your data hints untapped potential.";
+}
+// ---- Self aware line ----
+function selfAwareLine(total){
+  return pick([
+    `I’ve been quietly tracking your ${total} attempts.`,
+    `My little data brain noticed ${total} entries.`,
+    `I didn’t miss a single one of your ${total} attempts.`
+  ]);
+}
+// ---- Closers ----
+const CLOSERS = [
+  "Now go study… I’m watching.",
+  "Don’t ghost your books.",
+  "Make me proud next time.",
+  "Stay cute and consistent.",
+  "I’ll check on you soon."
+];
+// ---- Sentence Patterns ----
+const PATTERNS = [
+  d => `${accuracyLine(d.accuracy)} ${trendLine(d.trend)}`,
+  d => `${attemptLine(d.totalAttempts,d.streak)} ${mixLine(d.rtp,d.mtp,d.chapter)}`,
+  d => `${subjectLine(d.subject)} ${phaseLine(d.daysLeft)}`,
+  d => `${selfAwareLine(d.totalAttempts)} ${inferenceLine(d.accuracy,d.trend)}`,
+  d => `${accuracyLine(d.accuracy)} ${phaseLine(d.daysLeft)}`,
+  d => `${mixLine(d.rtp,d.mtp,d.chapter)} ${accuracyLine(d.accuracy)}`
+];
+// ---- MAIN GENERATOR ----
 export function generatePerformanceInsight({
   trend,
   accuracy,
@@ -251,47 +224,32 @@ export function generatePerformanceInsight({
   daysLeft = 90,
   streak = 0
 }) {
-  const state = classifyState(trend, accuracy);
-  const phase = examPhase(daysLeft);
-  const tone = subjectTone(subject);
+  const totalAttempts = rtp + mtp + chapter;
+  const name = getUserName();
 
-  const total = rtp + mtp + chapter;
+  const data = {
+    trend, accuracy, subject,
+    rtp, mtp, chapter,
+    daysLeft, streak, totalAttempts
+  };
 
-  let context = "";
+  let insight;
+  let tries = 0;
 
-  // practice count context
-  if (total > 0) {
-    context += `In this period you practiced ${total} sets. `;
-  }
+  do {
+    const lines = [
+      timeGreeting(),
+      pick(PATTERNS)(data),
+      pick(PATTERNS)(data),
+      pick(CLOSERS)
+    ];
 
-  // optional streak mention
-  context += maybe(0.6, streakHint(streak) + " ");
+    insight = lines.join(" ").replace(/\s+/g," ").trim();
+    tries++;
+  } while(usedInsights.includes(insight) && tries < 60);
 
-  // optional accuracy hint
-  context += maybe(0.7, percentHint(accuracy) + " ");
+  usedInsights.push(insight);
+  localStorage.setItem(USED_KEY, JSON.stringify(usedInsights));
 
-  // optional practice mix
-  context += maybe(0.5, practiceMixHint(rtp, mtp, chapter) + " ");
-
-  // core insight sentence chain
-  const main =
-    pick(OPENERS[state]) + " " +
-    pick(SUBJECT_ADVICE[tone]) + " " +
-    pick(ACTIONS[state]) + " " +
-    pick(CLOSERS[phase]);
-
-  // optional motivational finisher
-  const finishers = [
-    "Stay calm and consistent.",
-    "Small corrections now bring big results.",
-    "Precision beats volume.",
-    "Discipline will carry you forward.",
-    "Trust your process."
-  ];
-
-  return (
-    context +
-    main +
-    maybe(0.5, " " + pick(finishers))
-  ).replace(/\s+/g, " ").trim();
+  return insight;
 }
